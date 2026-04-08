@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Payment Successful | Carify{% endblock %}
+
+{% block content %}
+    <section class="page-content content-panel">
+        <h1>Payment Successful!</h1>
+        <p>Thank you for your purchase. Your payment has been processed successfully.</p>
+        <a class="button" href="{% url 'carify_app:product_list' %}">Continue Shopping</a>
+    </section>
+{% endblock %}

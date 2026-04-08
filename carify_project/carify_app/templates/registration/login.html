@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login | Carify</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f4; color: #222; margin: 0; }
+        .container { max-width: 420px; margin: 100px auto; padding: 32px; background: #fff; border-radius: 16px; box-shadow: 0 15px 40px rgba(0,0,0,0.08); }
+        h1 { margin-top: 0; font-size: 1.9rem; color: #231f20; }
+        label { display: block; margin: 18px 0 6px; font-weight: 600; }
+        input[type="text"], input[type="password"] { width: 100%; padding: 12px 14px; margin: 0; border: 1px solid #d8d8d8; border-radius: 10px; }
+        button { width: 100%; margin-top: 24px; padding: 14px 18px; border: none; border-radius: 10px; background: #f3811f; color: #fff; font-size: 1rem; font-weight: 700; cursor: pointer; }
+        button:hover { background: #d96d10; }
+        .help { margin-top: 16px; color: #666; font-size: 0.9rem; }
+        .help a { color: #f3811f; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sign in to Carify</h1>
+        <form method="post" action="">
+            {% csrf_token %}
+            {% if form.errors %}
+                <p style="color:#d63400;">Please enter a correct username and password.</p>
+            {% endif %}
+            <label for="id_username">Username</label>
+            <input type="text" name="username" id="id_username" autofocus required>
+            <label for="id_password">Password</label>
+            <input type="password" name="password" id="id_password" required>
+            <button type="submit">Login</button>
+            <input type="hidden" name="next" value="{{ next }}">
+        </form>
+        <p class="help">New seller? <a href="{% url 'carify_app:seller_register' %}">Register here</a>.</p>
+        <p class="help">Back to <a href="{% url 'carify_app:product_list' %}">Carify home</a>.</p>
+    </div>
+</body>
+</html>

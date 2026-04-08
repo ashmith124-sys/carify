@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sign up | Carify</title>
+    <style>
+        body { font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; background: #f8f8f8; color: #1f1f1f; }
+        .container { max-width: 520px; margin: 80px auto; padding: 32px; background: #fff; border-radius: 24px; box-shadow: 0 24px 60px rgba(0,0,0,0.08); }
+        h1 { margin: 0 0 10px; font-size: 2rem; }
+        p.subtitle { margin: 0 0 24px; color: #5f5f5f; }
+        label { display: block; margin: 18px 0 8px; font-weight: 700; }
+        input { width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid #d9d9d9; font-size: 1rem; }
+        button { width: 100%; margin-top: 24px; padding: 14px 16px; border: none; border-radius: 14px; background: #f3811f; color: #fff; font-size: 1rem; font-weight: 700; cursor: pointer; }
+        button:hover { background: #d96d10; }
+        .social-login { margin: 28px 0; }
+        .social-button { display: block; width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid #d9d9d9; background: #fff; margin-bottom: 12px; text-align: center; color: #1f1f1f; font-weight: 700; text-decoration: none; }
+        .social-button:hover { background: #fafafa; }
+        .footer { margin-top: 16px; color: #6d6d6d; font-size: 0.95rem; }
+        .footer a { color: #f3811f; text-decoration: none; }
+        .errorlist { margin: 0 0 12px; padding: 0; list-style: none; color: #c0392b; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Create your Carify account</h1>
+        <p class="subtitle">Register with email or use a social account.</p>
+
+        {% if form.errors %}
+            <ul class="errorlist">
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <form method="post" action="{% url 'account_signup' %}">
+            {% csrf_token %}
+            {% for field in form %}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+            {% endfor %}
+            <button type="submit">Sign up</button>
+            {{ form.next }}
+        </form>
+
+        {% if providers %}
+        <div class="social-login">
+            <p style="margin-bottom: 12px; color:#5f5f5f;">Or sign up with</p>
+            {% for provider in providers %}
+                <a class="social-button" href="{% provider_login_url provider.id process='signup' %}">{{ provider.name }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="footer">
+            Already have an account? <a href="{% url 'account_login' %}">Log in</a>
+        </div>
+    </div>
+</body>
+</html>

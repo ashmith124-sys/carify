@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.name }} | Carify{% endblock %}
+
+{% block content %}
+    <section class="page-content content-panel">
+        <a class="back-link" href="{% url 'carify_app:product_list' %}">← Back to products</a>
+        <div class="detail-header">
+            <div>
+                <p class="section-label">Product Details</p>
+                <h1>{{ product.name }}</h1>
+                <p class="product-detail-description">{{ product.description }}</p>
+                <p class="product-detail-meta">Price: <strong>${{ product.price }}</strong></p>
+                <p class="product-detail-meta">Seller: <strong>{{ product.seller.username }}</strong></p>
+            </div>
+        </div>
+
+        {% if product.image %}
+            <div class="detail-image-wrap">
+                <img class="detail-image" src="{{ product.image.url }}" alt="{{ product.name }}">
+            </div>
+        {% endif %}
+
+        {% if product.media.exists %}
+            <div class="media-grid">
+                {% for media in product.media.all %}
+                    {% if media.media_type == 'image' and media.image %}
+                        <div class="media-card">
+                            <img src="{{ media.image.url }}" alt="{{ media.caption|default:product.name }}">
+                            {% if media.caption %}
+                                <p>{{ media.caption }}</p>
+                            {% endif %}
+                        </div>
+                    {% elif media.media_type == 'video' and media.video %}
+                        <div class="media-card">
+                            <video controls>
+                                <source src="{{ media.video.url }}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                            {% if media.caption %}
+                                <p>{{ media.caption }}</p>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'carify_app:create_checkout' product.id %}" class="detail-action-form">
+            {% csrf_token %}
+            <button class="button" type="submit">Buy Now</button>
+        </form>
+    </section>
+{% endblock %}

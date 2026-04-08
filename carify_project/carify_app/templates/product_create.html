@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Add Product | Carify{% endblock %}
+
+{% block content %}
+    <section class="page-content content-panel">
+        <a class="back-link" href="{% url 'carify_app:product_list' %}">← Back to products</a>
+        <h1>Add New Product</h1>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <fieldset>
+                <legend>Product Details</legend>
+                {{ form.as_p }}
+            </fieldset>
+
+            <fieldset>
+                <legend>Product Media</legend>
+                {{ formset.management_form }}
+                <table class="media-table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Image</th>
+                            <th>Video</th>
+                            <th>Caption</th>
+                            <th>Sort order</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for media_form in formset %}
+                            <tr>
+                                <td>{{ media_form.media_type }}</td>
+                                <td>{{ media_form.image }}</td>
+                                <td>{{ media_form.video }}</td>
+                                <td>{{ media_form.caption }}</td>
+                                <td>{{ media_form.sort_order }}</td>
+                                <td>{{ media_form.DELETE }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </fieldset>
+
+            <button type="submit" class="button">Create Product</button>
+        </form>
+    </section>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Products | Carify{% endblock %}
+
+{% block content %}
+    <section class="page-content">
+        <div class="section-header">
+            <p class="section-label">Products</p>
+            <h2>Browse our full collection</h2>
+        </div>
+
+        <div class="product-grid">
+            {% for product in products %}
+            <article class="product-card">
+                {% if product.image %}
+                    <img class="product-image" src="{{ product.image.url }}" alt="{{ product.name }}">
+                {% elif product.first_media_image_url %}
+                    <img class="product-image" src="{{ product.first_media_image_url }}" alt="{{ product.name }}">
+                {% else %}
+                    <div class="product-image product-image-empty">No image</div>
+                {% endif %}
+                <div class="product-card-body">
+                    <h2>{{ product.name }}</h2>
+                    <p>{{ product.description|truncatechars:140 }}</p>
+                    <div class="product-meta">
+                        <span class="price">${{ product.price }}</span>
+                        <div class="actions">
+                            <form method="post" action="{% url 'carify_app:create_checkout' product.id %}">
+                                {% csrf_token %}
+                                <button class="button" type="submit">Buy Now</button>
+                            </form>
+                            <a class="secondary-button" href="{% url 'carify_app:product_detail' product.id %}">View details</a>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}

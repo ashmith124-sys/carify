@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Payment Cancelled | Carify{% endblock %}
+
+{% block content %}
+    <section class="page-content content-panel">
+        <h1>Payment Cancelled</h1>
+        <p>Your payment was cancelled. You can try again or continue shopping.</p>
+        <a class="button" href="{% url 'carify_app:product_list' %}">Continue Shopping</a>
+    </section>
+{% endblock %}

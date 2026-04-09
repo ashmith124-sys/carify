@@ -42,6 +42,17 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+    @property
+    def first_media_image_url(self):
+        """Helper property to get the first image URL from related media or the main image field."""
+        if self.image:
+            return self.image.url
+        # Fallback to related ProductMedia if no main image exists
+        first_img = self.media.filter(media_type='image').first()
+        if first_img and first_img.image:
+            return first_img.image.url
+        return None
+
 class ProductMedia(models.Model):
     MEDIA_TYPE_CHOICES = [
         ('image', 'Image'),

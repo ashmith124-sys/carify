@@ -14,26 +14,12 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 def home(request):
     """Render the landing page with featured products."""
     products = Product.objects.all().prefetch_related('media')
-    for product in products:
-        first_image = None
-        for media in product.media.all():
-            if media.media_type == 'image' and media.image:
-                first_image = media.image
-                break
-        product.first_media_image_url = first_image.url if first_image else None
     return render(request, 'home.html', {'products': products})
 
 
 def product_list(request):
     """Display list of products"""
     products = Product.objects.all().prefetch_related('media')
-    for product in products:
-        first_image = None
-        for media in product.media.all():
-            if media.media_type == 'image' and media.image:
-                first_image = media.image
-                break
-        product.first_media_image_url = first_image.url if first_image else None
     return render(request, 'product_list.html', {'products': products})
 
 def product_detail(request, product_id):
@@ -93,14 +79,6 @@ def seller_dashboard(request):
 def seller_products(request):
     """List seller products in the dashboard."""
     products = Product.objects.filter(seller=request.user).prefetch_related('media', 'category')
-    for product in products:
-        first_image = None
-        for media in product.media.all():
-            if media.media_type == 'image' and media.image:
-                first_image = media.image
-                break
-        product.first_media_image_url = first_image.url if first_image else None
-    
     return render(request, 'seller_dashboard_products.html', {
         'products': products
     })

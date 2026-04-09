@@ -2,59 +2,35 @@
 {% load static %}
 
 {% block content %}
-<!-- HERO SECTION -->
+<!-- HERO SECTION with Integrated Search -->
 <div class="hero">
-    <div class="hero-content">
-        <span class="hero-subtitle">NEW ARRIVALS 2026</span>
-        <h1 class="hero-title">PRECISION<br>MEETS<br>PERFORMANCE</h1>
-        <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 30px; max-width: 80%;">
-            Upgrade your ride with industry-leading aftermarket parts, built for extreme conditions. Direct from manufacturer to you.
-        </p>
-        <div style="display: flex; gap: 15px;">
-            <a href="{% url 'carify_app:product_list' %}" class="btn btn-primary">Shop Catalog</a>
-            <a href="#" class="btn btn-outline">Explore Brands</a>
-        </div>
+    <div class="hero-content" style="background: rgba(43, 39, 40, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); padding: 60px; border-radius: 4px;">
+        <span class="hero-subtitle" style="background: var(--accent); color: var(--text-inverse); font-weight: 800;">PERFORMANCE UNLIMITED</span>
+        <h1 class="hero-title" style="margin-bottom: 40px; text-shadow: 0 10px 30px rgba(0,0,0,0.5);">PRECISION<br>FOR THE<br>DRIVEN</h1>
+        
+        <!-- Integrated Search Bar -->
+        <form action="{% url 'carify_app:product_list' %}" method="GET" style="display: flex; gap: 0; background: var(--bg-main); border: 2px solid var(--border-strong); border-radius: 4px; padding: 4px;">
+            <input type="text" name="q" placeholder="Search performance parts..." style="flex: 1; background: transparent; border: none; color: var(--text-main); padding: 15px 20px; outline: none; font-family: var(--font-body);">
+            <button type="submit" class="btn btn-primary" style="padding: 10px 30px; border-radius: 2px;">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
     </div>
     
     <div class="hero-visual">
-        <img src="https://images.unsplash.com/photo-1621135152850-efc482b3018f?auto=format&fit=crop&q=80&w=800" alt="High Performance Auto Part">
+        <img src="https://images.unsplash.com/photo-1549494391-7f9996d914ae?auto=format&fit=crop&q=80&w=1600" alt="Engine Precision" style="filter: brightness(0.6);">
     </div>
 </div>
 
-<!-- INFO BAR -->
-<div class="info-bar">
-    <div class="info-item">
-        <i class="fas fa-shipping-fast info-icon"></i>
-        <div class="info-text">
-            <h4 style="font-family: var(--font-heading);">FAST SHIPPING</h4>
-            <p style="font-size: 0.85rem; color: var(--text-secondary);">Direct from warehouse</p>
-        </div>
-    </div>
-    <div class="info-item">
-        <i class="fas fa-shield-alt info-icon"></i>
-        <div class="info-text">
-            <h4 style="font-family: var(--font-heading);">SECURE Checkout</h4>
-            <p style="font-size: 0.85rem; color: var(--text-secondary);">100% safe transactions</p>
-        </div>
-    </div>
-    <div class="info-item">
-        <i class="fas fa-undo info-icon"></i>
-        <div class="info-text">
-            <h4 style="font-family: var(--font-heading);">EASY RETURNS</h4>
-            <p style="font-size: 0.85rem; color: var(--text-secondary);">30-day return policy</p>
-        </div>
-    </div>
-</div>
-
-<!-- LATEST PRODUCTS SECTION -->
-<div class="section" style="background: var(--bg-secondary);">
+<!-- LATEST HARDWARE SECTION -->
+<div class="section" style="background: var(--bg-surface);">
     <div class="container">
         <div class="section-header">
             <div>
-                <span class="hero-subtitle" style="background: var(--bg-primary); color: var(--text-primary); border: 2px solid var(--border-strong);">FEATURED O.E.M.</span>
-                <h2 style="font-size: 2.5rem; margin-top: 10px;">LATEST HARDWARE</h2>
+                <h2 style="font-size: 2.5rem; letter-spacing: -1px; margin-bottom: 5px;">LATEST HARDWARE</h2>
+                <p style="color: var(--text-muted); text-transform: uppercase; font-size: 0.8rem; font-weight: 600; letter-spacing: 2px;">Direct from testing labs</p>
             </div>
-            <a href="{% url 'carify_app:product_list' %}" class="btn btn-outline">View All</a>
+            <a href="{% url 'carify_app:product_list' %}" style="font-family: var(--font-heading); font-weight: 700; text-transform: uppercase; color: var(--accent); letter-spacing: 1px;">View All Items <i class="fas fa-arrow-right"></i></a>
         </div>
         
         <div class="product-grid">
@@ -64,8 +40,6 @@
                     <div class="product-image-container">
                         {% if product.quantity < 5 %}
                             <span class="product-badge">LOW STOCK</span>
-                        {% else %}
-                            <span class="product-badge">IN STOCK</span>
                         {% endif %}
                         
                         {% if product.first_media_image_url %}
@@ -73,20 +47,20 @@
                         {% elif product.image %}
                             <img src="{{ product.image.url }}" alt="{{ product.name }}">
                         {% else %}
-                            <img src="https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&q=80&w=400" alt="Placeholder">
+                            <img src="https://images.unsplash.com/photo-1486491830252-1719446d670a?auto=format&fit=crop&q=80&w=400" alt="Part Placeholder">
                         {% endif %}
                     </div>
                 </a>
                 
                 <div class="product-info">
-                    <div style="font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; font-family: var(--font-heading); font-weight: 600; margin-bottom: 5px;">
+                    <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-family: var(--font-heading); font-weight: 700; margin-bottom: 8px;">
                         {{ product.category.name|default:"General Parts" }}
                     </div>
-                    <a href="{% url 'carify_app:product_detail' product.id %}" class="product-title">
+                    <a href="{% url 'carify_app:product_detail' product.id %}" class="product-title" style="font-weight: 600; font-size: 1.25rem;">
                         {{ product.name }}
                     </a>
                     
-                    <div class="product-price">
+                    <div class="product-price" style="color: var(--text-main); opacity: 0.9;">
                         ${{ product.price }}
                     </div>
                 </div>
@@ -99,7 +73,7 @@
                 </form>
             </div>
             {% empty %}
-            <div style="grid-column: 1 / -1; text-align: center; padding: 60px; border: 2px dashed var(--border-strong);">
+            <div style="grid-column: 1 / -1; text-align: center; padding: 60px; border: 1px dashed var(--border-strong);">
                 <h3 style="margin-bottom: 15px;">No inventory loaded yet.</h3>
                 <a href="{% url 'carify_app:seller_add_product' %}" class="btn btn-primary">List the first part</a>
             </div>
@@ -108,25 +82,18 @@
     </div>
 </div>
 
-<!-- CATEGORY BANNERS -->
-<div class="section container">
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
-        <div style="background: var(--bg-dark); color: var(--text-inverse); padding: 60px; position: relative; overflow: hidden; border: 2px solid var(--border-strong);">
-            <div style="position: relative; z-index: 2;">
-                <h3 style="font-size: 2rem; margin-bottom: 15px;">PERFORMANCE<br>EXHAUSTS</h3>
-                <a href="#" class="btn btn-primary" style="background: var(--accent-electric); color: var(--bg-dark); border-color: var(--accent-electric);">Shop Now</a>
-            </div>
-            <i class="fas fa-wind" style="position: absolute; right: -20px; bottom: -20px; font-size: 12rem; opacity: 0.1; color: var(--accent-electric);"></i>
-        </div>
+<!-- NEWSLETTER SECTION -->
+<div class="section" style="background: var(--bg-main); border-top: 2px solid var(--border-strong);">
+    <div class="container" style="max-width: 800px; text-align: center;">
+        <h2 style="font-size: 2.5rem; margin-bottom: 15px;">JOIN THE RACING LINE</h2>
+        <p style="color: var(--text-muted); margin-bottom: 40px;">Get exclusive early access to hardware drops and technical insights.</p>
         
-        <div style="background: var(--accent-electric); color: var(--bg-dark); padding: 60px; position: relative; overflow: hidden; border: 2px solid var(--border-strong);">
-            <div style="position: relative; z-index: 2;">
-                <h3 style="font-size: 2rem; margin-bottom: 15px;">PREMIUM<br>LUBRICANTS</h3>
-                <a href="#" class="btn btn-primary" style="background: var(--bg-dark); color: var(--text-primary); border-color: var(--bg-dark);">Shop Now</a>
-            </div>
-            <i class="fas fa-oil-can" style="position: absolute; right: 20px; bottom: -20px; font-size: 12rem; opacity: 0.1; color: var(--bg-dark);"></i>
-        </div>
+        <form style="display: flex; gap: 0; background: var(--bg-surface); border: 2px solid var(--border-strong); border-radius: 4px; padding: 4px;">
+            <input type="email" placeholder="Enter your email" style="flex: 1; background: transparent; border: none; color: var(--text-main); padding: 15px 25px; outline: none;">
+            <button type="submit" class="btn btn-primary">SUBSCRIBE</button>
+        </form>
     </div>
 </div>
+
 
 {% endblock %}

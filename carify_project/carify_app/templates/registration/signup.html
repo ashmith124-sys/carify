@@ -1,56 +1,74 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Seller Registration | Carify</title>
-    <style>
-        body { font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; background: #f8f8f8; color: #1f1f1f; }
-        .page { max-width: 520px; margin: 60px auto; padding: 32px; background: #ffffff; border-radius: 24px; box-shadow: 0 24px 80px rgba(0,0,0,0.08); }
-        h1 { margin: 0 0 16px; font-size: 2rem; letter-spacing: -0.03em; }
-        p { margin: 0 0 28px; color: #5f5f5f; line-height: 1.75; }
-        label { display: block; margin: 18px 0 8px; font-weight: 700; }
-        input { width: 100%; padding: 14px 16px; border: 1px solid #d7d7d7; border-radius: 14px; font-size: 1rem; }
-        button { width: 100%; margin-top: 24px; padding: 14px 16px; border: none; border-radius: 14px; background: #f3811f; color: #fff; font-size: 1rem; font-weight: 700; cursor: pointer; }
-        button:hover { background: #d96d10; }
-        .footer { margin-top: 20px; font-size: 0.95rem; color: #6d6d6d; }
-        .footer a { color: #f3811f; text-decoration: none; }
-        .errorlist { color: #c0392b; margin: 0; padding: 0; list-style: none; }
-    </style>
-</head>
-<body>
-    <div class="page">
-        <h1>Seller Registration</h1>
-        <p>Create your seller account to list products and start selling on Carify.</p>
+{% extends "base.html" %}
+{% load static %}
 
-        <form method="post" novalidate>
-            {% csrf_token %}
-            {% if form.non_field_errors %}
-                <ul class="errorlist">
-                    {% for error in form.non_field_errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
+{% block title %}Seller Registration | Carify{% endblock %}
 
-            {% for field in form %}
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field }}
-                {% if field.errors %}
-                    <ul class="errorlist">
-                        {% for error in field.errors %}
-                            <li>{{ error }}</li>
+{% block content %}
+<div class="section" style="background: var(--bg-surface); min-height: 90vh; display: flex; align-items: center; justify-content: center;">
+    <div class="container" style="max-width: 600px;">
+        <div style="background: var(--bg-main); border: 2px solid var(--border-strong); padding: 50px; border-radius: 4px; box-shadow: 0 40px 100px rgba(0,0,0,0.5);">
+            <div style="text-align: center; margin-bottom: 40px;">
+                <h1 style="font-size: 2.5rem; letter-spacing: -2px; margin-bottom: 15px;">SELLER PORTAL</h1>
+                <p style="color: var(--text-muted); font-family: var(--font-heading); font-weight: 700; font-size: 0.8rem; letter-spacing: 2px;">JOIN THE NETWORK</p>
+            </div>
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                    <div style="background: rgba(220, 38, 38, 0.1); border: 1px solid #dc2626; color: #ef4444; padding: 15px; border-radius: 4px; margin-bottom: 25px;">
+                        {% for error in form.non_field_errors %}
+                            <p style="margin: 0; font-size: 0.9rem;">{{ error }}</p>
                         {% endfor %}
-                    </ul>
+                    </div>
                 {% endif %}
-            {% endfor %}
 
-            <button type="submit">Register as Seller</button>
-        </form>
+                {% for field in form %}
+                <div style="margin-bottom: 25px;">
+                    <label for="{{ field.id_for_label }}" style="display: block; font-family: var(--font-heading); font-weight: 700; font-size: 0.8rem; letter-spacing: 1px; margin-bottom: 10px; color: var(--text-muted);">
+                        {{ field.label|upper }}
+                    </label>
+                    
+                    {{ field }}
+                    
+                    {% if field.errors %}
+                        <div style="color: #ef4444; font-size: 0.8rem; margin-top: 8px; font-weight: 600;">
+                            {% for error in field.errors %}{{ error }}{% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
 
-        <div class="footer">
-            Already have an account? <a href="/accounts/login/">Sign in</a>
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 18px; font-size: 1rem; margin-top: 20px;">
+                    CREATE SELLER IDENTITY
+                </button>
+            </form>
+
+            <div style="margin-top: 40px; text-align: center; border-top: 1px solid var(--border-strong); padding-top: 30px;">
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px;">Already registered?</p>
+                <a href="/accounts/login/" style="color: var(--accent); font-family: var(--font-heading); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px;">
+                    Secure Sign In <i class="fas fa-lock" style="margin-left: 5px;"></i>
+                </a>
+            </div>
         </div>
     </div>
-</body>
-</html>
+</div>
+
+<style>
+    /* Styling the Django form inputs globally within this container */
+    input, select, textarea {
+        width: 100%;
+        padding: 15px;
+        background: var(--bg-surface) !important;
+        border: 1px solid var(--border-strong) !important;
+        color: var(--text-main) !important;
+        font-family: var(--font-body) !important;
+        border-radius: 4px !important;
+        outline: none !important;
+        transition: border-color 0.3s !important;
+    }
+    input:focus, select:focus, textarea:focus {
+        border-color: var(--accent) !important;
+    }
+</style>
+{% endblock %}

@@ -2,23 +2,23 @@
 {% block title %}Catalog | Carify{% endblock %}
 
 {% block content %}
-<div class="section" style="background: var(--bg-dark); border-bottom: 2px solid var(--border-strong);">
-    <div class="container text-center">
-        <h1 style="font-size: 3rem;">COMPLETE CATALOG</h1>
-        <p style="color: var(--text-secondary); margin-top: 10px;">Browse our entire collection of performance parts and accessories</p>
+<div class="section" style="background: var(--bg-surface); border-bottom: 2px solid var(--border-strong);">
+    <div class="container" style="max-width: 800px; text-align: center;">
+        <h1 style="font-size: 3.5rem; letter-spacing: -2px; margin-bottom: 10px;">COMPONENT CATALOG</h1>
+        <p style="color: var(--text-muted); text-transform: uppercase; font-size: 0.85rem; font-weight: 700; letter-spacing: 3px;">Precision Engineered Hardware</p>
     </div>
 </div>
 
 <div class="section container">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid var(--border-strong); padding-bottom: 20px;">
-        <div>
-            <span style="font-family: var(--font-heading); font-weight: 600;">{{ products.count }} ITEMS FOUND</span>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-bottom: 1px solid var(--border-strong); padding-bottom: 20px;">
+        <div style="font-family: var(--font-heading); font-weight: 700; color: var(--text-muted); font-size: 0.9rem;">
+            {{ products.count }} UNITS AVAILABLE
         </div>
-        <div style="display: flex; gap: 15px;">
-            <select style="padding: 10px; border: 2px solid var(--border-strong); font-family: var(--font-heading); font-weight: 600; text-transform: uppercase;">
-                <option>Sort by: Featured</option>
+        <div style="display: flex; gap: 20px;">
+            <select style="background: var(--bg-surface); color: var(--text-main); padding: 10px 20px; border: 1px solid var(--border-strong); border-radius: 4px; font-family: var(--font-heading); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; outline: none;">
+                <option>Sort by: Latest Drops</option>
+                <option>Performance: High to Low</option>
                 <option>Price: Low to High</option>
-                <option>Price: High to Low</option>
             </select>
         </div>
     </div>
@@ -29,7 +29,7 @@
             <a href="{% url 'carify_app:product_detail' product.id %}" style="display: contents;">
                 <div class="product-image-container">
                     {% if product.quantity < 5 %}
-                        <span class="product-badge">LOW STOCK</span>
+                        <span class="product-badge">CRITICAL STOCK</span>
                     {% endif %}
                     
                     {% if product.image %}
@@ -37,41 +37,38 @@
                     {% elif product.first_media_image_url %}
                         <img src="{{ product.first_media_image_url }}" alt="{{ product.name }}">
                     {% else %}
-                        <img src="https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&q=80&w=400" alt="Placeholder">
+                        <img src="https://images.unsplash.com/photo-1486491830252-1719446d670a?auto=format&fit=crop&q=80&w=400" alt="Part Placeholder">
                     {% endif %}
                 </div>
             </a>
             
             <div class="product-info">
-                <div style="font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; font-family: var(--font-heading); font-weight: 600; margin-bottom: 5px;">
+                <div style="font-size: 0.75rem; color: var(--accent); text-transform: uppercase; font-family: var(--font-heading); font-weight: 700; margin-bottom: 8px;">
                     {{ product.category.name|default:"General Parts" }}
                 </div>
-                <a href="{% url 'carify_app:product_detail' product.id %}" class="product-title">
+                <a href="{% url 'carify_app:product_detail' product.id %}" class="product-title" style="font-weight: 600; font-size: 1.1rem; line-height: 1.3;">
                     {{ product.name }}
                 </a>
-                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 15px; flex: 1;">
-                    {{ product.description|truncatechars:60 }}
-                </p>
                 
-                <div class="product-price">
+                <div class="product-price" style="margin-top: 15px; font-size: 1.4rem; color: var(--text-main);">
                     ${{ product.price }}
                 </div>
             </div>
             
-            <div style="display: flex; border-top: 2px solid var(--border-strong);">
-                <form method="post" action="{% url 'carify_app:create_checkout' product.id %}" style="display: contents;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn-add-cart-outline" style="border-top: none; background: var(--accent-electric); color: var(--text-primary); flex: 1;">
-                        BUY NOW
-                    </button>
-                </form>
-            </div>
+            <form method="post" action="{% url 'carify_app:create_checkout' product.id %}" style="display: contents;">
+                {% csrf_token %}
+                <button type="submit" class="btn-add-cart-outline" style="border-top: 1px solid var(--border-strong); padding: 18px; font-size: 0.85rem;">
+                    <i class="fas fa-bolt"></i> QUICK PURCHASE
+                </button>
+            </form>
         </div>
         {% empty %}
-        <div style="grid-column: 1 / -1; text-align: center; padding: 60px;">
-            <h3>No products found matching your criteria.</h3>
+        <div style="grid-column: 1 / -1; text-align: center; padding: 100px; border: 1px dashed var(--border-strong);">
+            <h3 style="margin-bottom: 20px;">No hardware detected in this category.</h3>
+            <a href="{% url 'carify_app:home' %}" class="btn btn-primary" style="padding: 12px 30px;">Return to Terminal</a>
         </div>
         {% endfor %}
     </div>
 </div>
+
 {% endblock %}

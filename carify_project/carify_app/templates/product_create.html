@@ -2,48 +2,95 @@
 {% block title %}Add Product | Carify{% endblock %}
 
 {% block content %}
-    <section class="page-content content-panel">
-        <a class="back-link" href="{% url 'carify_app:product_list' %}">← Back to products</a>
-        <h1>Add New Product</h1>
+<div class="section" style="background: var(--bg-surface); min-height: 100vh; padding: 60px 5%;">
+    <div class="container" style="max-width: 900px;">
+        <div style="margin-bottom: 40px;">
+            <a class="nav-link" href="{% url 'carify_app:seller_products' %}" style="display: inline-flex; align-items: center; gap: 10px; font-weight: 700; color: var(--accent);">
+                <i class="fas fa-arrow-left"></i> BACK TO INVENTORY
+            </a>
+            <h1 style="font-size: 3rem; letter-spacing: -2px; margin-top: 20px;">LIST NEW HARDWARE</h1>
+            <p style="color: var(--text-muted); text-transform: uppercase; font-size: 0.85rem; font-weight: 700; letter-spacing: 2px;">Component Registration Terminal</p>
+        </div>
 
-        <form method="post" enctype="multipart/form-data">
+        <form method="post" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 40px;">
             {% csrf_token %}
 
-            <fieldset>
-                <legend>Product Details</legend>
-                {{ form.as_p }}
-            </fieldset>
+            <div style="background: var(--bg-main); border: 2px solid var(--border-strong); padding: 40px; border-radius: 4px;">
+                <h3 style="margin-bottom: 30px; border-bottom: 1px solid var(--border-strong); padding-bottom: 15px;">PRODUCT SPECIFICATIONS</h3>
+                <div class="form-grid" style="display: grid; gap: 20px;">
+                    {{ form.as_p }}
+                </div>
+            </div>
 
-            <fieldset>
-                <legend>Product Media</legend>
+            <div style="background: var(--bg-main); border: 2px solid var(--border-strong); padding: 40px; border-radius: 4px;">
+                <h3 style="margin-bottom: 30px; border-bottom: 1px solid var(--border-strong); padding-bottom: 15px;">MULTIMEDIA ASSETS</h3>
                 {{ formset.management_form }}
-                <table class="media-table">
-                    <thead>
-                        <tr>
-                            <th>Type</th>
-                            <th>Image</th>
-                            <th>Video</th>
-                            <th>Caption</th>
-                            <th>Sort order</th>
-                            <th>Delete</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for media_form in formset %}
-                            <tr>
-                                <td>{{ media_form.media_type }}</td>
-                                <td>{{ media_form.image }}</td>
-                                <td>{{ media_form.video }}</td>
-                                <td>{{ media_form.caption }}</td>
-                                <td>{{ media_form.sort_order }}</td>
-                                <td>{{ media_form.DELETE }}</td>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
+                        <thead>
+                            <tr style="text-align: left; border-bottom: 2px solid var(--border-strong);">
+                                <th style="padding: 15px; font-family: var(--font-heading); font-size: 0.8rem; color: var(--text-muted);">TYPE</th>
+                                <th style="padding: 15px; font-family: var(--font-heading); font-size: 0.8rem; color: var(--text-muted);">FILE</th>
+                                <th style="padding: 15px; font-family: var(--font-heading); font-size: 0.8rem; color: var(--text-muted);">CAPTION</th>
+                                <th style="padding: 15px; font-family: var(--font-heading); font-size: 0.8rem; color: var(--text-muted);">SORT</th>
+                                <th style="padding: 15px; font-family: var(--font-heading); font-size: 0.8rem; color: var(--text-muted);">REMOVE</th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </fieldset>
+                        </thead>
+                        <tbody>
+                            {% for media_form in formset %}
+                                <tr style="border-bottom: 1px solid var(--border-strong);">
+                                    <td style="padding: 15px;">{{ media_form.media_type }}</td>
+                                    <td style="padding: 15px;">
+                                        <div style="display: flex; flex-direction: column; gap: 5px;">
+                                            {{ media_form.image }}
+                                            {{ media_form.video }}
+                                        </div>
+                                    </td>
+                                    <td style="padding: 15px;">{{ media_form.caption }}</td>
+                                    <td style="padding: 15px;">{{ media_form.sort_order }}</td>
+                                    <td style="padding: 15px; text-align: center;">{{ media_form.DELETE }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-            <button type="submit" class="button">Create Product</button>
+            <div style="display: flex; justify-content: flex-end;">
+                <button type="submit" class="btn btn-primary" style="padding: 20px 60px; font-size: 1.1rem; box-shadow: 0 10px 30px var(--accent-glow);">
+                    PUBLISH HARDWARE <i class="fas fa-upload" style="margin-left: 10px;"></i>
+                </button>
+            </div>
         </form>
-    </section>
+    </div>
+</div>
+
+<style>
+    /* Styling Django form fields */
+    input, select, textarea {
+        width: 100%;
+        padding: 12px 16px;
+        background: var(--bg-surface) !important;
+        border: 1px solid var(--border-strong) !important;
+        color: var(--text-main) !important;
+        font-family: var(--font-body) !important;
+        border-radius: 4px !important;
+        outline: none !important;
+        margin-top: 5px;
+    }
+    input:focus, select:focus, textarea:focus {
+        border-color: var(--accent) !important;
+    }
+    p label {
+        display: block;
+        font-family: var(--font-heading);
+        font-weight: 700;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    p { margin-bottom: 20px; }
+</style>
 {% endblock %}
+

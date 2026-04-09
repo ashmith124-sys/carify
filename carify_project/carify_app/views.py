@@ -121,10 +121,12 @@ def create_checkout_session(request, product_id):
             }
         )
         
-        return JsonResponse({'checkout_url': checkout_session.url})
+        return redirect(checkout_session.url)
     except Exception as e:
         order.delete()
-        return JsonResponse({'error': str(e)}, status=400)
+        # Return to product list with an error message in a real app, 
+        # but for now just redirect home if it fails
+        return redirect('carify_app:product_list')
 
 @login_required
 def payment_success(request):

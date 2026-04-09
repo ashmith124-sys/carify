@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-from .models import Category, Product, ProductMedia, Order, OrderItem, Payment
+from .models import Category, Product, ProductMedia, Order, OrderItem, Payment, SellerProfile, Service, Wishlist
 
 class ProductMediaInline(admin.TabularInline):
     model = ProductMedia
@@ -116,3 +116,32 @@ class OrderItemAdmin(admin.ModelAdmin):
     def price_display(self, obj):
         return format_html('<strong>${}</strong>', obj.price)
     price_display.short_description = 'Price'
+
+@admin.register(SellerProfile)
+class SellerProfileAdmin(admin.ModelAdmin):
+    list_display = ('shop_name', 'user', 'is_approved', 'created_at')
+    list_filter = ('is_approved', 'created_at')
+    search_fields = ('shop_name', 'user__username', 'user__email')
+    readonly_fields = ('created_at',)
+
+@admin.register(Service)
+class ServiceAdmin(admin.ModelAdmin):
+    list_display = ('name', 'price_display', 'seller', 'category', 'created_at')
+    list_filter = ('category', 'created_at')
+    search_fields = ('name', 'description', 'seller__username')
+    readonly_fields = ('created_at', 'updated_at')
+    
+    def price_display(self, obj):
+        return format_html('<strong>${}</strong>', obj.price)
+    price_display.short_description = 'Price'
+
+@admin.register(Wishlist)
+class WishlistAdmin(admin.ModelAdmin):
+    list_display = ('user', 'products_count', 'services_count')
+    search_fields = ('user__username', 'user__email')
+
+    def products_count(self, obj):
+        return obj.products.count()
+    
+    def services_count(self, obj):
+        return obj.services.count()

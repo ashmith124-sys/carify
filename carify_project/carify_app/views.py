@@ -81,6 +81,31 @@ def seller_add_product(request):
     })
 
 @login_required
+def seller_dashboard(request):
+    """Main dashboard overview for sellers."""
+    # Ensure user has a profile or basic products
+    products = Product.objects.filter(seller=request.user)
+    return render(request, 'seller_dashboard_home.html', {
+        'products': products
+    })
+
+@login_required
+def seller_products(request):
+    """List seller products in the dashboard."""
+    products = Product.objects.filter(seller=request.user).prefetch_related('media', 'category')
+    for product in products:
+        first_image = None
+        for media in product.media.all():
+            if media.media_type == 'image' and media.image:
+                first_image = media.image
+                break
+        product.first_media_image_url = first_image.url if first_image else None
+    
+    return render(request, 'seller_dashboard_products.html', {
+        'products': products
+    })
+
+@login_required
 def create_checkout_session(request, product_id):
     """Create a Stripe checkout session for a single product"""
     product = get_object_or_404(Product, id=product_id)

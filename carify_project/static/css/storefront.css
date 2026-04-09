@@ -1,0 +1,410 @@
+/* STOREFRONT REDESIGN (Shopify Rapid Preset Inspiration) */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+    /* Colors */
+    --bg-primary: #231F20;       /* Deep Charcoal */
+    --bg-secondary: #2E2A2B;
+    --bg-dark: #111111;
+    
+    --text-primary: #E6E7E8;     /* Light Silver */
+    --text-secondary: #A0A0A0;
+    --text-inverse: #111111;
+    
+    --accent-electric: #F3811F;  /* Vibrant Orange */
+    --accent-hover: #FC953C;
+    --accent-glow: rgba(243, 129, 31, 0.25);
+    
+    --border-strong: #3E3A3B;
+    --border-light: rgba(230, 231, 232, 0.05);
+    
+    /* Typography */
+    --font-heading: 'Space Grotesk', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    
+    /* Spacing */
+    --container-max: 1400px;
+    --section-pad: 80px 5%;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Base Global Classes */
+.container {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 5%;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 28px;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    border: 2px solid var(--border-strong);
+    background: transparent;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-primary {
+    background: var(--text-primary);
+    color: var(--text-inverse);
+}
+
+.btn-primary:hover {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+    color: var(--text-inverse);
+    box-shadow: 0 0 15px var(--accent-glow);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--text-primary);
+}
+
+.btn-outline:hover {
+    background: var(--bg-dark);
+    color: var(--text-inverse);
+}
+
+/* ================== */
+/* MEGA HEADER        */
+/* ================== */
+.site-header {
+    background: var(--bg-primary);
+    border-bottom: 2px solid var(--border-strong);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 5%;
+    max-width: var(--container-max);
+    margin: 0 auto;
+}
+
+.header-brand {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    text-transform: uppercase;
+    position: relative;
+}
+
+.header-brand::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    right: -10px;
+    width: 6px;
+    height: 6px;
+    background: var(--accent-electric);
+}
+
+.header-nav {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-link {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    position: relative;
+}
+
+.nav-link::before {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--text-primary);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+}
+
+.nav-link:hover::before {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+.header-actions {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.header-icon {
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.header-icon:hover {
+    color: var(--accent-electric);
+}
+
+/* ================== */
+/* HERO COMPONENT     */
+/* ================== */
+.hero {
+    position: relative;
+    padding: 100px 5%;
+    display: flex;
+    align-items: center;
+    background-color: var(--bg-secondary);
+    border-bottom: 2px solid var(--border-strong);
+    overflow: hidden;
+}
+
+.hero-content {
+    max-width: 600px;
+    position: relative;
+    z-index: 2;
+}
+
+.hero-subtitle {
+    font-family: var(--font-heading);
+    color: var(--accent-electric);
+    font-weight: 700;
+    margin-bottom: 20px;
+    display: inline-block;
+    background: var(--text-primary);
+    padding: 4px 12px;
+    font-size: 14px;
+}
+
+.hero-title {
+    font-size: clamp(3rem, 6vw, 5rem);
+    margin-bottom: 30px;
+    line-height: 0.9;
+}
+
+.hero-visual {
+    position: absolute;
+    right: 5%;
+    bottom: -5%;
+    width: 50%;
+    height: 110%;
+    z-index: 1;
+}
+
+.hero-visual img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(20px 20px 0px var(--border-strong));
+}
+
+/* ================== */
+/* PRODUCT GRID       */
+/* ================== */
+.section {
+    padding: var(--section-pad);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.product-card {
+    border: 2px solid var(--border-strong);
+    background: var(--bg-primary);
+    transition: transform 0.2s;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card:hover {
+    transform: translate(-4px, -4px);
+    box-shadow: 6px 6px 0px var(--border-strong);
+}
+
+.product-image-container {
+    position: relative;
+    aspect-ratio: 1;
+    border-bottom: 2px solid var(--border-strong);
+    padding: 20px;
+    background: var(--bg-dark);
+}
+
+.product-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.product-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: var(--accent-electric);
+    color: var(--text-primary);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border: 2px solid var(--border-strong);
+}
+
+.product-info {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.product-title {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+}
+
+.product-price {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-top: auto;
+}
+
+.btn-add-cart-outline {
+    width: 100%;
+    border-top: 2px solid var(--border-strong);
+    padding: 15px;
+    text-align: center;
+    background: transparent;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-add-cart-outline:hover {
+    background: var(--accent-electric);
+}
+
+/* ================== */
+/* COLLECTIONS / INFO */
+/* ================== */
+.info-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 2px solid var(--border-strong);
+    border-bottom: 2px solid var(--border-strong);
+}
+
+.info-item {
+    padding: 30px 5%;
+    border-right: 2px solid var(--border-strong);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.info-item:last-child {
+    border-right: none;
+}
+
+.info-icon {
+    font-size: 2rem;
+    color: var(--accent-electric);
+}
+
+.info-text h4 {
+    margin-bottom: 5px;
+}
+
+/* FOOTER */
+.site-footer {
+    background: var(--bg-dark);
+    color: var(--text-inverse);
+    padding: 80px 5% 40px;
+}
+
+.footer-top {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 60px;
+    max-width: var(--container-max);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.footer-brand {
+    font-size: 2.5rem;
+    color: var(--accent-electric);
+    margin-bottom: 20px;
+}
+
+.footer-links h4 {
+    margin-bottom: 20px;
+    color: var(--accent-electric);
+}
+
+.footer-links a {
+    display: block;
+    color: #A1A1AA;
+    margin-bottom: 10px;
+}
+
+.footer-links a:hover {
+    color: var(--text-inverse);
+}

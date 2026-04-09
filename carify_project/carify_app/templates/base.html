@@ -4,29 +4,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Carify{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <title>{% block title %}Carify | Auto Parts & Detailing{% endblock %}</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Unified Custom CSS for Storefront (Prompt/Rapid Theme Style) -->
+    <link rel="stylesheet" href="{% static 'css/storefront.css' %}">
 </head>
 <body>
+    
     <header class="site-header">
         <div class="header-inner">
-            <a class="brand" href="{% url 'carify_app:home' %}">Carify</a>
-            <nav class="site-nav">
-                <a href="{% url 'carify_app:home' %}">Home</a>
-                <a href="{% url 'carify_app:product_list' %}">Products</a>
-                <a href="/accounts/login/">Login</a>
-                <a href="/accounts/signup/" class="button">Sign up</a>
-            </nav>
+            <div style="display: flex; align-items: center; gap: 40px;">
+                <a href="{% url 'carify_app:home' %}" class="header-brand">Carify</a>
+                
+                <nav class="header-nav">
+                    <a href="{% url 'carify_app:home' %}" class="nav-link">Home</a>
+                    <a href="{% url 'carify_app:product_list' %}" class="nav-link">Catalog</a>
+                    <a href="#" class="nav-link">Services</a>
+                    <a href="#" class="nav-link">Brands</a>
+                </nav>
+            </div>
+            
+            <div class="header-actions">
+                <a href="#" class="header-icon"><i class="fas fa-search"></i></a>
+                
+                {% if user.is_authenticated %}
+                    {% if user.seller_profile %}
+                        <a href="{% url 'carify_app:seller_dashboard' %}" class="nav-link" style="color: var(--accent-electric);">Dashboard</a>
+                    {% else %}
+                        <a href="#" class="header-icon"><i class="far fa-user"></i></a>
+                    {% endif %}
+                {% else %}
+                    <a href="/accounts/login/" class="nav-link">Login</a>
+                {% endif %}
+                
+                <a href="#" class="header-icon" style="position: relative;">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span style="position: absolute; top: -4px; right: -10px; background: var(--accent-electric); color: var(--text-inverse); font-size: 0.6rem; font-weight: 700; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">0</span>
+                </a>
+            </div>
         </div>
     </header>
 
-    <main class="main-content">
+    <main>
         {% block content %}{% endblock %}
     </main>
 
     <footer class="site-footer">
-        <div class="footer-inner">
-            <p>Carify &copy; {% now "Y" %}. Premium automotive accessories for every driver.</p>
+        <div class="footer-top">
+            <div>
+                <h3 class="footer-brand">CARIFY</h3>
+                <p style="color: #A1A1AA; font-size: 0.9rem; max-width: 300px;">
+                    The premium marketplace for auto parts, accessories, and professional detailing services. Built for speed.
+                </p>
+                <div style="margin-top: 20px; display: flex; gap: 15px;">
+                    <a href="#" style="color: var(--text-inverse); font-size: 1.2rem;"><i class="fab fa-twitter"></i></a>
+                    <a href="#" style="color: var(--text-inverse); font-size: 1.2rem;"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-links">
+                <h4>Shop</h4>
+                <a href="#">All Products</a>
+                <a href="#">Performance Parts</a>
+                <a href="#">Car Care</a>
+                <a href="#">Accessories</a>
+            </div>
+            
+            <div class="footer-links">
+                <h4>Company</h4>
+                <a href="#">About Us</a>
+                <a href="#">Contact Support</a>
+                <a href="#">Seller Portal</a>
+                <a href="#">Terms of Service</a>
+            </div>
+        </div>
+        
+        <div style="max-width: 1400px; margin: 0 auto; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; color: #71717A; font-size: 0.8rem;">
+            &copy; {% now "Y" %} CARIFY PLATFORM. ALL RIGHTS RESERVED.
         </div>
     </footer>
 </body>

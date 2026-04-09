@@ -1,515 +1,132 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CARIFY - You Can Count On, Start to Finish</title>
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'css/home.css' %}">
-</head>
-<body>
 
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'carify_app:home' %}">
-                <span class="brand-logo">CARIFY</span>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'carify_app:product_list' %}">Products</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#categories">Categories</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/accounts/login/">Login</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/accounts/signup/">Sign up</a></li>
-                </ul>
-            </div>
+{% block content %}
+<!-- HERO SECTION -->
+<div class="hero">
+    <div class="hero-content">
+        <span class="hero-subtitle">NEW ARRIVALS 2026</span>
+        <h1 class="hero-title">PRECISION<br>MEETS<br>PERFORMANCE</h1>
+        <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 30px; max-width: 80%;">
+            Upgrade your ride with industry-leading aftermarket parts, built for extreme conditions. Direct from manufacturer to you.
+        </p>
+        <div style="display: flex; gap: 15px;">
+            <a href="{% url 'carify_app:product_list' %}" class="btn btn-primary">Shop Catalog</a>
+            <a href="#" class="btn btn-outline">Explore Brands</a>
         </div>
-    </nav>
+    </div>
+    
+    <div class="hero-visual">
+        <img src="https://images.unsplash.com/photo-1621135152850-efc482b3018f?auto=format&fit=crop&q=80&w=800" alt="High Performance Auto Part">
+    </div>
+</div>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero-section">
-        <div class="hero-overlay"></div>
-        <div class="hero-content">
-            <div class="container text-center">
-                <h1 class="hero-title" data-aos="fade-up">You Can Count On,<br><span class="highlight">Start to Finish</span></h1>
+<!-- INFO BAR -->
+<div class="info-bar">
+    <div class="info-item">
+        <i class="fas fa-shipping-fast info-icon"></i>
+        <div class="info-text">
+            <h4 style="font-family: var(--font-heading);">FAST SHIPPING</h4>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">Direct from warehouse</p>
+        </div>
+    </div>
+    <div class="info-item">
+        <i class="fas fa-shield-alt info-icon"></i>
+        <div class="info-text">
+            <h4 style="font-family: var(--font-heading);">SECURE Checkout</h4>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">100% safe transactions</p>
+        </div>
+    </div>
+    <div class="info-item">
+        <i class="fas fa-undo info-icon"></i>
+        <div class="info-text">
+            <h4 style="font-family: var(--font-heading);">EASY RETURNS</h4>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">30-day return policy</p>
+        </div>
+    </div>
+</div>
+
+<!-- LATEST PRODUCTS SECTION -->
+<div class="section" style="background: var(--bg-secondary);">
+    <div class="container">
+        <div class="section-header">
+            <div>
+                <span class="hero-subtitle" style="background: var(--bg-primary); color: var(--text-primary); border: 2px solid var(--border-strong);">FEATURED O.E.M.</span>
+                <h2 style="font-size: 2.5rem; margin-top: 10px;">LATEST HARDWARE</h2>
+            </div>
+            <a href="{% url 'carify_app:product_list' %}" class="btn btn-outline">View All</a>
+        </div>
+        
+        <div class="product-grid">
+            {% for product in products|slice:":8" %}
+            <div class="product-card">
+                <a href="{% url 'carify_app:product_detail' product.id %}" style="display: contents;">
+                    <div class="product-image-container">
+                        {% if product.quantity < 5 %}
+                            <span class="product-badge">LOW STOCK</span>
+                        {% else %}
+                            <span class="product-badge">IN STOCK</span>
+                        {% endif %}
+                        
+                        {% if product.first_media_image_url %}
+                            <img src="{{ product.first_media_image_url }}" alt="{{ product.name }}">
+                        {% elif product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        {% else %}
+                            <img src="https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&q=80&w=400" alt="Placeholder">
+                        {% endif %}
+                    </div>
+                </a>
                 
-                <div class="hero-cars" data-aos="fade-up" data-aos-delay="200">
-                    <div class="car-showcase">
-                        <img src="https://images.unsplash.com/photo-1557349504-2f6a19aff9d5?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1ODB8MHwxfHNlYXJjaHwyfHxzcG9ydHMlMjBjYXJzfGVufDB8fHx8MTc3NTY3NjQ2MXww&ixlib=rb-4.1.0&q=85" alt="Luxury Car 1" class="car-img">
-                        <img src="https://images.unsplash.com/photo-1532581140115-3e355d1ed1de?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1ODB8MHwxfHNlYXJjaHwzfHxzcG9ydHMlMjBjYXJzfGVufDB8fHx8MTc3NTY3NjQ2MXww&ixlib=rb-4.1.0&q=85" alt="Luxury Car 2" class="car-img">
-                        <img src="https://images.unsplash.com/photo-1621135152850-efc482b3018f?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1ODB8MHwxfHNlYXJjaHwxfHxzcG9ydHMlMjBjYXJzfGVufDB8fHx8MTc3NTY3NjQ2MXww&ixlib=rb-4.1.0&q=85" alt="Luxury Car 3" class="car-img">
+                <div class="product-info">
+                    <div style="font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; font-family: var(--font-heading); font-weight: 600; margin-bottom: 5px;">
+                        {{ product.category.name|default:"General Parts" }}
+                    </div>
+                    <a href="{% url 'carify_app:product_detail' product.id %}" class="product-title">
+                        {{ product.name }}
+                    </a>
+                    
+                    <div class="product-price">
+                        ${{ product.price }}
                     </div>
                 </div>
-
-                <div class="stats-bar" data-aos="fade-up" data-aos-delay="400">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="stat-item">
-                                <h3 class="stat-number">24K</h3>
-                                <p class="stat-label">Premium Products</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="stat-item">
-                                <h3 class="stat-number">18K</h3>
-                                <p class="stat-label">Happy Customer</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="stat-item">
-                                <h3 class="stat-number">48H</h3>
-                                <p class="stat-label">Faster Delivery</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                
+                <form action="#" method="POST" style="margin: 0;">
+                    {% csrf_token %}
+                    <button type="button" class="btn-add-cart-outline">
+                        <i class="fas fa-plus"></i> ADD TO CART
+                    </button>
+                </form>
             </div>
+            {% empty %}
+            <div style="grid-column: 1 / -1; text-align: center; padding: 60px; border: 2px dashed var(--border-strong);">
+                <h3 style="margin-bottom: 15px;">No inventory loaded yet.</h3>
+                <a href="{% url 'carify_app:seller_add_product' %}" class="btn btn-primary">List the first part</a>
+            </div>
+            {% endfor %}
         </div>
-    </section>
+    </div>
+</div>
 
-    <!-- Find Your Tools Section -->
-    <section id="categories" class="find-tools-section py-5">
-        <div class="container">
-            <h2 class="section-title text-center mb-5">Find your tools.</h2>
-            <div class="row g-4">
-                <div class="col-md-2 col-6">
-                    <div class="tool-card">
-                        <i class="fas fa-oil-can"></i>
-                        <p>Oils</p>
-                    </div>
-                </div>
-                <div class="col-md-2 col-6">
-                    <div class="tool-card">
-                        <i class="fas fa-spray-can"></i>
-                        <p>Lubricants</p>
-                    </div>
-                </div>
-                <div class="col-md-2 col-6">
-                    <div class="tool-card">
-                        <i class="fas fa-cog"></i>
-                        <p>Parts</p>
-                    </div>
-                </div>
-                <div class="col-md-2 col-6">
-                    <div class="tool-card">
-                        <i class="fas fa-wrench"></i>
-                        <p>Tools</p>
-                    </div>
-                </div>
-                <div class="col-md-2 col-6">
-                    <div class="tool-card">
-                        <i class="fas fa-paint-roller"></i>
-                        <p>Care</p>
-                    </div>
-                </div>
-                <div class="col-md-2 col-6">
-                    <div class="tool-card">
-                        <i class="fas fa-tools"></i>
-                        <p>Accessories</p>
-                    </div>
-                </div>
+<!-- CATEGORY BANNERS -->
+<div class="section container">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+        <div style="background: var(--bg-dark); color: var(--text-inverse); padding: 60px; position: relative; overflow: hidden; border: 2px solid var(--border-strong);">
+            <div style="position: relative; z-index: 2;">
+                <h3 style="font-size: 2rem; margin-bottom: 15px;">PERFORMANCE<br>EXHAUSTS</h3>
+                <a href="#" class="btn btn-primary" style="background: var(--accent-electric); color: var(--bg-dark); border-color: var(--accent-electric);">Shop Now</a>
             </div>
+            <i class="fas fa-wind" style="position: absolute; right: -20px; bottom: -20px; font-size: 12rem; opacity: 0.1; color: var(--accent-electric);"></i>
         </div>
-    </section>
-
-    <!-- Featured Products Section -->
-    <section id="products" class="featured-products-section py-5">
-        <div class="container">
-            <div class="section-header d-flex justify-content-between align-items-center mb-5">
-                <h2 class="section-title">Featured <span class="highlight">Products</span></h2>
-                <div class="search-box">
-                    <input type="text" class="form-control" placeholder="Search products...">
-                    <i class="fas fa-search"></i>
-                </div>
+        
+        <div style="background: var(--accent-electric); color: var(--bg-dark); padding: 60px; position: relative; overflow: hidden; border: 2px solid var(--border-strong);">
+            <div style="position: relative; z-index: 2;">
+                <h3 style="font-size: 2rem; margin-bottom: 15px;">PREMIUM<br>LUBRICANTS</h3>
+                <a href="#" class="btn btn-primary" style="background: var(--bg-dark); color: var(--text-primary); border-color: var(--bg-dark);">Shop Now</a>
             </div>
-
-            <div class="row g-4">
-                <!-- Product Card 1 -->
-                <div class="col-md-4">
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="https://images.unsplash.com/photo-1487754180451-c456f719a1fc" alt="Product">
-                            <div class="product-overlay">
-                                <button class="btn-quick-view"><i class="fas fa-eye"></i> Quick View</button>
-                            </div>
-                        </div>
-                        <div class="product-info">
-                            <span class="product-badge">NEW</span>
-                            <h4 class="product-title">Power Core Anti Seize</h4>
-                            <p class="product-description">High-quality formulas designed to support smooth operation, heat control, and long-term engine reliability.</p>
-                            <div class="product-footer">
-                                <span class="product-price">Now <strong>₹1799/-</strong></span>
-                                <button class="btn-add-cart"><i class="fas fa-shopping-cart"></i> ADD CART</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Product Card 2 -->
-                <div class="col-md-4">
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="https://images.pexels.com/photos/6872580/pexels-photo-6872580.jpeg" alt="Product">
-                            <div class="product-overlay">
-                                <button class="btn-quick-view"><i class="fas fa-eye"></i> Quick View</button>
-                            </div>
-                        </div>
-                        <div class="product-info">
-                            <span class="product-badge">SALE</span>
-                            <h4 class="product-title">Power Core Anti Seize</h4>
-                            <p class="product-description">High-quality formulas designed to support smooth operation, heat control, and long-term engine reliability.</p>
-                            <div class="product-footer">
-                                <span class="product-price">Now <strong>₹1799/-</strong></span>
-                                <button class="btn-add-cart"><i class="fas fa-shopping-cart"></i> ADD CART</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Product Card 3 -->
-                <div class="col-md-4">
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3" alt="Product">
-                            <div class="product-overlay">
-                                <button class="btn-quick-view"><i class="fas fa-eye"></i> Quick View</button>
-                            </div>
-                        </div>
-                        <div class="product-info">
-                            <span class="product-badge">HOT</span>
-                            <h4 class="product-title">Power Core Anti Seize</h4>
-                            <p class="product-description">High-quality formulas designed to support smooth operation, heat control, and long-term engine reliability.</p>
-                            <div class="product-footer">
-                                <span class="product-price">Now <strong>₹1799/-</strong></span>
-                                <button class="btn-add-cart"><i class="fas fa-shopping-cart"></i> ADD CART</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Product Card 4 -->
-                <div class="col-md-4">
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="https://images.pexels.com/photos/6003/man-hand-car-black.jpg" alt="Product">
-                            <div class="product-overlay">
-                                <button class="btn-quick-view"><i class="fas fa-eye"></i> Quick View</button>
-                            </div>
-                        </div>
-                        <div class="product-info">
-                            <span class="product-badge">NEW</span>
-                            <h4 class="product-title">Power Core Anti Seize</h4>
-                            <p class="product-description">High-quality formulas designed to support smooth operation, heat control, and long-term engine reliability.</p>
-                            <div class="product-footer">
-                                <span class="product-price">Now <strong>₹1799/-</strong></span>
-                                <button class="btn-add-cart"><i class="fas fa-shopping-cart"></i> ADD CART</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Product Card 5 -->
-                <div class="col-md-4">
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="https://images.unsplash.com/photo-1606577924006-27d39b132ae2" alt="Product">
-                            <div class="product-overlay">
-                                <button class="btn-quick-view"><i class="fas fa-eye"></i> Quick View</button>
-                            </div>
-                        </div>
-                        <div class="product-info">
-                            <span class="product-badge">SALE</span>
-                            <h4 class="product-title">Power Core Anti Seize</h4>
-                            <p class="product-description">High-quality formulas designed to support smooth operation, heat control, and long-term engine reliability.</p>
-                            <div class="product-footer">
-                                <span class="product-price">Now <strong>₹1799/-</strong></span>
-                                <button class="btn-add-cart"><i class="fas fa-shopping-cart"></i> ADD CART</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Product Card 6 -->
-                <div class="col-md-4">
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="https://images.unsplash.com/photo-1708805282683-50a060eba80f" alt="Product">
-                            <div class="product-overlay">
-                                <button class="btn-quick-view"><i class="fas fa-eye"></i> Quick View</button>
-                            </div>
-                        </div>
-                        <div class="product-info">
-                            <span class="product-badge">HOT</span>
-                            <h4 class="product-title">Power Core Anti Seize</h4>
-                            <p class="product-description">High-quality formulas designed to support smooth operation, heat control, and long-term engine reliability.</p>
-                            <div class="product-footer">
-                                <span class="product-price">Now <strong>₹1799/-</strong></span>
-                                <button class="btn-add-cart"><i class="fas fa-shopping-cart"></i> ADD CART</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="text-center mt-5">
-                <button class="btn-view-all">
-                    View All Products
-                    <i class="fas fa-arrow-right ms-2"></i>
-                </button>
-            </div>
-
-            <!-- Pagination Dots -->
-            <div class="pagination-dots text-end mt-4">
-                <span class="dot active"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
-            </div>
+            <i class="fas fa-oil-can" style="position: absolute; right: 20px; bottom: -20px; font-size: 12rem; opacity: 0.1; color: var(--bg-dark);"></i>
         </div>
-    </section>
+    </div>
+</div>
 
-    <!-- How CARIFY Works Section -->
-    <section id="about" class="how-works-section py-5">
-        <div class="container">
-            <h2 class="section-title text-center mb-4">How <span class="highlight">CARIFY</span> Works</h2>
-            <p class="text-center works-description mb-5">
-                When a customer places an order, we directly ship from our supplier warehouse to the customer — no middlemen, fast delivery, lowest price.
-            </p>
-            <div class="works-visual">
-                <img src="https://images.unsplash.com/photo-1486314030120-d5ab85fe58cd?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTN8MHwxfHNlYXJjaHwzfHxkZXNlcnQlMjBzdW5zZXR8ZW58MHx8fHwxNzc1Njc2NDY1fDA&ixlib=rb-4.1.0&q=85" alt="How CARIFY Works" class="img-fluid rounded">
-                <div class="works-overlay">
-                    <div class="works-step">
-                        <div class="step-icon"><i class="fas fa-shopping-cart"></i></div>
-                        <h4>Order Placed</h4>
-                    </div>
-                    <div class="arrow"><i class="fas fa-arrow-right"></i></div>
-                    <div class="works-step">
-                        <div class="step-icon"><i class="fas fa-warehouse"></i></div>
-                        <h4>Direct Ship</h4>
-                    </div>
-                    <div class="arrow"><i class="fas fa-arrow-right"></i></div>
-                    <div class="works-step">
-                        <div class="step-icon"><i class="fas fa-truck"></i></div>
-                        <h4>Fast Delivery</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Power Through Section -->
-    <section class="power-section py-5">
-        <div class="container">
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <div class="power-card">
-                        <img src="https://images.pexels.com/photos/12313590/pexels-photo-12313590.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Power Through">
-                        <div class="power-overlay">
-                            <h3>Power Through every mile</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="power-card">
-                        <img src="https://images.unsplash.com/photo-1621135152850-efc482b3018f?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1ODB8MHwxfHNlYXJjaHwxfHxzcG9ydHMlMjBjYXJzfGVufDB8fHx8MTc3NTY3NjQ2MXww&ixlib=rb-4.1.0&q=85" alt="Power Core">
-                        <div class="power-overlay">
-                            <h3>Power core paint coat</h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Shop Bestsellers Section -->
-    <section class="bestsellers-section py-5">
-        <div class="container">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="section-title">Tested <span class="highlight">trusted road ready</span></h2>
-                <button class="btn-shop-bestsellers">
-                    Shop Bestsellers
-                    <i class="fas fa-arrow-right ms-2"></i>
-                </button>
-            </div>
-
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="bestseller-card">
-                        <img src="https://images.unsplash.com/photo-1487754180451-c456f719a1fc" alt="Bestseller">
-                        <div class="bestseller-info">
-                            <h5>Engine Care</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="bestseller-card">
-                        <img src="https://images.pexels.com/photos/6872580/pexels-photo-6872580.jpeg" alt="Bestseller">
-                        <div class="bestseller-info">
-                            <h5>Car Detailing</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="bestseller-card">
-                        <img src="https://images.unsplash.com/photo-1708805282683-50a060eba80f" alt="Bestseller">
-                        <div class="bestseller-info">
-                            <h5>Tire Care</h5>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FAQ Section -->
-    <section id="contact" class="faq-section py-5">
-        <div class="container">
-            <h2 class="section-title text-center mb-5">Frequently Asked <span class="highlight">Questions</span></h2>
-            
-            <div class="accordion" id="faqAccordion">
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
-                            What payment methods do you accept?
-                        </button>
-                    </h2>
-                    <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body">
-                            We accept all major credit cards, debit cards, UPI, net banking, and digital wallets. All transactions are secure and encrypted.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
-                            Do you offer international shipping?
-                        </button>
-                    </h2>
-                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body">
-                            Yes, we offer international shipping to select countries. Shipping costs and delivery times vary based on the destination.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
-                            What is your return policy?
-                        </button>
-                    </h2>
-                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body">
-                            We offer a 30-day return policy for unused products in their original packaging. Contact our support team to initiate a return.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
-                            How long does delivery take?
-                        </button>
-                    </h2>
-                    <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body">
-                            Standard delivery takes 3-5 business days. We also offer express delivery within 48 hours for select locations.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
-                            Are your products genuine?
-                        </button>
-                    </h2>
-                    <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body">
-                            Yes, all our products are 100% genuine and sourced directly from authorized manufacturers and distributors.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer py-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h3 class="footer-brand">CARIFY</h3>
-                    <p class="footer-text">Your trusted partner for premium automotive products and accessories.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <h5 class="footer-heading">Quick Links</h5>
-                    <ul class="footer-links">
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#about">About</a></li>
-                        <li><a href="{% url 'carify_app:product_list' %}">Products</a></li>
-                        <li><a href="#categories">Categories</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <h5 class="footer-heading">Customer Service</h5>
-                    <ul class="footer-links">
-                        <li><a href="#">Shipping Policy</a></li>
-                        <li><a href="#">Return Policy</a></li>
-                        <li><a href="#">Terms & Conditions</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <h5 class="footer-heading">Contact Us</h5>
-                    <ul class="footer-contact">
-                        <li><i class="fas fa-phone"></i> +91 123 456 7890</li>
-                        <li><i class="fas fa-envelope"></i> info@carify.com</li>
-                        <li><i class="fas fa-map-marker-alt"></i> Mumbai, India</li>
-                    </ul>
-                </div>
-            </div>
-            <hr class="footer-divider">
-            <div class="text-center">
-                <p class="copyright">&copy; 2026 CARIFY. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Scroll to Top Button -->
-    <button id="scrollTopBtn" class="scroll-top-btn">
-        <i class="fas fa-arrow-up"></i>
-    </button>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- Custom JS -->
-    <script src="{% static 'js/script.js' %}"></script>
-
-</body>
-</html>
+{% endblock %}

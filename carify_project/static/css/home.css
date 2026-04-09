@@ -100,7 +100,7 @@ body {
 }
 
 .hero-title {
-    font-size: 4rem;
+    font-size: clamp(2.25rem, 5vw, 4rem);
     font-weight: 800;
     margin-bottom: 2rem;
     text-shadow: 2px 2px 4px var(--shadow);
@@ -126,6 +126,10 @@ body {
 .hero-cars {
     margin: 3rem 0;
     position: relative;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 1rem;
 }
 
 .car-showcase {
@@ -136,8 +140,10 @@ body {
 }
 
 .car-img {
-    width: 300px;
-    height: 200px;
+    width: clamp(260px, 28vw, 450px);
+    height: auto;
+    aspect-ratio: 3 / 2;
+    max-width: 100%;
     object-fit: cover;
     border-radius: 15px;
     box-shadow: 0 10px 30px var(--shadow);

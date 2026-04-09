@@ -1,0 +1,147 @@
+{% extends 'seller_base.html' %}
+
+{% block title %}Dashboard Overview | Carify Seller{% endblock %}
+
+{% block content %}
+<div class="section-header">
+    <h1 class="section-title">Overview</h1>
+    <a href="{% url 'carify_app:seller_add_product' %}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Add Product
+    </a>
+</div>
+
+<!-- Key Metrics Cards -->
+<div class="dashboard-grid">
+    <div class="stat-card">
+        <div class="stat-title">Total Revenue</div>
+        <div class="stat-value">$12,450.00</div>
+        <div class="stat-change positive">
+            <i class="fas fa-arrow-up"></i> 14.5% from last month
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-title">Total Orders</div>
+        <div class="stat-value">150</div>
+        <div class="stat-change positive">
+            <i class="fas fa-arrow-up"></i> 5.2% from last month
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-title">Active Products</div>
+        <div class="stat-value">{{ products.count|default:"0" }}</div>
+        <div class="stat-change">
+            Live on store
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-title">Low Stock Items</div>
+        <div class="stat-value" style="color: var(--warning);">3</div>
+        <div class="stat-change negative">
+            <i class="fas fa-exclamation-triangle"></i> Requires attention
+        </div>
+    </div>
+</div>
+
+<!-- Revenue Chart and Recent Orders -->
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+    <!-- Chart -->
+    <div class="content-section">
+        <div class="section-header" style="margin-bottom: 20px;">
+            <h2 class="section-title">Sales Overview</h2>
+            <select style="background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); padding: 5px 10px; border-radius: 5px;">
+                <option>Last 7 Days</option>
+                <option>Last 30 Days</option>
+            </select>
+        </div>
+        <canvas id="revenueChart" height="150"></canvas>
+    </div>
+    
+    <!-- Recent Orders (Dummy or real data) -->
+    <div class="content-section">
+        <div class="section-header">
+            <h2 class="section-title">Recent Orders</h2>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 15px;">
+            {% for item in request.user.order_set.all|slice:":4" %}
+            <div style="display: flex; justify-content: space-between; padding-bottom: 15px; border-bottom: 1px solid var(--border-color);">
+                <div>
+                    <div style="font-weight: 500;">Order #{{ item.id }}</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">{{ item.created_at|timesince }} ago</div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-weight: 600; color: var(--success);">${{ item.total_amount }}</div>
+                    <div class="status-badge status-active" style="display: inline-block; padding: 2px 8px; font-size: 0.7rem; margin-top: 5px;">{{ item.get_status_display }}</div>
+                </div>
+            </div>
+            {% empty %}
+            <div style="text-align: center; color: var(--text-muted); padding: 20px;">
+                <i class="fas fa-box-open" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i>
+                <p>No recent orders</p>
+            </div>
+            {% endfor %}
+            <a href="#" style="color: var(--accent-primary); text-decoration: none; font-size: 0.9rem; text-align: center; margin-top: 10px;">View All Orders</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialize Chart.js with dummy data for sales
+    const ctx = document.getElementById('revenueChart').getContext('2d');
+    
+    // Gradient fill
+    let gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(99, 102, 241, 0.5)'); // primary accent
+    gradient.addColorStop(1, 'rgba(99, 102, 241, 0.0)');
+    
+    const revenueChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [{
+                label: 'Revenue ($)',
+                data: [1200, 1900, 1500, 2200, 1800, 3100, 2800],
+                borderColor: '#6366F1', // primary accent
+                backgroundColor: gradient,
+                borderWidth: 2,
+                pointBackgroundColor: '#EC4899', // secondary accent
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: '#EC4899',
+                fill: true,
+                tension: 0.4 // Smooth curves
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(26, 31, 46, 0.9)',
+                    titleColor: '#F3F4F6',
+                    bodyColor: '#F3F4F6',
+                    borderColor: 'rgba(255,255,255,0.1)',
+                    borderWidth: 1,
+                    padding: 10,
+                    displayColors: false,
+                }
+            },
+            scales: {
+                y: {
+                    grid: { color: 'rgba(255, 255, 255, 0.05)', borderDash: [5, 5] },
+                    ticks: { color: '#9CA3AF' }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { color: '#9CA3AF' }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

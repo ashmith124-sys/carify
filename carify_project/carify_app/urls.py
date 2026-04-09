@@ -12,6 +12,9 @@ router.register(r'product-media', api.ProductMediaViewSet)
 router.register(r'orders', api.OrderViewSet)
 router.register(r'order-items', api.OrderItemViewSet)
 router.register(r'payments', api.PaymentViewSet)
+router.register(r'seller-profiles', api.SellerProfileViewSet)
+router.register(r'services', api.ServiceViewSet)
+router.register(r'wishlists', api.WishlistViewSet)
 
 urlpatterns = [
     # API endpoints
@@ -20,6 +23,8 @@ urlpatterns = [
     # Web interface endpoints
     path('', views.home, name='home'),
     path('products/', views.product_list, name='product_list'),
+    path('seller/dashboard/', views.seller_dashboard, name='seller_dashboard'),
+    path('seller/products/', views.seller_products, name='seller_products'),
     path('seller/product/add/', views.seller_add_product, name='seller_add_product'),
     path('accounts/signup/', views.seller_register, name='seller_register'),
     path('product/<int:product_id>/', views.product_detail, name='product_detail'),

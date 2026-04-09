@@ -1,0 +1,93 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Seller Dashboard | Carify{% endblock %}</title>
+    
+    <!-- Icons and Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/seller_dashboard.css' %}">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="brand-icon">C</div>
+            <div class="brand-text">Carify Seller</div>
+        </div>
+        
+        <nav class="nav-links">
+            <a href="{% url 'carify_app:seller_dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'seller_dashboard' %}active{% endif %}">
+                <i class="fas fa-home"></i> Dashboard
+            </a>
+            <a href="{% url 'carify_app:seller_products' %}" class="nav-link {% if request.resolver_match.url_name == 'seller_products' %}active{% endif %}">
+                <i class="fas fa-box-open"></i> Products
+            </a>
+            <a href="#" class="nav-link">
+                <i class="fas fa-shopping-cart"></i> Orders
+            </a>
+            <a href="#" class="nav-link">
+                <i class="fas fa-wrench"></i> Services
+            </a>
+            <a href="#" class="nav-link">
+                <i class="fas fa-chart-line"></i> Analytics
+            </a>
+        </nav>
+        
+        <div style="padding: 20px 10px; border-top: 1px solid var(--border-color);">
+            <a href="#" class="nav-link">
+                <i class="fas fa-cog"></i> Settings
+            </a>
+            <a href="/" class="nav-link" style="color: var(--danger);">
+                <i class="fas fa-sign-out-alt"></i> Exit to Store
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Navigation -->
+        <header class="top-header">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search orders, products...">
+            </div>
+            
+            <div class="user-profile">
+                <button class="btn-icon"><i class="far fa-bell"></i></button>
+                <div style="text-align: right; margin-right: 10px;">
+                    <div style="font-weight: 600; font-size: 0.9rem;">
+                        {% if user.seller_profile.shop_name %}
+                            {{ user.seller_profile.shop_name }}
+                        {% else %}
+                            {{ user.username }}
+                        {% endif %}
+                    </div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">Seller Account</div>
+                </div>
+                {% if user.seller_profile.logo %}
+                <img src="{{ user.seller_profile.logo.url }}" alt="Profile" class="avatar">
+                {% else %}
+                <img src="https://ui-avatars.com/api/?name={{ user.username }}&background=6366F1&color=fff" alt="Profile" class="avatar">
+                {% endif %}
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

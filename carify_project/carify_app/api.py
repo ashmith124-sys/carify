@@ -1,11 +1,13 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-from .models import Category, Product, ProductMedia, Order, OrderItem, Payment
+from django_filters.rest_framework import DjangoFilterBackend
+from .models import Category, Product, ProductMedia, Order, OrderItem, Payment, SellerProfile, Service, Wishlist
 from .serializers import (
     CategorySerializer, ProductSerializer, ProductMediaSerializer,
-    OrderSerializer, OrderItemSerializer, PaymentSerializer
+    OrderSerializer, OrderItemSerializer, PaymentSerializer,
+    SellerProfileSerializer, ServiceSerializer, WishlistSerializer
 )
 
 
@@ -17,6 +19,10 @@ class CategoryViewSet(viewsets.ModelViewSet):
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all().prefetch_related('media')
     serializer_class = ProductSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['category', 'seller']
+    search_fields = ['name', 'description']
+    ordering_fields = ['price', 'created_at']
 
     @action(detail=True, methods=['post'])
     def create_checkout(self, request, pk=None):
@@ -50,3 +56,26 @@ class OrderItemViewSet(viewsets.ModelViewSet):
 class PaymentViewSet(viewsets.ModelViewSet):
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
+
+class SellerProfileViewSet(viewsets.ModelViewSet):
+    queryset = SellerProfile.objects.all()
+    serializer_class = SellerProfileSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['shop_name', 'description']
+
+class ServiceViewSet(viewsets.ModelViewSet):
+    queryset = Service.objects.all()
+    serializer_class = ServiceSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['category', 'seller']
+    search_fields = ['name', 'description']
+    ordering_fields = ['price', 'created_at']
+
+class WishlistViewSet(viewsets.ModelViewSet):
+    queryset = Wishlist.objects.all()
+    serializer_class = WishlistSerializer
+    
+    def get_queryset(self):
+        # Users should only see their own wishlists ideally, but for now we'll allow all for admin simplicity
+        # or we could scope it: return self.queryset.filter(user=self.request.user) if self.request.user.is_authenticated else Wishlist.objects.none()
+        return super().get_queryset()

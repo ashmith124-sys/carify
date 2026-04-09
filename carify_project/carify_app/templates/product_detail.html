@@ -2,52 +2,85 @@
 {% block title %}{{ product.name }} | Carify{% endblock %}
 
 {% block content %}
-    <section class="page-content content-panel">
-        <a class="back-link" href="{% url 'carify_app:product_list' %}">← Back to products</a>
-        <div class="detail-header">
-            <div>
-                <p class="section-label">Product Details</p>
-                <h1>{{ product.name }}</h1>
-                <p class="product-detail-description">{{ product.description }}</p>
-                <p class="product-detail-meta">Price: <strong>${{ product.price }}</strong></p>
-                <p class="product-detail-meta">Seller: <strong>{{ product.seller.username }}</strong></p>
-            </div>
-        </div>
+<div class="section container">
+    <a href="{% url 'carify_app:product_list' %}" style="display: inline-block; margin-bottom: 20px; font-family: var(--font-heading); font-weight: 600; text-transform: uppercase;">
+        <i class="fas fa-arrow-left"></i> BACK TO CATALOG
+    </a>
 
-        {% if product.image %}
-            <div class="detail-image-wrap">
-                <img class="detail-image" src="{{ product.image.url }}" alt="{{ product.name }}">
-            </div>
-        {% endif %}
-
-        {% if product.media.exists %}
-            <div class="media-grid">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px;">
+        <!-- Left: Image Gallery -->
+        <div style="border: 2px solid var(--border-strong); background: #FAFAFA;">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; height: auto; object-fit: contain;">
+            {% elif product.media.exists %}
                 {% for media in product.media.all %}
-                    {% if media.media_type == 'image' and media.image %}
-                        <div class="media-card">
-                            <img src="{{ media.image.url }}" alt="{{ media.caption|default:product.name }}">
-                            {% if media.caption %}
-                                <p>{{ media.caption }}</p>
-                            {% endif %}
-                        </div>
-                    {% elif media.media_type == 'video' and media.video %}
-                        <div class="media-card">
-                            <video controls>
-                                <source src="{{ media.video.url }}" type="video/mp4">
-                                Your browser does not support the video tag.
-                            </video>
-                            {% if media.caption %}
-                                <p>{{ media.caption }}</p>
-                            {% endif %}
-                        </div>
+                    {% if media.media_type == 'image' and forloop.first %}
+                        <img src="{{ media.image.url }}" alt="{{ product.name }}" style="width: 100%; height: auto; object-fit: contain;">
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <img src="https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&q=80&w=800" alt="Placeholder" style="width: 100%; height: auto; object-fit: contain;">
+            {% endif %}
+            
+            {% if product.media.count > 1 %}
+            <div style="display: flex; gap: 10px; padding: 10px; border-top: 2px solid var(--border-strong); background: var(--bg-primary);">
+                {% for media in product.media.all %}
+                    {% if media.media_type == 'image' %}
+                        <img src="{{ media.image.url }}" alt="Thumbnail" style="width: 80px; height: 80px; object-fit: cover; border: 2px solid var(--border-strong); cursor: pointer;">
                     {% endif %}
                 {% endfor %}
             </div>
-        {% endif %}
+            {% endif %}
+        </div>
 
-        <form method="post" action="{% url 'carify_app:create_checkout' product.id %}" class="detail-action-form">
-            {% csrf_token %}
-            <button class="button" type="submit">Buy Now</button>
-        </form>
-    </section>
+        <!-- Right: Product Info -->
+        <div>
+            <div style="font-family: var(--font-heading); font-weight: 700; color: var(--accent-electric); text-transform: uppercase; margin-bottom: 15px; display: inline-block; background: var(--bg-dark); padding: 4px 12px; font-size: 0.8rem;">
+                {{ product.category.name|default:"Performance Part" }}
+            </div>
+            
+            <h1 style="font-size: 3rem; margin-bottom: 20px;">{{ product.name }}</h1>
+            
+            <div style="font-family: var(--font-heading); font-size: 2.5rem; font-weight: 700; margin-bottom: 30px;">
+                ${{ product.price }}
+            </div>
+            
+            <p style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 40px; line-height: 1.8;">
+                {{ product.description }}
+            </p>
+            
+            <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 40px;">
+                <div style="font-family: var(--font-heading); font-weight: 600;">STATUS:</div>
+                {% if product.quantity > 5 %}
+                    <div style="color: #10B981; font-weight: 600;"><i class="fas fa-check-circle"></i> In Stock Ready to Ship</div>
+                {% elif product.quantity > 0 %}
+                    <div style="color: var(--accent-electric); font-weight: 600;"><i class="fas fa-exclamation-triangle"></i> Low Stock ({{ product.quantity }} left)</div>
+                {% else %}
+                    <div style="color: #EF4444; font-weight: 600;"><i class="fas fa-times-circle"></i> Out of Stock</div>
+                {% endif %}
+            </div>
+
+            <form method="post" action="{% url 'carify_app:create_checkout' product.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 1.2rem; padding: 20px; {% if product.quantity <= 0 %}opacity: 0.5; pointer-events: none;{% endif %}">
+                    <i class="fas fa-shopping-cart" style="margin-right: 15px;"></i> SECURE CHECKOUT
+                </button>
+            </form>
+            
+            <div style="margin-top: 40px; border-top: 2px solid var(--border-strong); padding-top: 20px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div>
+                        <div style="font-family: var(--font-heading); font-weight: 600; margin-bottom: 5px;">MANUFACTURER</div>
+                        <div style="color: var(--text-secondary);">{{ product.seller.username }}</div>
+                    </div>
+                    <div>
+                        <div style="font-family: var(--font-heading); font-weight: 600; margin-bottom: 5px;">PART NUMBER</div>
+                        <div style="color: var(--text-secondary);">#PRD-{{ product.id }}XX{{ product.quantity }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

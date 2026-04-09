@@ -1,0 +1,100 @@
+{% extends 'seller_base.html' %}
+
+{% block title %}Products Manager | Carify Seller{% endblock %}
+
+{% block content %}
+<div class="section-header">
+    <h1 class="section-title">Products Manager</h1>
+    <a href="{% url 'carify_app:seller_add_product' %}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Add Product
+    </a>
+</div>
+
+<div class="content-section">
+    <div class="section-header">
+        <div style="display: flex; gap: 15px;">
+            <div class="search-bar" style="width: 250px;">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search products...">
+            </div>
+            <select style="background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-main); padding: 10px; border-radius: 8px;">
+                <option>All Categories</option>
+                <option>Automotive Parts</option>
+                <option>Accessories</option>
+            </select>
+        </div>
+        <div style="color: var(--text-muted); font-size: 0.9rem;">
+            Showing {{ products.count }} products
+        </div>
+    </div>
+
+    <div style="overflow-x: auto;">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Inventory</th>
+                    <th>Status</th>
+                    <th style="text-align: right;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td>
+                        <div class="product-cell">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" class="product-img" alt="{{ product.name }}">
+                            {% elif product.first_media_image_url %}
+                                <img src="{{ product.first_media_image_url }}" class="product-img" alt="{{ product.name }}">
+                            {% else %}
+                                <div class="product-img" style="background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; color: var(--text-muted);">
+                                    <i class="fas fa-image"></i>
+                                </div>
+                            {% endif %}
+                            <div>
+                                <div style="font-weight: 500;">{{ product.name }}</div>
+                                <div style="font-size: 0.8rem; color: var(--text-muted);">Added {{ product.created_at|date:"M d, Y" }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="color: var(--text-muted);">{{ product.category.name|default:"Uncategorized" }}</td>
+                    <td style="font-weight: 600;">${{ product.price }}</td>
+                    <td>
+                        {% if product.quantity > 10 %}
+                            {{ product.quantity }} in stock
+                        {% elif product.quantity > 0 %}
+                            <span style="color: var(--warning);">{{ product.quantity }} in stock</span>
+                        {% else %}
+                            <span style="color: var(--danger);">Out of stock</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if product.quantity > 0 %}
+                            <span class="status-badge status-active">Active</span>
+                        {% else %}
+                            <span class="status-badge status-draft" style="color: var(--danger); background: rgba(239, 68, 68, 0.1);">Out of Stock</span>
+                        {% endif %}
+                    </td>
+                    <td style="text-align: right;">
+                        <a href="{% url 'carify_app:product_detail' product.id %}" class="btn-icon" title="View"><i class="far fa-eye"></i></a>
+                        <button class="btn-icon" title="Edit"><i class="far fa-edit"></i></button>
+                        <button class="btn-icon" style="color: var(--danger);" title="Delete"><i class="far fa-trash-alt"></i></button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                        <i class="fas fa-box-open" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                        <p style="font-size: 1.1rem; margin-bottom: 10px;">You haven't listed any products yet.</p>
+                        <a href="{% url 'carify_app:seller_add_product' %}" class="btn btn-primary" style="margin-top: 10px;">Create First Product</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -2,13 +2,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-    --bg-main: #0B0E14; /* Deep modern dark blue/black */
-    --bg-sidebar: #131722; /* Slightly lighter for depth */
-    --bg-card: rgba(26, 31, 46, 0.6); /* Glassmorphic card bg */
-    --bg-card-hover: rgba(33, 40, 59, 0.8);
+    --bg-main: #231F20; /* Deep Charcoal */
+    --bg-sidebar: #1A1718; /* Darker charcoal */
+    --bg-card: rgba(46, 42, 43, 0.6); /* Slightly lighter charcoal glass */
+    --bg-card-hover: rgba(62, 58, 59, 0.8);
     
-    --accent-primary: #6366F1; /* Indigo */
-    --accent-secondary: #EC4899; /* Pink */
+    --accent-primary: #F3811F; /* Vibrant Orange */
+    --accent-secondary: #D66D12; /* Burnt Orange */
     --accent-gradient: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
     
     --text-main: #F3F4F6;
@@ -108,7 +108,7 @@ body {
 }
 
 .nav-link:hover, .nav-link.active {
-    background: rgba(99, 102, 241, 0.1);
+    background: rgba(243, 129, 31, 0.1);
     color: var(--accent-primary);
 }
 
@@ -161,7 +161,7 @@ body {
 
 .search-bar input:focus {
     border-color: var(--accent-primary);
-    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+    box-shadow: 0 0 0 2px rgba(243, 129, 31, 0.2);
 }
 
 .user-profile {
@@ -333,12 +333,12 @@ body {
 .btn-primary {
     background: var(--accent-gradient);
     color: white;
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 4px 15px rgba(243, 129, 31, 0.3);
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 6px 20px rgba(243, 129, 31, 0.4);
 }
 
 .btn-icon {

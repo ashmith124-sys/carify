@@ -1,0 +1,31 @@
+<div class="filter-sidebar">
+    <!-- CATEGORIES -->
+    <div class="filter-group" style="margin-bottom: 40px;">
+        <h4 style="font-size: 0.65rem; color: var(--bronze); letter-spacing: 0.2em; margin-bottom: 25px; font-weight: 800; text-transform: uppercase;">Categories</h4>
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+            <a href="javascript:void(0)" class="filter-link active" data-category="all">The Selection</a>
+            {% for category in categories %}
+            <a href="javascript:void(0)" class="filter-link" data-category="{{ category.id }}">{{ category.name }}</a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- PRICE RANGE -->
+    <div class="filter-group" style="margin-bottom: 40px; padding-top: 30px; border-top: 1px solid var(--border-subtle);">
+        <h4 style="font-size: 0.65rem; color: var(--bronze); letter-spacing: 0.2em; margin-bottom: 25px; font-weight: 800; text-transform: uppercase;">Valuation</h4>
+        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+            <input type="number" id="minPrice" placeholder="MIN" 
+                   style="width: 100%; height: 45px; background: var(--surface-soft); border: 1px solid var(--border-subtle); color: white; padding: 0 15px; font-size: 0.7rem; font-family: var(--font-heading);">
+            <input type="number" id="maxPrice" placeholder="MAX" 
+                   style="width: 100%; height: 45px; background: var(--surface-soft); border: 1px solid var(--border-subtle); color: white; padding: 0 15px; font-size: 0.7rem; font-family: var(--font-heading);">
+        </div>
+        <button id="applyPrice" class="btn btn-primary" style="width: 100%; height: 45px; font-size: 0.65rem; padding: 0;">Apply Filter</button>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="filter-group" style="padding-top: 10px;">
+        <button id="resetFilters" style="background: none; border: none; color: var(--text-muted); font-size: 0.6rem; letter-spacing: 0.1em; cursor: pointer; text-transform: uppercase; border-bottom: 1px solid transparent; transition: 0.3s;" onmouseover="this.style.color='var(--copper)'" onmouseout="this.style.color='var(--text-muted)'">
+            Reset Selection
+        </button>
+    </div>
+</div>

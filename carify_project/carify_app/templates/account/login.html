@@ -1,66 +1,54 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login | Carify</title>
-    <style>
-        body { font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; background: #f8f8f8; color: #1f1f1f; }
-        .container { max-width: 480px; margin: 80px auto; padding: 32px; background: #fff; border-radius: 24px; box-shadow: 0 24px 60px rgba(0,0,0,0.08); }
-        h1 { margin: 0 0 14px; font-size: 2rem; }
-        p.subtitle { margin: 0 0 24px; color: #5f5f5f; }
-        label { display: block; margin: 18px 0 8px; font-weight: 700; }
-        input { width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid #d9d9d9; font-size: 1rem; }
-        button { width: 100%; margin-top: 24px; padding: 14px 16px; border: none; border-radius: 14px; background: #f3811f; color: #fff; font-size: 1rem; font-weight: 700; cursor: pointer; }
-        button:hover { background: #d96d10; }
-        .social-login { margin: 28px 0; }
-        .social-button { display: block; width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid #d9d9d9; background: #fff; margin-bottom: 12px; text-align: center; color: #1f1f1f; font-weight: 700; text-decoration: none; }
-        .social-button:hover { background: #fafafa; }
-        .footer { margin-top: 16px; color: #6d6d6d; font-size: 0.95rem; }
-        .footer a { color: #f3811f; text-decoration: none; }
-        .errorlist { margin: 0 0 12px; padding: 0; list-style: none; color: #c0392b; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Login to Carify</h1>
-        <p class="subtitle">Use your account or a social provider to continue.</p>
+{% extends "base.html" %}
+{% load static %}
 
-        {% if form.errors %}
-            <ul class="errorlist">
-                {% for field in form %}
-                    {% for error in field.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                {% endfor %}
-                {% for error in form.non_field_errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+{% block title %}Sign In | CARIFY{% endblock %}
 
-        <form method="post" action="{% url 'account_login' %}">
-            {% csrf_token %}
-            <label for="id_login">Email or Username</label>
-            {{ form.login }}
-            <label for="id_password">Password</label>
-            {{ form.password }}
-            <button type="submit">Login</button>
-            {{ form.next }}
-        </form>
+{% block content %}
+<div class="auth-page" style="padding: 120px 24px 60px;">
+    <div class="container" style="max-width: 440px;">
+        <div class="glass-panel" style="padding: 60px 40px; border-radius: 4px; box-shadow: 0 40px 100px rgba(0,0,0,0.5);">
+            <div style="text-align: center; margin-bottom: 50px;">
+                <span class="hero-eyebrow" style="margin-bottom: 20px;">Private Terminal</span>
+                <h1 style="font-size: 3rem; letter-spacing: -2px; margin-bottom: 10px;">Sign In</h1>
+                <p style="color: var(--text-muted); font-size: 0.8rem; letter-spacing: 0.05em;">ENTER THE CARIFY COLLECTION</p>
+            </div>
 
-        {% if providers %}
-        <div class="social-login">
-            <p style="margin-bottom: 12px; color:#5f5f5f;">Or sign in with</p>
-            {% for provider in providers %}
-                <a class="social-button" href="{% provider_login_url provider.id process='login' %}">{{ provider.name }}</a>
-            {% endfor %}
-        </div>
-        {% endif %}
+            <form method="post" action="">
+                {% csrf_token %}
+                
+                {% if form.errors %}
+                <div style="background: rgba(155, 90, 43, 0.1); border: 1px solid var(--border-elegant); color: var(--bronze); padding: 15px; font-size: 0.7rem; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600;">
+                    Invalid credentials detected. Please verify and retry.
+                </div>
+                {% endif %}
 
-        <div class="footer">
-            Don't have an account? <a href="{% url 'account_signup' %}">Sign up</a>
+                <div class="form-group" style="margin-bottom: 30px;">
+                    <label style="font-size: 0.6rem; color: var(--text-muted); display: block; margin-bottom: 10px; letter-spacing: 0.2em; font-weight: 700; text-transform: uppercase;">Identity</label>
+                    <input type="text" name="username" required placeholder="USERNAME" 
+                           style="width: 100%; height: 55px; background: var(--surface-soft); border: 1px solid var(--border-subtle); color: white; padding: 0 20px; font-size: 0.85rem; font-family: var(--font-heading);">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 40px;">
+                    <label style="font-size: 0.6rem; color: var(--text-muted); display: block; margin-bottom: 10px; letter-spacing: 0.2em; font-weight: 700; text-transform: uppercase;">Key</label>
+                    <input type="password" name="password" required placeholder="PASSWORD"
+                           style="width: 100%; height: 55px; background: var(--surface-soft); border: 1px solid var(--border-subtle); color: white; padding: 0 20px; font-size: 0.85rem; font-family: var(--font-heading);">
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100" style="height: 60px; font-size: 0.8rem; letter-spacing: 0.2em;">
+                    Access Selection
+                </button>
+
+                <input type="hidden" name="next" value="{{ next }}">
+            </form>
+
+            <div style="margin-top: 50px; text-align: center; border-top: 1px solid var(--border-subtle); padding-top: 30px;">
+                <p style="color: var(--text-muted); font-size: 0.7rem; margin-bottom: 25px; letter-spacing: 0.1em; text-transform: uppercase;">New to the series?</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <a href="{% url 'carify_app:buyer_register' %}" class="btn btn-outline" style="font-size: 0.6rem; padding: 12px 10px;">Join as Buyer</a>
+                    <a href="{% url 'carify_app:seller_register' %}" class="btn btn-outline" style="font-size: 0.6rem; padding: 12px 10px;">Join as Seller</a>
+                </div>
+            </div>
         </div>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

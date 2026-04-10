@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About | Carify{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="section" style="padding-top: 12rem; padding-bottom: 6rem; position: relative; overflow: hidden;">
+    <div style="position: absolute; bottom: -100px; left: -100px; width: 400px; height: 400px; background: hsl(var(--primary)); filter: blur(200px); opacity: 0.12; z-index: 0;"></div>
+    <div class="container" style="position: relative; z-index: 1; text-align: center; max-width: 800px;">
+        <span class="section-label">COMPANY_PROFILE</span>
+        <h1 class="section-title" style="font-size: 3.5rem; margin-bottom: 2rem;">ABOUT CARIFY</h1>
+        <p style="font-size: 1.15rem; color: hsl(var(--muted-foreground)); line-height: 1.8;">
+            Carify is a premium multi-vendor marketplace built for the automotive performance community. We connect passionate builders with verified sellers of high-quality parts, accessories, and professional car care services.
+        </p>
+    </div>
+</section>
+
+<!-- OUR STORY -->
+<section class="section" style="border-top: 1px solid hsl(var(--border));">
+    <div class="container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center;">
+        <div>
+            <span class="section-label">ORIGIN_STORY</span>
+            <h2 class="section-title" style="font-size: 2.5rem;">BUILT BY<br>ENTHUSIASTS,<br>FOR ENTHUSIASTS.</h2>
+            <p style="color: hsl(var(--muted-foreground)); line-height: 1.8; margin-bottom: 1.5rem;">
+                Carify was born out of frustration. Sourcing quality automotive parts in the GCC region meant endless scrolling through social media groups, dealing with unverified sellers, and hoping for the best.
+            </p>
+            <p style="color: hsl(var(--muted-foreground)); line-height: 1.8;">
+                We knew there had to be a better way. So we built Carify — a dedicated, secure, and beautifully designed platform where every part is categorized, every seller is accountable, and every transaction is protected.
+            </p>
+        </div>
+        <div style="position: relative;">
+            <img src="{% static 'images/engine_core.png' %}" alt="Engine Core" style="width: 100%; border-radius: var(--radius); border: 1px solid hsl(var(--border));">
+        </div>
+    </div>
+</section>
+
+<!-- TEAM VALUES -->
+<section class="section" style="background: hsl(var(--surface)); border-top: 1px solid hsl(var(--border));">
+    <div class="container">
+        <div style="text-align: center; margin-bottom: 5rem;">
+            <span class="section-label">TEAM_PROTOCOL</span>
+            <h2 class="section-title">OUR VALUES</h2>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem;">
+            <div class="glass card" style="padding: 2.5rem 1.5rem; text-align: center;">
+                <i class="fa-solid fa-shield-halved" style="font-size: 2rem; color: hsl(var(--primary)); margin-bottom: 1.5rem;"></i>
+                <h4 style="margin-bottom: 0.75rem;">INTEGRITY</h4>
+                <p style="font-size: 0.85rem; color: hsl(var(--muted-foreground)); line-height: 1.6;">Every listing is verified. Every seller is vetted. No exceptions.</p>
+            </div>
+            <div class="glass card" style="padding: 2.5rem 1.5rem; text-align: center;">
+                <i class="fa-solid fa-rocket" style="font-size: 2rem; color: hsl(var(--primary)); margin-bottom: 1.5rem;"></i>
+                <h4 style="margin-bottom: 0.75rem;">INNOVATION</h4>
+                <p style="font-size: 0.85rem; color: hsl(var(--muted-foreground)); line-height: 1.6;">We constantly push boundaries in design, technology, and user experience.</p>
+            </div>
+            <div class="glass card" style="padding: 2.5rem 1.5rem; text-align: center;">
+                <i class="fa-solid fa-users" style="font-size: 2rem; color: hsl(var(--primary)); margin-bottom: 1.5rem;"></i>
+                <h4 style="margin-bottom: 0.75rem;">COMMUNITY</h4>
+                <p style="font-size: 0.85rem; color: hsl(var(--muted-foreground)); line-height: 1.6;">Built for the car community. Every feature is driven by real user feedback.</p>
+            </div>
+            <div class="glass card" style="padding: 2.5rem 1.5rem; text-align: center;">
+                <i class="fa-solid fa-bolt" style="font-size: 2rem; color: hsl(var(--primary)); margin-bottom: 1.5rem;"></i>
+                <h4 style="margin-bottom: 0.75rem;">SPEED</h4>
+                <p style="font-size: 0.85rem; color: hsl(var(--muted-foreground)); line-height: 1.6;">Fast search, instant checkout, rapid deployment. Performance in everything.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="section" style="border-top: 1px solid hsl(var(--border)); background: radial-gradient(circle at center, hsl(var(--primary) / 0.06) 0%, transparent 70%);">
+    <div class="container" style="text-align: center; max-width: 650px;">
+        <h2 class="section-title" style="font-size: 2.5rem;">JOIN THE NETWORK</h2>
+        <p style="font-size: 1.05rem; color: hsl(var(--muted-foreground)); margin-bottom: 3rem; line-height: 1.7;">
+            Become part of the fastest-growing automotive marketplace in the region.
+        </p>
+        <div style="display: flex; gap: 1.5rem; justify-content: center;">
+            <a href="{% url 'carify_app:product_list' %}" class="btn btn-primary" style="height: 55px; padding: 0 3rem; font-size: 1rem;">EXPLORE CATALOG</a>
+            <a href="{% url 'carify_app:why_we' %}" class="btn btn-outline" style="height: 55px; padding: 0 3rem; font-size: 1rem;">WHY CARIFY?</a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

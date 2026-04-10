@@ -1,21 +1,27 @@
 {% extends 'base.html' %}
-{% block title %}Payment Cancelled | Carify{% endblock %}
+{% load static %}
+
+{% block title %}Acquisition Cancelled | CARIFY{% endblock %}
 
 {% block content %}
-<div class="section" style="background: var(--bg-surface); min-height: 70vh; display: flex; align-items: center; justify-content: center; text-align: center;">
-    <div class="container" style="max-width: 600px; background: var(--bg-main); border: 2px solid var(--border-strong); padding: 60px; border-radius: 4px;">
-        <div style="font-size: 5rem; color: #ef4444; margin-bottom: 30px;">
-            <i class="fas fa-times-circle"></i>
-        </div>
-        <h1 style="font-size: 3rem; margin-bottom: 15px;">PAYMENT CANCELLED</h1>
-        <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 40px; line-height: 1.6;">
-            Transaction aborted. The payment session was terminated. Your cart items are still reserved for a limited time.
-        </p>
-        <div style="display: flex; gap: 20px; justify-content: center;">
-            <a href="{% url 'carify_app:product_list' %}" class="btn btn-primary" style="padding: 15px 40px;">RETURN TO CATALOG</a>
-            <a href="/" class="btn btn-outline" style="padding: 15px 40px; border: 1px solid var(--border-strong);">GO HOME</a>
+<div class="auth-page" style="padding: 180px 24px 100px; min-height: 80vh; display: flex; align-items: center; justify-content: center;">
+    <div class="container" style="max-width: 500px;" data-appear>
+        <div class="glass-panel" style="padding: 60px 40px; text-align: center; border-radius: 4px; box-shadow: 0 40px 100px rgba(0,0,0,0.5);">
+            <div style="font-size: 3rem; color: #ef4444; margin-bottom: 20px;">
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            
+            <span class="hero-eyebrow" style="margin-bottom: 15px; display: block;">Protocol Aborted</span>
+            <h1 style="font-size: 2.5rem; letter-spacing: -1px; margin-bottom: 20px;">TRANSACTION HALTED</h1>
+            
+            <p style="color: var(--text-muted); font-size: 0.8rem; letter-spacing: 0.05em; line-height: 1.8; margin-bottom: 40px;">
+                Your acquisition process was securely terminated. No funds were captured during this session.
+            </p>
+            
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                <a href="{% url 'carify_app:product_list' %}" class="btn btn-primary" style="height: 60px; font-size: 0.8rem; letter-spacing: 0.2em;">RETURN TO COLLECTION</a>
+            </div>
         </div>
     </div>
 </div>
 {% endblock %}
-

@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Why We | Carify{% endblock %}
+
+{% block content %}
+
+<!-- HERO BANNER -->
+<section class="section" style="padding-top: 12rem; padding-bottom: 6rem; position: relative; overflow: hidden;">
+    <div style="position: absolute; top: -100px; right: -100px; width: 400px; height: 400px; background: hsl(var(--primary)); filter: blur(200px); opacity: 0.15; z-index: 0;"></div>
+    <div class="container" style="position: relative; z-index: 1; text-align: center; max-width: 800px;">
+        <span class="section-label">OUR PURPOSE</span>
+        <h1 class="section-title" style="font-size: 3.5rem; margin-bottom: 2rem;">WHY WE EXIST</h1>
+        <p style="font-size: 1.15rem; color: hsl(var(--muted-foreground)); line-height: 1.8;">
+            Every great car deserves the right parts. Every passionate builder deserves a platform that speaks their language. That's why we built Carify — to bridge the gap between performance enthusiasts and premium automotive hardware.
+        </p>
+    </div>
+</section>
+
+<!-- CORE VALUES -->
+<section class="section" style="border-top: 1px solid hsl(var(--border));">
+    <div class="container">
+        <div style="text-align: center; margin-bottom: 5rem;">
+            <span class="section-label">CORE PILLARS</span>
+            <h2 class="section-title">WHAT DRIVES US</h2>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 3rem;">
+            <!-- Pillar 1 -->
+            <div class="glass card" style="padding: 3rem 2rem; text-align: center; border-top: 3px solid hsl(var(--primary));">
+                <div style="width: 70px; height: 70px; border-radius: 50%; background: hsl(var(--primary) / 0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem;">
+                    <i class="fa-solid fa-gauge-high" style="font-size: 1.8rem; color: hsl(var(--primary));"></i>
+                </div>
+                <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">PERFORMANCE FIRST</h3>
+                <p style="font-size: 0.9rem; color: hsl(var(--muted-foreground)); line-height: 1.7;">
+                    We don't sell generic parts. Every listing on Carify is curated for builders who demand track-tested, precision-engineered components that actually make a difference.
+                </p>
+            </div>
+
+            <!-- Pillar 2 -->
+            <div class="glass card" style="padding: 3rem 2rem; text-align: center; border-top: 3px solid hsl(var(--primary));">
+                <div style="width: 70px; height: 70px; border-radius: 50%; background: hsl(var(--primary) / 0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem;">
+                    <i class="fa-solid fa-handshake" style="font-size: 1.8rem; color: hsl(var(--primary));"></i>
+                </div>
+                <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">TRUST & TRANSPARENCY</h3>
+                <p style="font-size: 0.9rem; color: hsl(var(--muted-foreground)); line-height: 1.7;">
+                    Verified sellers. Authenticated parts. Secure payments via Stripe. We eliminate the guesswork so you can focus on what matters — your build.
+                </p>
+            </div>
+
+            <!-- Pillar 3 -->
+            <div class="glass card" style="padding: 3rem 2rem; text-align: center; border-top: 3px solid hsl(var(--primary));">
+                <div style="width: 70px; height: 70px; border-radius: 50%; background: hsl(var(--primary) / 0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem;">
+                    <i class="fa-solid fa-earth-americas" style="font-size: 1.8rem; color: hsl(var(--primary));"></i>
+                </div>
+                <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">GLOBAL REACH</h3>
+                <p style="font-size: 0.9rem; color: hsl(var(--muted-foreground)); line-height: 1.7;">
+                    Built for the GCC region and beyond. We connect sellers and buyers across borders, making premium automotive hardware accessible everywhere.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- THE PROBLEM WE SOLVE -->
+<section class="section" style="background: hsl(var(--surface)); border-top: 1px solid hsl(var(--border));">
+    <div class="container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center;">
+        <div>
+            <span class="section-label">THE PROBLEM</span>
+            <h2 class="section-title" style="font-size: 2.5rem;">FRAGMENTED.<br>UNRELIABLE.<br>OUTDATED.</h2>
+            <p style="color: hsl(var(--muted-foreground)); line-height: 1.8; margin-bottom: 2rem;">
+                The automotive parts market is scattered across forums, social media groups, and unreliable marketplaces. Buyers waste hours searching for parts with no guarantee of quality. Sellers lack a professional platform to showcase their inventory.
+            </p>
+            <p style="color: hsl(var(--muted-foreground)); line-height: 1.8;">
+                Carify changes that. We built a unified, premium marketplace where every transaction is secure, every part is categorized, and every seller is accountable.
+            </p>
+        </div>
+        <div style="position: relative;">
+            <div class="glass card" style="padding: 3rem; border-color: hsl(var(--primary) / 0.3);">
+                <div style="display: flex; flex-direction: column; gap: 2rem;">
+                    <div style="display: flex; align-items: center; gap: 1.5rem;">
+                        <div style="min-width: 50px; height: 50px; border-radius: 50%; background: hsl(var(--destructive) / 0.15); display: flex; align-items: center; justify-content: center;">
+                            <i class="fa-solid fa-xmark" style="color: #ef4444; font-size: 1.2rem;"></i>
+                        </div>
+                        <div>
+                            <h4 style="margin-bottom: 0.25rem; font-size: 0.95rem;">No Verification</h4>
+                            <p style="font-size: 0.8rem; color: hsl(var(--muted-foreground));">Traditional markets have no part authentication</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1.5rem;">
+                        <div style="min-width: 50px; height: 50px; border-radius: 50%; background: hsl(var(--destructive) / 0.15); display: flex; align-items: center; justify-content: center;">
+                            <i class="fa-solid fa-xmark" style="color: #ef4444; font-size: 1.2rem;"></i>
+                        </div>
+                        <div>
+                            <h4 style="margin-bottom: 0.25rem; font-size: 0.95rem;">Scattered Inventory</h4>
+                            <p style="font-size: 0.8rem; color: hsl(var(--muted-foreground));">Parts spread across dozens of platforms</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1.5rem;">
+                        <div style="min-width: 50px; height: 50px; border-radius: 50%; background: hsl(var(--destructive) / 0.15); display: flex; align-items: center; justify-content: center;">
+                            <i class="fa-solid fa-xmark" style="color: #ef4444; font-size: 1.2rem;"></i>
+                        </div>
+                        <div>
+                            <h4 style="margin-bottom: 0.25rem; font-size: 0.95rem;">Risky Payments</h4>
+                            <p style="font-size: 0.8rem; color: hsl(var(--muted-foreground));">Cash-only or unprotected bank transfers</p>
+                        </div>
+                    </div>
+                    <div style="height: 1px; background: hsl(var(--border));"></div>
+                    <div style="display: flex; align-items: center; gap: 1.5rem;">
+                        <div style="min-width: 50px; height: 50px; border-radius: 50%; background: hsl(var(--primary) / 0.15); display: flex; align-items: center; justify-content: center;">
+                            <i class="fa-solid fa-check" style="color: hsl(var(--primary)); font-size: 1.2rem;"></i>
+                        </div>
+                        <div>
+                            <h4 style="margin-bottom: 0.25rem; font-size: 0.95rem; color: hsl(var(--primary));">Carify Solves All Three</h4>
+                            <p style="font-size: 0.8rem; color: hsl(var(--muted-foreground));">One platform. Verified. Secure. Global.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- STATS -->
+<section class="section" style="border-top: 1px solid hsl(var(--border));">
+    <div class="container">
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 3rem; text-align: center;">
+            <div>
+                <div style="font-size: 3rem; font-weight: 800; font-family: var(--font-heading); color: hsl(var(--primary));">500+</div>
+                <p style="font-size: 0.85rem; color: hsl(var(--muted-foreground)); margin-top: 0.5rem;">Verified Parts</p>
+            </div>
+            <div>
+                <div style="font-size: 3rem; font-weight: 800; font-family: var(--font-heading); color: hsl(var(--primary));">50+</div>
+                <p style="font-size: 0.85rem; color: hsl(var(--muted-foreground)); margin-top: 0.5rem;">Trusted Sellers</p>
+            </div>
+            <div>
+                <div style="font-size: 3rem; font-weight: 800; font-family: var(--font-heading); color: hsl(var(--primary));">12</div>
+                <p style="font-size: 0.85rem; color: hsl(var(--muted-foreground)); margin-top: 0.5rem;">Countries Served</p>
+            </div>
+            <div>
+                <div style="font-size: 3rem; font-weight: 800; font-family: var(--font-heading); color: hsl(var(--primary));">99.9%</div>
+                <p style="font-size: 0.85rem; color: hsl(var(--muted-foreground)); margin-top: 0.5rem;">Uptime</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="section" style="background: radial-gradient(circle at center, hsl(var(--primary) / 0.08) 0%, transparent 70%); border-top: 1px solid hsl(var(--border));">
+    <div class="container" style="text-align: center; max-width: 700px;">
+        <h2 class="section-title" style="font-size: 2.5rem;">READY TO BUILD?</h2>
+        <p style="font-size: 1.1rem; color: hsl(var(--muted-foreground)); margin-bottom: 3rem; line-height: 1.7;">
+            Whether you're sourcing parts for a weekend project or listing inventory for your shop, Carify is built for you.
+        </p>
+        <div style="display: flex; gap: 1.5rem; justify-content: center;">
+            <a href="{% url 'carify_app:product_list' %}" class="btn btn-primary" style="height: 55px; padding: 0 3rem; font-size: 1rem;">EXPLORE CATALOG</a>
+            <a href="{% url 'carify_app:seller_register' %}" class="btn btn-outline" style="height: 55px; padding: 0 3rem; font-size: 1rem;">BECOME A SELLER</a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

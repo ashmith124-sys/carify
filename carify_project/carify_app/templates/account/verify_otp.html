@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Verify Identity | CARIFY{% endblock %}
+
+{% block content %}
+<div class="auth-page" style="padding: 120px 24px 80px;">
+    <div class="container" style="max-width: 440px;">
+        <div class="glass-panel" style="padding: 60px 40px; border-radius: 4px; box-shadow: 0 40px 100px rgba(0,0,0,0.5);">
+            <div style="text-align: center; margin-bottom: 50px;">
+                <span class="hero-eyebrow" style="margin-bottom: 20px;">Identity Verification</span>
+                <h1 style="font-size: 3rem; letter-spacing: -2px; margin-bottom: 10px;">Secure Key</h1>
+                <p style="color: var(--text-muted); font-size: 0.8rem; letter-spacing: 0.05em; line-height: 1.6;">
+                    Enter the access code transmitted to<br><span class="copper-text" style="font-weight: 600;">{{ email }}</span>
+                </p>
+            </div>
+
+            <form method="post" action="">
+                {% csrf_token %}
+                
+                <div class="form-group" style="margin-bottom: 40px;">
+                    <label style="font-size: 0.6rem; color: var(--text-muted); display: block; margin-bottom: 15px; letter-spacing: 0.25em; font-weight: 700; text-transform: uppercase; text-align: center;">Decryption Key</label>
+                    <input type="text" name="otp_code" required maxlength="6" 
+                           style="width: 100%; height: 70px; background: var(--surface-soft); border: 1px solid var(--border-subtle); color: var(--bronze); font-size: 2rem; text-align: center; letter-spacing: 0.3em; font-family: var(--font-heading); font-weight: 600;">
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100" style="height: 60px; font-size: 0.8rem; letter-spacing: 0.2em;">
+                    Verify Access
+                </button>
+            </form>
+
+            <div style="margin-top: 50px; text-align: center; border-top: 1px solid var(--border-subtle); padding-top: 30px;">
+                <p style="color: var(--text-muted); font-size: 0.7rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.1em;">Key not received?</p>
+                <form method="post" action="{% url 'carify_app:verify_otp' %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" name="resend" value="1" class="nav-link" style="background: none; border: none; border-bottom: 1px solid var(--bronze); font-size: 0.65rem; padding-bottom: 2px; cursor: pointer; color: var(--bronze);">Resend Access Key</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

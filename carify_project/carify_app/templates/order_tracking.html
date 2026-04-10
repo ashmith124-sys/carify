@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Logistics Protocol | CARIFY{% endblock %}
+
+{% block content %}
+<section class="section-padding" style="padding-top: 160px; min-height: 90vh;">
+    <div class="container" style="max-width: 650px;">
+        <div data-appear>
+            <span class="hero-eyebrow">Logistics Protocol</span>
+            <h1 class="font-heading" style="font-size: clamp(2.5rem, 8vw, 4.5rem); letter-spacing: -3px; margin-bottom: 15px;">ORDER STATUS</h1>
+            <p class="font-serif" style="font-style: italic; color: var(--text-muted); font-size: 1.1rem; margin-bottom: 60px;">Monitor the preservation journey of your acquisition.</p>
+        </div>
+
+        <!-- SECURE ENTRY PORTAL -->
+        <div class="glass-panel" style="padding: 50px; border-radius: 0;" data-appear>
+            <form method="GET" style="display: grid; gap: 30px;">
+                <div>
+                    <label class="font-heading" style="font-size: 0.65rem; color: var(--text-muted); display: block; margin-bottom: 20px; letter-spacing: 0.25em;">RESERVATION IDENTIFIER</label>
+                    <input type="text" name="tracking_id" value="{{ query|default:'' }}" placeholder="e.g., CA-XXXX-XXXX" 
+                           style="width: 100%; height: 65px; background: var(--surface-soft); border: 1px solid var(--border-subtle); border-radius: 0; color: white; padding: 0 25px; font-size: 1.1rem; font-family: 'Outfit', sans-serif; letter-spacing: 0.1em; outline: none; transition: border-color 0.4s;"
+                           onfocus="this.style.borderColor='var(--bronze)'" onblur="this.style.borderColor='var(--border-subtle)'">
+                </div>
+                <button type="submit" class="btn btn-primary" style="height: 65px; width: 100%; letter-spacing: 0.3em;">
+                    INITIATE SEARCH
+                </button>
+            </form>
+        </div>
+
+        {% if order %}
+        <div class="order-result" data-appear style="margin-top: 80px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 60px; padding-bottom: 30px; border-bottom: 1px solid var(--border-subtle);">
+                <div>
+                    <span style="font-size: 0.6rem; color: var(--text-muted); letter-spacing: 0.2em; display: block; margin-bottom: 8px;">IDENTIFIER</span>
+                    <h3 class="copper-text" style="font-size: 1.5rem; font-family: var(--font-heading); letter-spacing: 0.05em;">{{ order.tracking_id|upper }}</h3>
+                </div>
+                <div style="text-align: right;">
+                    <span style="font-size: 0.6rem; color: var(--text-muted); letter-spacing: 0.2em; display: block; margin-bottom: 8px;">VALUATION</span>
+                    <h3 style="font-size: 1.5rem; font-family: var(--font-heading);">${{ order.total_amount }}</h3>
+                </div>
+            </div>
+
+            <!-- PRECISION TIMELINE -->
+            <div class="elite-timeline" data-stagger="true">
+                <div class="timeline-step active stagger-item">
+                    <div class="step-indicator">
+                        <div class="step-dot"></div>
+                        <div class="step-line"></div>
+                    </div>
+                    <div class="step-content">
+                        <h4 class="font-heading">RESERVATION SECURED</h4>
+                        <p>Order established in our digital registry.</p>
+                        <span class="step-time">{{ order.created_at|date:"M d, Y • H:i" }}</span>
+                    </div>
+                </div>
+
+                <div class="timeline-step {% if order.status != 'pending' %}active{% endif %} stagger-item">
+                    <div class="step-indicator">
+                        <div class="step-dot"></div>
+                        <div class="step-line"></div>
+                    </div>
+                    <div class="step-content">
+                        <h4 class="font-heading">CLEARANCE GRANTED</h4>
+                        <p>Transaction authorized and security protocols cleared.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-step {% if order.status == 'shipped' or order.status == 'delivered' %}active{% endif %} stagger-item">
+                    <div class="step-indicator">
+                        <div class="step-dot"></div>
+                        <div class="step-line"></div>
+                    </div>
+                    <div class="step-content">
+                        <h4 class="font-heading">IN TRANSIT</h4>
+                        <p>Your acquisition is with our elite logistics network.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-step {% if order.status == 'delivered' %}active{% endif %} stagger-item">
+                    <div class="step-indicator">
+                        <div class="step-dot"></div>
+                    </div>
+                    <div class="step-content">
+                        <h4 class="font-heading">FINAL ARRIVAL</h4>
+                        <p>Safely delivered to the verified destination.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% elif query %}
+        <div class="glass-panel" style="padding: 60px; text-align: center; margin-top: 80px;" data-appear>
+            <i class="fas fa-microchip" style="color: var(--copper); font-size: 2rem; margin-bottom: 30px; opacity: 0.5;"></i>
+            <p style="font-size: 0.8rem; letter-spacing: 0.2em; color: var(--text-muted); text-transform: uppercase;">
+                IDENTIFIER NOT RECOGNIZED: <span class="copper-text" style="font-weight: 800;">{{ query }}</span>
+            </p>
+            <p style="font-size: 0.65rem; color: var(--text-muted); margin-top: 15px; font-family: var(--font-serif); font-style: italic;">Verify the entry and re-initiate the protocol.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+    .elite-timeline { display: flex; flex-direction: column; }
+    .timeline-step { display: flex; gap: 40px; }
+    .step-indicator { display: flex; flex-direction: column; align-items: center; width: 12px; }
+    .step-dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid var(--border-subtle); background: var(--obsidian); transition: 0.6s var(--transition-premium); flex-shrink: 0; }
+    .step-line { width: 1px; flex-grow: 1; background: var(--border-subtle); margin: 8px 0; }
+    
+    .timeline-step.active .step-dot { background: var(--bronze); border-color: var(--bronze); box-shadow: 0 0 20px rgba(217, 145, 90, 0.3); }
+    .timeline-step.active .step-line { background: var(--bronze); }
+    
+    .step-content { padding-bottom: 50px; }
+    .step-content h4 { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px; letter-spacing: 0.15em; transition: 0.4s; }
+    .timeline-step.active .step-content h4 { color: var(--text-pure); }
+    .step-content p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 10px; line-height: 1.6; }
+    .step-time { font-size: 0.6rem; color: var(--bronze); font-weight: 700; letter-spacing: 0.2em; }
+    
+    .stagger-item { opacity: 0; transform: translateY(20px); transition: all 1s var(--transition-premium); }
+    .stagger-item.visible { opacity: 1; transform: translateY(0); }
+</style>
+{% endblock %}

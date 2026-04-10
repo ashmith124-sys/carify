@@ -2,84 +2,180 @@
 {% load static %}
 
 {% block content %}
-<!-- HERO SECTION with Integrated Search -->
-<div class="hero">
-    <div class="hero-content" style="background: rgba(43, 39, 40, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); padding: 60px; border-radius: 4px;">
-        <span class="hero-subtitle" style="background: var(--accent); color: var(--text-inverse); font-weight: 800;">PERFORMANCE UNLIMITED</span>
-        <h1 class="hero-title" style="margin-bottom: 40px; text-shadow: 0 10px 30px rgba(0,0,0,0.5);">PRECISION<br>FOR THE<br>DRIVEN</h1>
-        
-        <!-- Integrated Search Bar -->
-        <form action="{% url 'carify_app:product_list' %}" method="GET" style="display: flex; gap: 0; background: var(--bg-main); border: 2px solid var(--border-strong); border-radius: 4px; padding: 4px;">
-            <input type="text" name="q" placeholder="Search performance parts..." style="flex: 1; background: transparent; border: none; color: var(--text-main); padding: 15px 20px; outline: none; font-family: var(--font-body);">
-            <button type="submit" class="btn btn-primary" style="padding: 10px 30px; border-radius: 2px;">
-                <i class="fas fa-search"></i>
-            </button>
-        </form>
+<!-- CINEMATIC SHOP SLIDESHOW HERO -->
+<section class="lifestyle-section" style="min-height: 100vh;">
+    <!-- Slides container -->
+    <div id="heroSlider" style="position: absolute; inset: 0; width: 100%; height: 100%;">
+        <div class="hero-slide active" style="position: absolute; inset: 0; width: 100%; height: 100%; opacity: 1; transition: opacity 1.5s ease-in-out;">
+            <div class="lifestyle-bg" style="background-image: url('{% static 'images/hero_ceramic.png' %}'); filter: brightness(0.6) contrast(1.1);"></div>
+        </div>
+        <div class="hero-slide" style="position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1.5s ease-in-out;">
+            <div class="lifestyle-bg" style="background-image: url('https://images.unsplash.com/photo-1621359983321-3957bd9cc2bc?auto=format&fit=crop&q=80&w=1600'); filter: brightness(0.6) contrast(1.1);"></div>
+        </div>
+        <div class="hero-slide" style="position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1.5s ease-in-out;">
+            <div class="lifestyle-bg" style="background-image: url('{% static 'images/protection_ppf.png' %}'); filter: brightness(0.5) contrast(1.2);"></div>
+        </div>
     </div>
     
-    <div class="hero-visual">
-        <img src="https://images.unsplash.com/photo-1549494391-7f9996d914ae?auto=format&fit=crop&q=80&w=1600" alt="Engine Precision" style="filter: brightness(0.6);">
-    </div>
-</div>
+    <div class="lifestyle-overlay"></div>
 
-<!-- LATEST HARDWARE SECTION -->
-<div class="section" style="background: var(--bg-surface);">
-    <div class="container">
-        <div class="section-header">
-            <div>
-                <h2 style="font-size: 2.5rem; letter-spacing: -1px; margin-bottom: 5px;">LATEST HARDWARE</h2>
-                <p style="color: var(--text-muted); text-transform: uppercase; font-size: 0.8rem; font-weight: 600; letter-spacing: 2px;">Direct from testing labs</p>
+    <div class="container lifestyle-content" style="max-width: 900px;">
+        <div data-appear>
+            <span class="font-heading" style="color: var(--bronze); font-size: 0.8rem; letter-spacing: 0.3em; margin-bottom: 25px; display: block;">THE ELITE COLLECTION</span>
+            <h1 class="font-heading" style="font-size: clamp(3rem, 8vw, 5.5rem); margin-bottom: 30px; line-height: 0.95;">CINEMATIC<br>COMMERCE</h1>
+            <p class="font-serif" style="font-size: 1.4rem; font-style: italic; color: var(--text-elegant); margin-bottom: 50px; opacity: 0.9;">
+                Curated solutions for the automotive connoisseur.
+            </p>
+            <div style="display: flex; gap: 20px; justify-content: center;">
+                <a href="{% url 'carify_app:product_list' %}" class="btn btn-primary" style="padding: 1.25rem 3rem;">SHOP THE COLLECTION</a>
             </div>
-            <a href="{% url 'carify_app:product_list' %}" style="font-family: var(--font-heading); font-weight: 700; text-transform: uppercase; color: var(--accent); letter-spacing: 1px;">View All Items <i class="fas fa-arrow-right"></i></a>
+            
+            <!-- Slide Indicators -->
+            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 60px;" id="sliderDots">
+                <span class="slider-dot active" data-index="0"></span>
+                <span class="slider-dot" data-index="1"></span>
+                <span class="slider-dot" data-index="2"></span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ABOUT US / THE LEGACY BRAND STATEMENT -->
+<section class="section-padding" style="background: var(--bg-main); text-align: center; border-bottom: 1px solid var(--border-subtle);">
+    <div class="container" style="max-width: 800px;" data-appear>
+        <div style="margin-bottom: 30px;">
+            <i class="fas fa-gem" style="font-size: 2rem; color: var(--bronze); opacity: 0.8;"></i>
+        </div>
+        <span class="font-heading" style="color: var(--bronze); font-size: 0.75rem; letter-spacing: 0.3em; margin-bottom: 20px; display: block; text-transform: uppercase;">Our Philosophy</span>
+        <h2 class="font-heading" style="font-size: 2.5rem; margin-bottom: 30px; letter-spacing: -1px;">THE ART OF PRESERVATION</h2>
+        <p style="color: var(--text-elegant); font-size: 1.1rem; line-height: 1.8; margin-bottom: 40px; font-family: var(--font-serif); font-style: italic;">
+            Carify operates at the intersection of automotive engineering and cosmetic perfection. We are not merely a marketplace; we are the curators of the world's most advanced chemical enhancements. Our mission is to bridge the gap between elite detailing artisans and the uncompromising enthusiast.
+        </p>
+        <a href="{% url 'carify_app:about' %}" class="font-heading" style="font-size: 0.75rem; letter-spacing: 0.1em; color: var(--text-pure); border-bottom: 1px solid var(--bronze); padding-bottom: 5px; text-decoration: none; transition: 0.3s;" onmouseover="this.style.color='var(--bronze)'" onmouseout="this.style.color='var(--text-pure)'">READ THE FULL MANIFESTO</a>
+    </div>
+</section>
+
+<!-- LIFESTYLE HIGHLIGHT: ALTERNATING ROW 1 -->
+<section class="section-padding" style="background: var(--surface);">
+    <div class="container" style="max-width: var(--container-max); padding: 0;">
+        <div class="lifestyle-row">
+            <div class="lifestyle-image hover-lift" data-appear>
+                <img src="{% static 'images/hero_ceramic.png' %}" alt="Ceramic Coverage" style="width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.5);">
+            </div>
+            <div class="lifestyle-text" data-appear>
+                <span class="font-heading" style="font-size: 0.7rem; color: var(--bronze); letter-spacing: 0.2em; margin-bottom: 20px; display: inline-block;">SIGNATURE SERIES</span>
+                <h2 class="font-heading" style="font-size: 3rem; margin-bottom: 30px;">GLASS<br>ARMOR</h2>
+                <p style="color: var(--text-muted); font-size: 1.1rem; line-height: 1.8; margin-bottom: 40px;">
+                    Our flagship ceramic formulation delivers extreme gloss and hydrophobic resilience, ensuring your vehicle maintains a showroom finish in any environment.
+                </p>
+                <a href="{% url 'carify_app:product_list' %}" class="btn btn-outline">EXPLORE CERAMICS</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- LIFESTYLE HIGHLIGHT: ALTERNATING ROW 2 -->
+<section class="section-padding">
+    <div class="container" style="max-width: var(--container-max); padding: 0;">
+        <div class="lifestyle-row reverse">
+            <div class="lifestyle-image hover-lift" data-appear>
+                <img src="{% static 'images/protection_ppf.png' %}" alt="PPF Films" style="width: 100%; height: 100%; object-fit: cover; filter: contrast(1.2);">
+            </div>
+            <div class="lifestyle-text" data-appear>
+                <span class="font-heading" style="font-size: 0.7rem; color: var(--bronze); letter-spacing: 0.2em; margin-bottom: 20px; display: inline-block;">PERFORMANCE METRICS</span>
+                <h2 class="font-heading" style="font-size: 3rem; margin-bottom: 30px;">INVISIBLE<br>SHIELD</h2>
+                <p style="color: var(--text-muted); font-size: 1.1rem; line-height: 1.8; margin-bottom: 40px;">
+                    Self-healing, optical-grade Paint Protection Films that defend against high-velocity debris while enhancing the natural depth of your paintwork.
+                </p>
+                <a href="{% url 'carify_app:product_list' %}" class="btn btn-outline">SHOP FILMS</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURED COMMERCE GRID -->
+<section class="section-padding" style="background: var(--surface-soft); border-top: 1px solid var(--border-subtle);">
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 60px;" data-appear>
+            <div>
+                <span class="font-heading" style="color: var(--bronze); letter-spacing: 0.2em; font-size: 0.75rem;">CURATED</span>
+                <h2 class="font-heading" style="font-size: 2.5rem; letter-spacing: -1px; margin-top: 10px;">LATEST ARRIVALS</h2>
+            </div>
+            <a href="{% url 'carify_app:product_list' %}" class="font-heading" style="font-size: 0.75rem; letter-spacing: 0.1em; color: var(--text-pure); border-bottom: 1px solid var(--text-pure); padding-bottom: 5px; text-decoration: none;">VIEW ALL</a>
         </div>
         
-        <div class="product-grid">
+        <div class="collection-grid" data-appear data-stagger="true">
             {% for product in products|slice:":8" %}
-            <div class="product-card">
-                <a href="{% url 'carify_app:product_detail' product.id %}" style="display: contents;">
-                    <div class="product-image-container">
-                        {% if product.quantity < 5 %}
-                            <span class="product-badge">LOW STOCK</span>
-                        {% endif %}
-                        
+            <div class="shop-card stagger-item">
+                <a href="{% url 'carify_app:product_detail' product.id %}" style="text-decoration: none; display: block; height: 100%;">
+                    <div class="shop-image-wrapper">
                         {% if product.first_media_image_url %}
-                            <img src="{{ product.first_media_image_url }}" alt="{{ product.name }}">
-                        {% elif product.image %}
-                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                            <img src="{{ product.first_media_image_url }}" alt="{{ product.name }}" class="shop-img">
                         {% else %}
-                            <img src="https://images.unsplash.com/photo-1486491830252-1719446d670a?auto=format&fit=crop&q=80&w=400" alt="Part Placeholder">
+                            <img src="https://images.unsplash.com/photo-1607603750909-408e1938f8c7?auto=format&fit=crop&q=80&w=400" class="shop-img" style="opacity: 0.4;">
                         {% endif %}
+                        <!-- Quick Add Hover Overlay -->
+                        <div class="quick-add-overlay">
+                            <span class="btn btn-primary" style="width: 80%; font-size: 0.65rem; padding: 0.8rem 1rem;">VIEW DETAILS</span>
+                        </div>
+                    </div>
+                    <div class="shop-info">
+                        <span class="shop-vendor font-heading">{{ product.category.name|default:"CARIFY EXCLUSIVE" }}</span>
+                        <h4 class="shop-title font-heading">{{ product.name }}</h4>
+                        <span class="shop-price font-heading copper-text">${{ product.price }}</span>
                     </div>
                 </a>
-                
-                <div class="product-info">
-                    <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-family: var(--font-heading); font-weight: 700; margin-bottom: 8px;">
-                        {{ product.category.name|default:"General Parts" }}
-                    </div>
-                    <a href="{% url 'carify_app:product_detail' product.id %}" class="product-title" style="font-weight: 600; font-size: 1.25rem;">
-                        {{ product.name }}
-                    </a>
-                    
-                    <div class="product-price" style="color: var(--text-main); opacity: 0.9;">
-                        ${{ product.price }}
-                    </div>
-                </div>
-                
-                <form action="#" method="POST" style="margin: 0;">
-                    {% csrf_token %}
-                    <button type="button" class="btn-add-cart-outline">
-                        <i class="fas fa-plus"></i> ADD TO CART
-                    </button>
-                </form>
-            </div>
-            {% empty %}
-            <div style="grid-column: 1 / -1; text-align: center; padding: 60px; border: 1px dashed var(--border-strong);">
-                <h3 style="margin-bottom: 15px;">No inventory loaded yet.</h3>
-                <a href="{% url 'carify_app:seller_add_product' %}" class="btn btn-primary">List the first part</a>
             </div>
             {% endfor %}
         </div>
     </div>
-</div>
+</section>
 
+<style>
+    /* Slider Dots */
+    .slider-dot { width: 40px; height: 2px; background: rgba(255,255,255,0.2); cursor: pointer; transition: 0.3s; }
+    .slider-dot.active { background: var(--bronze); }
+    
+    /* Lifestyle Row */
+    .lifestyle-row { display: grid; grid-template-columns: 1fr; align-items: center; gap: 0; min-height: 80vh; }
+    @media (min-width: 992px) { 
+        .lifestyle-row { grid-template-columns: 1fr 1fr; } 
+        .lifestyle-row.reverse .lifestyle-image { order: 2; }
+        .lifestyle-row.reverse .lifestyle-text { order: 1; padding: 100px 100px 100px 50px; }
+        .lifestyle-text { padding: 100px 50px 100px 100px; }
+    }
+    .lifestyle-image { height: 100%; min-height: 400px; overflow: hidden; }
+    .lifestyle-text { padding: 50px 20px; }
+    
+    
+    .stagger-item { opacity: 0; transform: translateY(25px); transition: all 1s var(--transition-premium); }
+    .stagger-item.visible { opacity: 1; transform: translateY(0); }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Cinematic Slider Logic
+    const slides = document.querySelectorAll('.hero-slide');
+    const dots = document.querySelectorAll('.slider-dot');
+    let currentSlide = 0;
+    
+    function showSlide(index) {
+        slides.forEach(s => s.style.opacity = '0');
+        dots.forEach(d => d.classList.remove('active'));
+        
+        slides[index].style.opacity = '1';
+        dots[index].classList.add('active');
+        currentSlide = index;
+    }
+    
+    setInterval(() => {
+        let nxt = (currentSlide + 1) % slides.length;
+        showSlide(nxt);
+    }, 6000);
+    
+    dots.forEach((dot, idx) => {
+        dot.addEventListener('click', () => showSlide(idx));
+    });
+});
+</script>
 {% endblock %}

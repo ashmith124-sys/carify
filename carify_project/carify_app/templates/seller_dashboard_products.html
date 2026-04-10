@@ -10,86 +10,73 @@
     </a>
 </div>
 
-<div class="content-section">
-    <div class="section-header">
+<div class="content-section" style="padding: 0; overflow: hidden;" data-appear>
+    <div style="padding: 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2);">
         <div style="display: flex; gap: 15px;">
-            <div class="search-bar" style="width: 250px;">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Search products...">
-            </div>
-            <select style="background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-main); padding: 10px; border-radius: 8px;">
-                <option>All Categories</option>
-                <option>Automotive Parts</option>
-                <option>Accessories</option>
-            </select>
+            <input type="text" placeholder="SEARCH ASSETS..." style="background: transparent; border: 1px solid var(--border-color); color: var(--text-pure); padding: 10px 15px; border-radius: 4px; font-family: var(--font-heading); font-size: 0.7rem;">
         </div>
-        <div style="color: var(--text-muted); font-size: 0.9rem;">
-            Showing {{ products.count }} products
+        <div style="color: var(--text-muted); font-size: 0.7rem; font-family: var(--font-heading); letter-spacing: 0.1em;">
+            INDEXING {{ products.count }} ASSETS
         </div>
     </div>
 
     <div style="overflow-x: auto;">
-        <table class="data-table">
+        <table style="width: 100%; text-align: left; border-collapse: collapse;">
             <thead>
-                <tr>
-                    <th>Product</th>
-                    <th>Category</th>
-                    <th>Price</th>
-                    <th>Inventory</th>
-                    <th>Status</th>
-                    <th style="text-align: right;">Actions</th>
+                <tr style="border-bottom: 1px solid var(--border-color);">
+                    <th style="padding: 20px; font-size: 0.7rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em;">Product Specimen</th>
+                    <th style="padding: 20px; font-size: 0.7rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em;">Category</th>
+                    <th style="padding: 20px; font-size: 0.7rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em;">Financials</th>
+                    <th style="padding: 20px; font-size: 0.7rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em;">Inventory</th>
+                    <th style="padding: 20px; font-size: 0.7rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em;">State</th>
+                    <th style="padding: 20px; font-size: 0.7rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em; text-align: right;">Protocol Limits</th>
                 </tr>
             </thead>
             <tbody>
                 {% for product in products %}
-                <tr>
-                    <td>
-                        <div class="product-cell">
-                            {% if product.image %}
-                                <img src="{{ product.image.url }}" class="product-img" alt="{{ product.name }}">
-                            {% elif product.first_media_image_url %}
-                                <img src="{{ product.first_media_image_url }}" class="product-img" alt="{{ product.name }}">
-                            {% else %}
-                                <div class="product-img" style="background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; color: var(--text-muted);">
-                                    <i class="fas fa-image"></i>
-                                </div>
-                            {% endif %}
+                <tr style="border-bottom: 1px solid var(--border-color); transition: 0.3s;">
+                    <td style="padding: 20px;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 45px; height: 45px; background: var(--surface); border-radius: 4px; overflow: hidden; flex-shrink: 0;">
+                                <img src="{{ product.first_media_image_url|default:'https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&q=80&w=200' }}" alt="{{ product.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
                             <div>
-                                <div style="font-weight: 500;">{{ product.name }}</div>
-                                <div style="font-size: 0.8rem; color: var(--text-muted);">Added {{ product.created_at|date:"M d, Y" }}</div>
+                                <div style="font-family: var(--font-heading); font-size: 0.85rem;">{{ product.name|truncatechars:35 }}</div>
+                                <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 4px;">Listed {{ product.created_at|date:"M d, Y" }}</div>
                             </div>
                         </div>
                     </td>
-                    <td style="color: var(--text-muted);">{{ product.category.name|default:"Uncategorized" }}</td>
-                    <td style="font-weight: 600;">${{ product.price }}</td>
-                    <td>
-                        {% if product.quantity > 10 %}
-                            {{ product.quantity }} in stock
+                    <td style="padding: 20px; font-size: 0.75rem; color: var(--text-muted);">{{ product.category.name|default:"Elite Exclusive" }}</td>
+                    <td style="padding: 20px; font-family: var(--font-heading); color: var(--bronze); font-size: 0.9rem;">${{ product.price }}</td>
+                    <td style="padding: 20px; font-size: 0.75rem;">
+                        {% if product.quantity > 5 %}
+                            <span style="color: var(--text-pure);">{{ product.quantity }} Units</span>
                         {% elif product.quantity > 0 %}
-                            <span style="color: var(--warning);">{{ product.quantity }} in stock</span>
+                            <span style="color: #F5A623;">{{ product.quantity }} Units (Low)</span>
                         {% else %}
-                            <span style="color: var(--danger);">Out of stock</span>
+                            <span style="color: #ef4444;">Depleted</span>
                         {% endif %}
                     </td>
-                    <td>
+                    <td style="padding: 20px;">
                         {% if product.quantity > 0 %}
-                            <span class="status-badge status-active">Active</span>
+                            <span class="status-badge" style="display: inline-block; padding: 4px 10px; font-size: 0.65rem; border-radius: 20px; background: rgba(74,222,128,0.1); color: #4ade80; text-transform: uppercase;">Active</span>
                         {% else %}
-                            <span class="status-badge status-draft" style="color: var(--danger); background: rgba(239, 68, 68, 0.1);">Out of Stock</span>
+                            <span class="status-badge" style="display: inline-block; padding: 4px 10px; font-size: 0.65rem; border-radius: 20px; background: rgba(239,68,68,0.1); color: #ef4444; text-transform: uppercase;">Suspended</span>
                         {% endif %}
                     </td>
-                    <td style="text-align: right;">
-                        <a href="{% url 'carify_app:product_detail' product.id %}" class="btn-icon" title="View"><i class="far fa-eye"></i></a>
-                        <button class="btn-icon" title="Edit"><i class="far fa-edit"></i></button>
-                        <button class="btn-icon" style="color: var(--danger);" title="Delete"><i class="far fa-trash-alt"></i></button>
+                    <td style="padding: 20px; text-align: right;">
+                        <a href="{% url 'carify_app:product_detail' product.id %}" style="color: var(--text-muted); font-size: 0.9rem; margin-right: 15px; transition: 0.3s;" onmouseover="this.style.color='var(--text-pure)'" onmouseout="this.style.color='var(--text-muted)'"><i class="far fa-eye"></i></a>
+                        <button style="background: none; border: none; color: var(--text-muted); font-size: 0.9rem; margin-right: 15px; cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='var(--bronze)'" onmouseout="this.style.color='var(--text-muted)'"><i class="far fa-edit"></i></button>
+                        <button style="background: none; border: none; color: #ef4444; font-size: 0.9rem; cursor: pointer; transition: 0.3s; opacity: 0.7;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'"><i class="far fa-trash-alt"></i></button>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="6" style="text-align: center; padding: 40px; color: var(--text-muted);">
-                        <i class="fas fa-box-open" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
-                        <p style="font-size: 1.1rem; margin-bottom: 10px;">You haven't listed any products yet.</p>
-                        <a href="{% url 'carify_app:seller_add_product' %}" class="btn btn-primary" style="margin-top: 10px;">Create First Product</a>
+                    <td colspan="6" style="text-align: center; padding: 80px 20px;">
+                        <i class="fas fa-box-open" style="font-size: 3rem; color: var(--border-color); margin-bottom: 20px; opacity: 0.5;"></i>
+                        <h3 style="font-size: 1.2rem; margin-bottom: 10px;">Asset Vault Empty</h3>
+                        <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 20px;">You have not initialized any components into the architecture.</p>
+                        <a href="{% url 'carify_app:seller_add_product' %}" class="btn btn-primary">INITIALIZE ASSET</a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -97,4 +84,8 @@
         </table>
     </div>
 </div>
+
+<style>
+    tbody tr:hover { background: rgba(255,255,255,0.02); }
+</style>
 {% endblock %}

@@ -1,55 +1,57 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Sign In | Carify{% endblock %}
+{% block title %}Sign In | CARIFY{% endblock %}
 
 {% block content %}
-<div class="section" style="background: var(--bg-surface); min-height: 80vh; display: flex; align-items: center; justify-content: center;">
-    <div class="container" style="max-width: 480px;">
-        <div style="background: var(--bg-main); border: 2px solid var(--border-strong); padding: 50px; border-radius: 4px; box-shadow: 0 40px 100px rgba(0,0,0,0.5);">
-            <div style="text-align: center; margin-bottom: 40px;">
-                <h1 style="font-size: 2.5rem; letter-spacing: -2px; margin-bottom: 10px;">SIGN IN</h1>
-                <p style="color: var(--text-muted); font-family: var(--font-heading); font-weight: 700; font-size: 0.8rem; letter-spacing: 2px;">ACCESS THE TERMINAL</p>
+<div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 140px 20px 100px;">
+    <div class="glass-panel" style="width: 100%; max-width: 500px; padding: 50px 40px; border-radius: 4px;">
+        <span class="font-heading" style="color: var(--bronze); font-weight: 800; letter-spacing: 0.2rem; font-size: 0.7rem; display: block; margin-bottom: 10px;">SECURE ACCESS</span>
+        <h1 class="font-heading" style="margin-bottom: 15px; font-size: 2.5rem; letter-spacing: -1px;">SIGN IN</h1>
+        <p class="font-serif" style="color: var(--text-muted); font-size: 1rem; margin-bottom: 40px; font-style: italic;">
+            Access the terminal to manage your preservation protocol.
+        </p>
+
+        <form method="post" action="">
+            {% csrf_token %}
+            
+            {% if form.errors %}
+                <div style="background: rgba(220, 38, 38, 0.1); border: 1px solid #dc2626; color: #ef4444; padding: 15px; border-radius: 4px; margin-bottom: 25px; font-size: 0.9rem;">
+                    Authentication failed. Check credentials and retry.
+                </div>
+            {% endif %}
+
+            <div style="margin-bottom: 25px;">
+                <label for="id_username" class="font-heading" style="font-size: 0.65rem; letter-spacing: 0.15em; color: var(--text-pure); display: block; margin-bottom: 10px;">USERNAME / IDENTITY</label>
+                <input type="text" name="username" id="id_username" autofocus required 
+                       style="width: 100%; background: rgba(255,255,255,0.02); border: 1px solid var(--border-subtle); color: var(--text-pure); padding: 15px 20px; font-family: 'Inter', sans-serif; transition: 0.3s; outline: none;"
+                       onfocus="this.style.borderColor='var(--bronze)'" 
+                       onblur="this.style.borderColor='var(--border-subtle)'">
             </div>
 
-            <form method="post" action="">
-                {% csrf_token %}
-                
-                {% if form.errors %}
-                    <div style="background: rgba(220, 38, 38, 0.1); border: 1px solid #dc2626; color: #ef4444; padding: 15px; border-radius: 4px; margin-bottom: 25px; font-size: 0.9rem;">
-                        Authentication failed. Check credentials and retry.
-                    </div>
-                {% endif %}
-
-                <div style="margin-bottom: 25px;">
-                    <label for="id_username" style="display: block; font-family: var(--font-heading); font-weight: 700; font-size: 0.8rem; letter-spacing: 1px; margin-bottom: 10px; color: var(--text-muted);">USERNAME / IDENTITY</label>
-                    <input type="text" name="username" id="id_username" autofocus required 
-                           style="width: 100%; padding: 15px; background: var(--bg-surface); border: 1px solid var(--border-strong); color: var(--text-main); font-family: var(--font-body); border-radius: 4px; outline: none; transition: border-color 0.3s;"
-                           onfocus="this.style.borderColor='var(--accent)'" 
-                           onblur="this.style.borderColor='var(--border-strong)'">
-                </div>
-
-                <div style="margin-bottom: 35px;">
-                    <label for="id_password" style="display: block; font-family: var(--font-heading); font-weight: 700; font-size: 0.8rem; letter-spacing: 1px; margin-bottom: 10px; color: var(--text-muted);">PASSWORD</label>
-                    <input type="password" name="password" id="id_password" required
-                           style="width: 100%; padding: 15px; background: var(--bg-surface); border: 1px solid var(--border-strong); color: var(--text-main); font-family: var(--font-body); border-radius: 4px; outline: none; transition: border-color 0.3s;"
-                           onfocus="this.style.borderColor='var(--accent)'" 
-                           onblur="this.style.borderColor='var(--border-strong)'">
-                </div>
-
-                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 18px; font-size: 1rem;">
-                    INITIALIZE LOGIN
-                </button>
-
-                <input type="hidden" name="next" value="{{ next }}">
-            </form>
-
-            <div style="margin-top: 40px; text-align: center; border-top: 1px solid var(--border-strong); padding-top: 30px;">
-                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px;">New to the platform?</p>
-                <a href="{% url 'carify_app:seller_register' %}" style="color: var(--accent); font-family: var(--font-heading); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px;">
-                    Register as Seller <i class="fas fa-arrow-right"></i>
-                </a>
+            <div style="margin-bottom: 35px;">
+                <label for="id_password" class="font-heading" style="font-size: 0.65rem; letter-spacing: 0.15em; color: var(--text-pure); display: block; margin-bottom: 10px;">PASSWORD</label>
+                <input type="password" name="password" id="id_password" required
+                       style="width: 100%; background: rgba(255,255,255,0.02); border: 1px solid var(--border-subtle); color: var(--text-pure); padding: 15px 20px; font-family: 'Inter', sans-serif; transition: 0.3s; outline: none;"
+                       onfocus="this.style.borderColor='var(--bronze)'" 
+                       onblur="this.style.borderColor='var(--border-subtle)'">
             </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; height: 60px;">
+                INITIALIZE LOGIN
+            </button>
+
+            <input type="hidden" name="next" value="{{ next }}">
+        </form>
+
+        <div style="margin-top: 40px; text-align: center; border-top: 1px solid var(--border-subtle); padding-top: 30px;">
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 15px;">New to the platform?</p>
+            <a href="{% url 'carify_app:seller_register' %}" class="font-heading" style="color: var(--text-elegant); font-weight: 500; text-decoration: underline; font-size: 0.75rem; letter-spacing: 0.1em; display: inline-block; margin: 0 10px;">
+                BECOME A PARTNER
+            </a>
+            <a href="{% url 'carify_app:buyer_register' %}" class="font-heading" style="color: var(--text-elegant); font-weight: 500; text-decoration: underline; font-size: 0.75rem; letter-spacing: 0.1em; display: inline-block; margin: 0 10px;">
+                CREATE CLIENT ID
+            </a>
         </div>
     </div>
 </div>

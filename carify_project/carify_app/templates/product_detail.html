@@ -1,81 +1,167 @@
 {% extends 'base.html' %}
-{% block title %}{{ product.name }} | Carify{% endblock %}
+{% load static %}
+
+{% block title %}{{ product.name }} | CARIFY{% endblock %}
 
 {% block content %}
-<div class="section container">
-    <a href="{% url 'carify_app:product_list' %}" style="display: inline-block; margin-bottom: 20px; font-family: var(--font-heading); font-weight: 600; text-transform: uppercase;">
-        <i class="fas fa-arrow-left"></i> BACK TO CATALOG
+<div class="container" style="padding-top: 140px; padding-bottom: 100px; max-width: var(--container-max);">
+    <!-- BREADCRUMB -->
+    <a href="{% url 'carify_app:product_list' %}" class="font-heading" style="display: inline-flex; align-items: center; gap: 12px; font-size: 0.65rem; color: var(--text-muted); text-decoration: none; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 40px;">
+        <i class="fas fa-arrow-left-long"></i> BACK TO COLLECTION
     </a>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px;">
-        <!-- Left: Image Gallery -->
-        <div style="border: 2px solid var(--border-strong); background: var(--bg-dark);">
-            {% if product.image %}
-                <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; height: auto; object-fit: contain;">
-            {% elif product.media.exists %}
-                {% for media in product.media.all %}
-                    {% if media.media_type == 'image' and forloop.first %}
-                        <img src="{{ media.image.url }}" alt="{{ product.name }}" style="width: 100%; height: auto; object-fit: contain;">
-                    {% endif %}
-                {% endfor %}
-            {% else %}
-                <img src="https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&q=80&w=800" alt="Placeholder" style="width: 100%; height: auto; object-fit: contain;">
-            {% endif %}
+    <div class="shopify-product-grid">
+        <!-- GALLERY MODULE (Shopify Style) -->
+        <div class="gallery-wrapper" data-appear>
+            <div id="mainImageContainer" style="position: relative; overflow: hidden; background: var(--obsidian); aspect-ratio: 1/1; max-height: 450px; border: 1px solid var(--border-subtle); border-radius: 4px;">
+                <img id="mainImage" src="{{ product.first_media_image_url|default:'https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&q=80&w=800' }}" 
+                     alt="{{ product.name }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s var(--transition-premium); cursor: zoom-in;">
+            </div>
             
-            {% if product.media.count > 1 %}
-            <div style="display: flex; gap: 10px; padding: 10px; border-top: 2px solid var(--border-strong); background: var(--bg-primary);">
+            <div class="thumbnail-strip" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 15px;">
                 {% for media in product.media.all %}
                     {% if media.media_type == 'image' %}
-                        <img src="{{ media.image.url }}" alt="Thumbnail" style="width: 80px; height: 80px; object-fit: cover; border: 2px solid var(--border-strong); cursor: pointer;">
+                    <div class="thumb {% if forloop.first %}active{% endif %}" data-full="{{ media.image.url }}" style="cursor: pointer; aspect-ratio: 1/1; overflow: hidden; background: var(--obsidian);">
+                        <img src="{{ media.image.url }}" alt="Specimen {{ forloop.counter }}" style="width: 100%; height: 100%; object-fit: cover; transition: 0.4s; opacity: 0.6;">
+                    </div>
                     {% endif %}
                 {% endfor %}
             </div>
-            {% endif %}
         </div>
 
-        <!-- Right: Product Info -->
-        <div>
-            <div style="font-family: var(--font-heading); font-weight: 700; color: var(--accent-electric); text-transform: uppercase; margin-bottom: 15px; display: inline-block; background: var(--bg-dark); padding: 4px 12px; font-size: 0.8rem;">
-                {{ product.category.name|default:"Performance Part" }}
-            </div>
-            
-            <h1 style="font-size: 3rem; margin-bottom: 20px;">{{ product.name }}</h1>
-            
-            <div style="font-family: var(--font-heading); font-size: 2.5rem; font-weight: 700; margin-bottom: 30px;">
-                ${{ product.price }}
-            </div>
-            
-            <p style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 40px; line-height: 1.8;">
-                {{ product.description }}
-            </p>
-            
-            <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 40px;">
-                <div style="font-family: var(--font-heading); font-weight: 600;">STATUS:</div>
-                {% if product.quantity > 5 %}
-                    <div style="color: #10B981; font-weight: 600;"><i class="fas fa-check-circle"></i> In Stock Ready to Ship</div>
-                {% elif product.quantity > 0 %}
-                    <div style="color: var(--accent-electric); font-weight: 600;"><i class="fas fa-exclamation-triangle"></i> Low Stock ({{ product.quantity }} left)</div>
-                {% else %}
-                    <div style="color: #EF4444; font-weight: 600;"><i class="fas fa-times-circle"></i> Out of Stock</div>
-                {% endif %}
-            </div>
-
-            <form method="post" action="{% url 'carify_app:create_checkout' product.id %}">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 1.2rem; padding: 20px; {% if product.quantity <= 0 %}opacity: 0.5; pointer-events: none;{% endif %}">
-                    <i class="fas fa-shopping-cart" style="margin-right: 15px;"></i> SECURE CHECKOUT
-                </button>
-            </form>
-            
-            <div class="section" style="background: var(--bg-dark); border-bottom: 2px solid var(--border-strong); padding-top: 20px;">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                    <div>
-                        <div style="font-family: var(--font-heading); font-weight: 600; margin-bottom: 5px;">MANUFACTURER</div>
-                        <div style="color: var(--text-secondary);">{{ product.seller.username }}</div>
+        <!-- STICKY PURCHASE MODULE -->
+        <div class="purchase-wrapper" data-appear>
+            <div style="position: sticky; top: 120px;">
+                <div data-stagger="true">
+                    <span class="font-heading stagger-item" style="font-size: 0.7rem; letter-spacing: 0.2em; color: var(--bronze); display: block; margin-bottom: 10px;">{{ product.category.name|default:"CARIFY EXCLUSIVE" }}</span>
+                    <h1 class="font-heading stagger-item" style="font-size: clamp(2rem, 4vw, 3.5rem); margin-bottom: 20px;">{{ product.name }}</h1>
+                    
+                    <div class="stagger-item" style="font-size: 1.5rem; font-family: var(--font-heading); margin-bottom: 40px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 30px;">
+                        <span id="targetPrice" class="copper-text">${{ product.price }}</span>
                     </div>
-                    <div>
-                        <div style="font-family: var(--font-heading); font-weight: 600; margin-bottom: 5px;">PART NUMBER</div>
-                        <div style="color: var(--text-secondary);">#PRD-{{ product.id }}XX{{ product.quantity }}</div>
+
+                    <p class="font-serif stagger-item" style="font-size: 1.1rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 40px; font-style: italic;">
+                        {{ product.description|truncatewords:40|default:"A paradigm of automotive preservation." }}
+                    </p>
+
+                    <!-- SPECIFICATION SELECTION -->
+                    {% if product.variants.exists %}
+                    <div class="stagger-item" style="margin-bottom: 40px;">
+                        <h4 class="font-heading" style="font-size: 0.65rem; letter-spacing: 0.2em; color: var(--text-pure); margin-bottom: 20px;">OPTIONS</h4>
+                        <div style="display: grid; gap: 15px;">
+                            {% for variant in product.variants.all %}
+                            <label class="elite-variant-option">
+                                <input type="radio" name="variant" value="{{ variant.id }}" data-extra="{{ variant.price_extra }}" {% if forloop.first %}checked{% endif %}>
+                                <div class="elite-variant-box">
+                                    <span style="font-size: 0.8rem; font-weight: 500;">{{ variant.name }}</span>
+                                    {% if variant.price_extra > 0 %}
+                                    <span style="font-size: 0.7rem; color: var(--bronze);">+${{ variant.price_extra }}</span>
+                                    {% endif %}
+                                </div>
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- ACTION MODULE -->
+                    <div class="stagger-item" style="display: grid; grid-template-columns: 120px 1fr; gap: 20px;">
+                        <div class="elite-qty" style="border: 1px solid var(--border-subtle);">
+                            <button onclick="updateQty(-1)">-</button>
+                            <input type="number" id="qtyInput" value="1" min="1" max="{{ product.quantity }}" readonly>
+                            <button onclick="updateQty(1)">+</button>
+                        </div>
+                        <button id="addToCartBtn" class="btn btn-primary" style="height: 60px; font-size: 0.85rem;" {% if product.quantity <= 0 %}disabled{% endif %}>
+                            {% if product.quantity > 0 %}ADD TO BAG{% else %}SOLD OUT{% endif %}
+                        </button>
+                    </div>
+
+                    <!-- TECH SHEET -->
+                    <div class="stagger-item" style="margin-top: 50px; background: rgba(255,255,255,0.02); padding: 30px;">
+                        <div class="tech-row"><span>Logistics</span><span>Global Express</span></div>
+                        <div class="tech-row"><span>Authenticity</span><span>Guaranteed Original</span></div>
+                    </div>
+                </div>
+            </div>
+    </div>
+        </div>
+    </div>
+
+    <!-- COMMUNITY HUB (Amazon Parity) -->
+    <div class="community-hub section-padding" style="border-top: 1px solid var(--border-subtle); margin-top: 80px;" data-appear>
+        <div class="grid-main" style="grid-template-columns: 1fr; gap: 60px;">
+            <style>
+                @media (min-width: 992px) { .community-grid-split { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; } }
+            </style>
+            <div class="community-grid-split">
+                <!-- Q&A MODULE -->
+                <div class="qa-section">
+                    <h3 class="font-heading" style="font-size: 1.5rem; margin-bottom: 30px;">COMMUNITY Q&A</h3>
+                    {% if user.is_authenticated %}
+                    <div style="margin-bottom: 30px;">
+                        <textarea id="qaInput" rows="3" placeholder="Ask the community or seller..." style="width: 100%; background: var(--surface); border: 1px solid var(--border-subtle); color: var(--text-pure); padding: 15px; font-family: 'Inter', sans-serif; resize: none; margin-bottom: 10px;"></textarea>
+                        <button onclick="submitQA()" class="btn btn-outline" style="font-size: 0.65rem; padding: 0.75rem 1.5rem;">ASK QUESTION</button>
+                    </div>
+                    {% else %}
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 30px;"><a href="/accounts/login/" class="copper-text">Sign in</a> to ask questions.</p>
+                    {% endif %}
+                    
+                    <div id="qaList" style="display: flex; flex-direction: column; gap: 20px;">
+                        {% for q in product.questions.all %}
+                            <div class="qa-card" style="padding: 20px; background: rgba(255,255,255,0.02); border-left: 2px solid var(--bronze);">
+                                <p style="font-weight: 600; font-size: 0.9rem; margin-bottom: 10px;">Q: {{ q.question }}</p>
+                                <span style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase;">By {{ q.user.username }}</span>
+                                
+                                <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+                                    {% for a in q.answers.all %}
+                                        <div style="padding-left: 15px; border-left: 1px solid var(--border-subtle);">
+                                            <p style="font-size: 0.85rem; color: var(--text-elegant); margin-bottom: 5px;">
+                                                <strong style="color: {% if a.is_seller_response %}var(--copper){% else %}inherit{% endif %}">A:</strong> {{ a.answer }}
+                                            </p>
+                                            <span style="font-size: 0.6rem; color: var(--text-muted);">{{ a.user.username }} {% if a.is_seller_response %}(Seller){% endif %}</span>
+                                        </div>
+                                    {% empty %}
+                                        <p style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;">No answers yet.</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% empty %}
+                            <p style="font-size: 0.85rem; color: var(--text-muted);">No questions align with this specimen yet.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- REVIEWS MODULE -->
+                <div class="reviews-section">
+                    <h3 class="font-heading" style="font-size: 1.5rem; margin-bottom: 30px;">TOP REVIEWS</h3>
+                    <div id="reviewsList" style="display: flex; flex-direction: column; gap: 30px;">
+                        {% for r in product.reviews.all|dictsortreversed:"helpful_votes.count" %}
+                            <div class="review-card" style="border-bottom: 1px solid var(--border-subtle); padding-bottom: 25px;">
+                                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                                    <div>
+                                        <div style="color: var(--bronze); font-size: 0.8rem; margin-bottom: 5px;">
+                                            {% for i in "12345"|make_list %}
+                                                <i class="fa{% if forloop.counter <= r.rating %}s{% else %}r{% endif %} fa-star"></i>
+                                            {% endfor %}
+                                        </div>
+                                        <span style="font-weight: 600; font-size: 0.9rem;">{{ r.user.username }}</span>
+                                    </div>
+                                    <span style="font-size: 0.65rem; color: var(--text-muted);">{{ r.created_at|date:"M d, Y" }}</span>
+                                </div>
+                                <p style="font-size: 0.85rem; color: var(--text-elegant); line-height: 1.6; margin-bottom: 15px;">{{ r.comment }}</p>
+                                
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span style="font-size: 0.65rem; color: var(--text-muted);">{{ r.helpful_votes.count }} people found this helpful</span>
+                                    {% if user.is_authenticated %}
+                                    <button onclick="toggleHelpful({{ r.id }}, this)" class="btn btn-outline" style="padding: 0.3rem 0.6rem; font-size: 0.6rem; text-transform: uppercase; border-color: rgba(255,255,255,0.2);">
+                                        Helpful
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% empty %}
+                            <p style="font-size: 0.85rem; color: var(--text-muted);">This specimen currently has no reviews.</p>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
@@ -83,4 +169,132 @@
     </div>
 </div>
 
+<style>
+    .shopify-product-grid { display: grid; grid-template-columns: 1fr; gap: 80px; align-items: start; }
+    @media (min-width: 1024px) { .shopify-product-grid { grid-template-columns: 1.5fr 1fr; } }
+
+    .thumb.active img { opacity: 1; }
+    .thumb:hover img { opacity: 1; }
+
+    .elite-variant-option input { display: none; }
+    .elite-variant-box { padding: 20px 25px; cursor: pointer; transition: 0.4s; display: flex; justify-content: space-between; border: 1px solid var(--border-subtle); background: transparent; }
+    .elite-variant-option input:checked + .elite-variant-box { border-color: var(--text-pure); background: rgba(255,255,255,0.05); }
+
+    .elite-qty { display: flex; height: 60px; align-items: center; justify-content: space-between; padding: 0 15px; }
+    .elite-qty button { background: none; border: none; color: var(--text-pure); cursor: pointer; font-size: 1.2rem; }
+    .elite-qty input { background: none; border: none; color: white; width: 40px; text-align: center; font-family: 'Outfit', sans-serif; font-weight: 600; }
+
+    .tech-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border-subtle); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.2em; }
+    .tech-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .tech-row span:first-child { color: var(--text-muted); }
+
+    /* Zoom Effect Refined */
+    #mainImageContainer:hover #mainImage { transform: scale(1.05); }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const mainImg = document.getElementById('mainImage');
+    const basePrice = parseFloat("{{ product.price }}");
+    const priceDisplay = document.getElementById('targetPrice');
+
+    // Thumbnail Logic
+    document.querySelectorAll('.thumb').forEach(thumb => {
+        thumb.addEventListener('click', () => {
+            document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+            thumb.classList.add('active');
+            mainImg.src = thumb.dataset.full;
+        });
+    });
+
+    // Price Update Logic
+    const variantInputs = document.querySelectorAll('input[name="variant"]');
+    function updateTotalPrice() {
+        let extra = 0;
+        const selected = document.querySelector('input[name="variant"]:checked');
+        if (selected) extra = parseFloat(selected.dataset.extra);
+        priceDisplay.innerText = '$' + (basePrice + extra).toFixed(2);
+    }
+    variantInputs.forEach(input => input.addEventListener('change', updateTotalPrice));
+
+    // Cart Integration via Bridge Style
+    const addBtn = document.getElementById('addToCartBtn');
+    addBtn.addEventListener('click', () => {
+        const variantId = document.querySelector('input[name="variant"]:checked')?.value;
+        const qty = document.getElementById('qtyInput').value;
+
+        addBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> ADDING...';
+        addBtn.disabled = true;
+
+        fetch('/api/cart-items/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value },
+            body: JSON.stringify({ product_id: "{{ product.id }}", variant_id: variantId, quantity: qty })
+        })
+        .then(res => res.json())
+        .then(() => {
+            addBtn.innerHTML = '<i class="fas fa-check"></i> ADDED TO BAG';
+            if(window.CarifyBridge) window.CarifyBridge.syncState();
+            
+            // Open Cart Drawer Automatically
+            const drawer = document.getElementById('cartDrawer');
+            const overlay = document.getElementById('globalOverlay');
+            if(drawer && overlay) {
+                drawer.classList.add('active');
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+            
+            setTimeout(() => {
+                addBtn.innerHTML = 'ADD TO BAG';
+                addBtn.disabled = false;
+            }, 2000);
+        })
+        .catch(() => {
+            addBtn.innerHTML = 'ERROR';
+            addBtn.disabled = false;
+        });
+    });
+});
+
+function updateQty(delta) {
+    const input = document.getElementById('qtyInput');
+    let val = parseInt(input.value) + delta;
+    if (val < 1) val = 1;
+    if (val > parseInt(input.max)) val = parseInt(input.max);
+    input.value = val;
+}
+
+function submitQA() {
+    const input = document.getElementById('qaInput');
+    const val = input.value.trim();
+    if(!val) return;
+    
+    fetch('/api/product-questions/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value },
+        body: JSON.stringify({ product: "{{ product.id }}", question: val })
+    }).then(res => {
+        if(res.ok) window.location.reload();
+    });
+}
+
+function toggleHelpful(reviewId, btnElement) {
+    fetch(`/api/reviews/${reviewId}/toggle_helpful/`, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value }
+    })
+    .then(r => r.json())
+    .then(data => {
+        if(data.added) {
+            btnElement.style.background = 'var(--bronze)';
+            btnElement.style.color = 'white';
+        } else {
+            btnElement.style.background = 'transparent';
+            btnElement.style.color = 'var(--text-pure)';
+        }
+        btnElement.previousElementSibling.innerText = `${data.helpful_votes_count} people found this helpful`;
+    });
+}
+</script>
 {% endblock %}

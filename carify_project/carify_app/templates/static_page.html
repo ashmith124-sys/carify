@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} | CARIFY{% endblock %}
+
+{% block content %}
+<section class="section-padding" style="padding-top: 160px; min-height: 80vh;">
+    <div class="header-container" style="max-width: 800px; margin: 0 auto;">
+        <div data-appear>
+            <span class="hero-eyebrow" style="margin-bottom: 20px;">{{ subtitle }}</span>
+            <h1 style="font-size: clamp(2.5rem, 8vw, 5rem); letter-spacing: -2px; margin-bottom: 40px;">{{ title }}</h1>
+            
+            <div style="border-left: 2px solid var(--bronze); padding-left: 40px; margin-top: 60px;">
+                <p style="font-size: 1.2rem; line-height: 2; color: var(--text-elegant); font-family: var(--font-serif); font-style: italic;">
+                    {{ content }}
+                </p>
+                <p style="color: var(--text-muted); line-height: 2; margin-top: 40px;">
+                    Our commitment to excellence is reflected in every partnership, every product, and every interaction. Carify is built for the individuals who understand that the value of an automobile lies in its preservation, not just its performance.
+                </p>
+            </div>
+
+            <div style="margin-top: 80px;">
+                <a href="{% url 'carify_app:product_list' %}" class="btn btn-primary">Discover the Collection</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if(entry.isIntersecting) entry.target.classList.add('visible');
+        });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('[data-appear]').forEach(el => observer.observe(el));
+});
+</script>
+{% endblock %}

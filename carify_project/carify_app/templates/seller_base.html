@@ -23,7 +23,7 @@
     <aside class="sidebar">
         <div class="sidebar-header">
             <div class="brand-icon">C</div>
-            <div class="brand-text">CARIFY COMMAND</div>
+            <div class="brand-text">Partner Portal</div>
         </div>
         
         <nav class="nav-links">
@@ -33,19 +33,19 @@
             <a href="{% url 'carify_app:seller_products' %}" class="nav-link {% if request.resolver_match.url_name == 'seller_products' %}active{% endif %}">
                 <i class="fas fa-box-open"></i> Products
             </a>
-            <a href="#" class="nav-link">
+            <a href="{% url 'carify_app:seller_orders' %}" class="nav-link {% if request.resolver_match.url_name == 'seller_orders' %}active{% endif %}">
                 <i class="fas fa-shopping-cart"></i> Orders
             </a>
-            <a href="#" class="nav-link">
+            <a href="{% url 'carify_app:services' %}" class="nav-link">
                 <i class="fas fa-wrench"></i> Services
             </a>
-            <a href="#" class="nav-link">
+            <a href="{% url 'carify_app:seller_analytics' %}" class="nav-link {% if request.resolver_match.url_name == 'seller_analytics' %}active{% endif %}">
                 <i class="fas fa-chart-line"></i> Analytics
             </a>
         </nav>
         
-        <div style="padding: 20px 10px; border-top: 1px solid var(--border-color);">
-            <a href="#" class="nav-link">
+        <div style="padding: 20px 10px; border-top: 1px solid var(--border-subtle);">
+            <a href="{% url 'carify_app:seller_settings' %}" class="nav-link {% if request.resolver_match.url_name == 'seller_settings' %}active{% endif %}">
                 <i class="fas fa-cog"></i> Settings
             </a>
             <a href="/" class="nav-link" style="color: var(--danger);">

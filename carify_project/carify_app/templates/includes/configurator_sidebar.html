@@ -1,0 +1,80 @@
+<!-- Configurator Sidebar -->
+<div id="configSidebar" class="config-sidebar">
+    <div class="config-header">
+        <h3 class="config-title">PROTECTION CONFIGURATOR</h3>
+        <button id="closeConfig" class="btn-close-config"><i class="fas fa-times"></i></button>
+    </div>
+
+    <div class="config-body">
+        <!-- STEP 1: VEHICLE TYPE -->
+        <div class="config-section">
+            <h4 class="config-section-label">01. SELECT VEHICLE ARCHITECTURE</h4>
+            <div class="option-grid">
+                <div class="option-card active" data-type="sedan" data-multiplier="1.0">
+                    <i class="fas fa-car-side"></i>
+                    <span>SEDAN</span>
+                </div>
+                <div class="option-card" data-type="suv" data-multiplier="1.25">
+                    <i class="fas fa-car-rear"></i>
+                    <span>SUV</span>
+                </div>
+                <div class="option-card" data-type="sport" data-multiplier="1.5">
+                    <i class="fas fa-shuttle-space"></i>
+                    <span>SUPERCAR</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 2: PROTECTION TIER -->
+        <div class="config-section">
+            <h4 class="config-section-label">02. CHOOSE PRESERVATION LEVEL</h4>
+            <div class="tier-list">
+                <div class="tier-card active" data-base="199">
+                    <div class="tier-info">
+                        <h5>ESSENTIAL</h5>
+                        <p>Chemical Decontamination + 1-Year Sealant</p>
+                    </div>
+                    <div class="tier-price">$199</div>
+                </div>
+                <div class="tier-card" data-base="899">
+                    <div class="tier-info">
+                        <h5>ELITE CERAMIC</h5>
+                        <p>Stage 1 Polish + 5-Year 9H Ceramic</p>
+                    </div>
+                    <div class="tier-price">$899</div>
+                </div>
+                <div class="tier-card" data-base="2499">
+                    <div class="tier-info">
+                        <h5>ULTIMATE PPF</h5>
+                        <p>Full Front Wrap + Ceramic Infused Film</p>
+                    </div>
+                    <div class="tier-price">$2499</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 3: SMART AI RECOMMENDATION -->
+        <div class="config-section">
+            <div class="ai-box">
+                <div style="display: flex; gap: 15px; align-items: flex-start;">
+                    <div class="ai-icon"><i class="fas fa-microchip"></i></div>
+                    <div>
+                        <h5 style="margin-bottom: 5px;">AI ASSISTANT</h5>
+                        <p style="font-size: 0.75rem; color: var(--text-muted);">Unsure? Describe your driving habits and we'll recommend the ideal tier.</p>
+                    </div>
+                </div>
+                <button class="btn btn-ghost" style="width: 100%; margin-top: 15px; padding: 10px;">ANALYZE MY VEHICLE</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="config-footer">
+        <div class="total-row">
+            <span>ESTIMATED INVESTMENT</span>
+            <span id="displayTotal" class="total-price">$199</span>
+        </div>
+        <button class="btn btn-primary" style="width: 100%;">REQUEST APPOINTMENT</button>
+    </div>
+</div>
+
+<div id="configOverlay" class="config-overlay"></div>

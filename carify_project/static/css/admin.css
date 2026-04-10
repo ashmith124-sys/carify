@@ -1,30 +1,30 @@
 /* Custom admin styles for Carify */
 .admin-interface .sidebar {
-    background: linear-gradient(135deg, #231f20 0%, #333333 100%);
+    background: linear-gradient(135deg, #0c0806 0%, #1a120f 100%);
 }
 
 .admin-interface .main-content {
-    background: #231f20;
+    background: #0c0806;
     color: #e6e7e8;
 }
 
 .admin-interface .card {
-    background: #333333;
+    background: #1a120f;
     color: #e6e7e8;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    border: 1px solid #444444;
+    border: 1px solid #2c1e18;
 }
 
 .admin-interface .btn-primary {
-    background: linear-gradient(135deg, #f3811f 0%, #e67e22 100%);
+    background: linear-gradient(135deg, #8d4004 0%, #e67e22 100%);
     border: none;
     border-radius: 8px;
     color: white;
 }
 
 .admin-interface .btn-primary:hover {
-    background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+    background: linear-gradient(135deg, #e67e22 0%, #8d4004 100%);
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
 }

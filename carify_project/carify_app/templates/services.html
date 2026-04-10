@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Service Protocols | CARIFY{% endblock %}
+
+{% block content %}
+
+<!-- CINEMATIC SERVICE HERO -->
+<section class="section-padding" style="padding-top: 160px; position: relative; overflow: hidden;">
+    <div style="position: absolute; top: -100px; left: -100px; width: 400px; height: 400px; background: var(--copper); filter: blur(200px); opacity: 0.1;"></div>
+    <div class="container" style="text-align: center; max-width: 900px;" data-appear>
+        <span class="hero-eyebrow">Service Protocols</span>
+        <h1 class="font-heading" style="font-size: clamp(2.5rem, 8vw, 4.5rem); letter-spacing: -3px; margin-bottom: 25px;">PROFESSIONAL CARE</h1>
+        <p class="font-serif" style="font-size: 1.25rem; font-style: italic; color: var(--text-muted); line-height: 1.8;">
+            From precision protection to elite performance builds, our network of authorized specialists delivers preservation services that match your standards.
+        </p>
+    </div>
+</section>
+
+<!-- MAIN SERVICE MODULES -->
+<section class="section-padding" style="border-top: 1px solid var(--border-subtle); background: var(--surface);">
+    <div class="container">
+        <div class="grid-main" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px;" data-stagger="true" data-appear>
+            
+            <!-- Protocol 1 -->
+            <div class="glass-panel stagger-item" style="border-radius: 0; padding: 0; overflow: hidden;">
+                <div style="height: 240px; background: var(--obsidian); display: flex; align-items: center; justify-content: center; position: relative;">
+                    <img src="{% static 'images/hero_ceramic.png' %}" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.3;">
+                    <i class="fa-solid fa-spray-can-sparkles" style="font-size: 3rem; color: var(--bronze); position: relative; z-index: 1;"></i>
+                </div>
+                <div style="padding: 40px;">
+                    <h3 class="font-heading" style="font-size: 1.15rem; margin-bottom: 15px; letter-spacing: 0.1em;">CERAMIC COATING</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 30px;">
+                        Multi-layer nano-ceramic protection shielding your acquisition from environmental elements. engineered for extreme depth and clarity.
+                    </p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 25px;">
+                        <span class="copper-text" style="font-weight: 700; font-family: var(--font-heading);">FROM $299</span>
+                        <a href="{% url 'carify_app:product_list' %}" class="btn btn-outline" style="padding: 10px 20px; font-size: 0.65rem;">DISCOVER</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Protocol 2 -->
+            <div class="glass-panel stagger-item" style="border-radius: 0; padding: 0; overflow: hidden; border-color: var(--border-elegant);">
+                <div style="height: 240px; background: var(--obsidian); display: flex; align-items: center; justify-content: center; position: relative;">
+                    <img src="{% static 'images/protection_ppf.png' %}" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.4;">
+                    <i class="fa-solid fa-wrench" style="font-size: 3rem; color: var(--bronze); position: relative; z-index: 1;"></i>
+                </div>
+                <div style="padding: 40px;">
+                    <span class="font-heading" style="font-size: 0.55rem; color: var(--bronze); border: 1px solid var(--bronze); padding: 4px 10px; border-radius: 0; margin-bottom: 15px; display: inline-block; letter-spacing: 0.2em;">ELITE STATUS</span>
+                    <h3 class="font-heading" style="font-size: 1.15rem; margin-bottom: 15px; letter-spacing: 0.1em;">PERFORMANCE TUNING</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 30px;">
+                        ECU remapping and complete mechanical builds by certified specialists. Unlocking the true potential of your vehicle.
+                    </p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 25px;">
+                        <span class="copper-text" style="font-weight: 700; font-family: var(--font-heading);">FROM $499</span>
+                        <a href="{% url 'carify_app:product_list' %}" class="btn btn-outline" style="padding: 10px 20px; font-size: 0.65rem;">DISCOVER</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Protocol 3 -->
+            <div class="glass-panel stagger-item" style="border-radius: 0; padding: 0; overflow: hidden;">
+                <div style="height: 240px; background: var(--obsidian); display: flex; align-items: center; justify-content: center; position: relative;">
+                    <img src="https://images.unsplash.com/photo-1621359983321-3957bd9cc2bc?auto=format&fit=crop&q=80&w=1000" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.3; filter: grayscale(1);">
+                    <i class="fa-solid fa-car" style="font-size: 3rem; color: var(--bronze); position: relative; z-index: 1;"></i>
+                </div>
+                <div style="padding: 40px;">
+                    <h3 class="font-heading" style="font-size: 1.15rem; margin-bottom: 15px; letter-spacing: 0.1em;">FULL DETAILING</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 30px;">
+                        Paint correction and interior transformation. Our most comprehensive preservation protocol for the elite collector.
+                    </p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 25px;">
+                        <span class="copper-text" style="font-weight: 700; font-family: var(--font-heading);">FROM $199</span>
+                        <a href="{% url 'carify_app:product_list' %}" class="btn btn-outline" style="padding: 10px 20px; font-size: 0.65rem;">DISCOVER</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- EXTENDED SERVICES -->
+<section class="section-padding">
+    <div class="container">
+        <div style="text-align: center; margin-bottom: 80px;" data-appear>
+            <span class="hero-eyebrow">Extended Protocols</span>
+            <h2 class="font-heading" style="font-size: 2.25rem;">CURATED SOLUTIONS</h2>
+        </div>
+
+        <div class="grid-main" style="grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 30px;" data-stagger="true" data-appear>
+            <div class="glass-panel stagger-item" style="display: flex; align-items: center; gap: 30px; padding: 30px; border-radius: 0;">
+                <div style="min-width: 70px; height: 70px; background: var(--obsidian); border: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-solid fa-film" style="font-size: 1.5rem; color: var(--bronze);"></i>
+                </div>
+                <div>
+                    <h4 class="font-heading" style="font-size: 0.9rem; margin-bottom: 8px; letter-spacing: 0.1em;">PPF (Paint Protection Film)</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.6;">Self-healing thermoplastic film absorbing rock chips and scratch damage.</p>
+                </div>
+            </div>
+            <div class="glass-panel stagger-item" style="display: flex; align-items: center; gap: 30px; padding: 30px; border-radius: 0;">
+                <div style="min-width: 70px; height: 70px; background: var(--obsidian); border: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-solid fa-palette" style="font-size: 1.5rem; color: var(--bronze);"></i>
+                </div>
+                <div>
+                    <h4 class="font-heading" style="font-size: 0.9rem; margin-bottom: 8px; letter-spacing: 0.1em;">Custom Wrapping</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.6;">Full body vinyl wraps in bespoke finishes. Reversible and paint-safe.</p>
+                </div>
+            </div>
+            <div class="glass-panel stagger-item" style="display: flex; align-items: center; gap: 30px; padding: 30px; border-radius: 0;">
+                <div style="min-width: 70px; height: 70px; background: var(--obsidian); border: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-solid fa-gears" style="font-size: 1.5rem; color: var(--bronze);"></i>
+                </div>
+                <div>
+                    <h4 class="font-heading" style="font-size: 0.9rem; margin-bottom: 8px; letter-spacing: 0.1em;">Suspension Precision</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.6;">Full air suspension setups and precision 4-wheel technical alignment.</p>
+                </div>
+            </div>
+            <div class="glass-panel stagger-item" style="display: flex; align-items: center; gap: 30px; padding: 30px; border-radius: 0;">
+                <div style="min-width: 70px; height: 70px; background: var(--obsidian); border: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-solid fa-screwdriver-wrench" style="font-size: 1.5rem; color: var(--bronze);"></i>
+                </div>
+                <div>
+                    <h4 class="font-heading" style="font-size: 0.9rem; margin-bottom: 8px; letter-spacing: 0.1em;">Maintenance Protocol</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.6;">Scheduled servicing and technical fluid flushes by master technicians.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CALL TO ACTION -->
+<section class="section-padding" style="border-top: 1px solid var(--border-subtle); background: radial-gradient(circle at center, rgba(155, 90, 43, 0.08) 0%, transparent 70%);">
+    <div class="container" style="text-align: center; max-width: 700px;" data-appear>
+        <h2 class="font-heading" style="font-size: 2.5rem; margin-bottom: 20px;">INITIATE SESSISON</h2>
+        <p class="font-serif" style="font-size: 1.15rem; color: var(--text-muted); margin-bottom: 50px; line-height: 1.8;">
+            Connect with our global network of authorized service specialists and secure your preservation appointment.
+        </p>
+        <div style="display: flex; gap: 20px; justify-content: center;">
+            <a href="{% url 'carify_app:product_list' %}" class="btn btn-primary" style="padding: 0 40px; height: 60px;">BROWSE SOLUTIONS</a>
+            <a href="{% url 'carify_app:seller_register' %}" class="btn btn-outline" style="padding: 0 40px; height: 60px;">JOIN NETWORK</a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% endblock %}

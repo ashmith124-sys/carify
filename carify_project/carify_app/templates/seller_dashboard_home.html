@@ -14,17 +14,17 @@
 <div class="dashboard-grid">
     <div class="stat-card">
         <div class="stat-title">Total Revenue</div>
-        <div class="stat-value">$12,450.00</div>
+        <div class="stat-value">${{ total_revenue|floatformat:2 }}</div>
         <div class="stat-change positive">
-            <i class="fas fa-arrow-up"></i> 14.5% from last month
+            <i class="fas fa-arrow-up"></i> Generated from verified orders
         </div>
     </div>
     
     <div class="stat-card">
         <div class="stat-title">Total Orders</div>
-        <div class="stat-value">150</div>
+        <div class="stat-value">{{ total_orders }}</div>
         <div class="stat-change positive">
-            <i class="fas fa-arrow-up"></i> 5.2% from last month
+            <i class="fas fa-check"></i> Across all components
         </div>
     </div>
     
@@ -38,9 +38,9 @@
     
     <div class="stat-card">
         <div class="stat-title">Low Stock Items</div>
-        <div class="stat-value" style="color: var(--warning);">3</div>
-        <div class="stat-change negative">
-            <i class="fas fa-exclamation-triangle"></i> Requires attention
+        <div class="stat-value" style="color: {% if low_stock_count > 0 %}var(--warning){% else %}var(--success){% endif %};">{{ low_stock_count }}</div>
+        <div class="stat-change {% if low_stock_count > 0 %}negative{% endif %}">
+            <i class="fas fa-exclamation-triangle"></i> Action required
         </div>
     </div>
 </div>
@@ -65,24 +65,24 @@
             <h2 class="section-title">Recent Orders</h2>
         </div>
         <div style="display: flex; flex-direction: column; gap: 15px;">
-            {% for item in request.user.order_set.all|slice:":4" %}
+            {% for item in recent_orders %}
             <div style="display: flex; justify-content: space-between; padding-bottom: 15px; border-bottom: 1px solid var(--border-color);">
                 <div>
-                    <div style="font-weight: 500;">Order #{{ item.id }}</div>
-                    <div style="font-size: 0.8rem; color: var(--text-muted);">{{ item.created_at|timesince }} ago</div>
+                    <div style="font-weight: 500; font-size: 0.85rem;">{{ item.product.name|truncatechars:20 }}</div>
+                    <div style="font-size: 0.7rem; color: var(--text-muted);">#ORD-{{ item.order.id }} • {{ item.order.created_at|timesince }} ago</div>
                 </div>
                 <div style="text-align: right;">
-                    <div style="font-weight: 600; color: var(--success);">${{ item.total_amount }}</div>
-                    <div class="status-badge status-active" style="display: inline-block; padding: 2px 8px; font-size: 0.7rem; margin-top: 5px;">{{ item.get_status_display }}</div>
+                    <div style="font-weight: 600; color: var(--success); font-size: 0.9rem;">${{ item.price }}</div>
+                    <div class="status-badge" style="display: inline-block; padding: 2px 8px; font-size: 0.6rem; margin-top: 5px; background: rgba(255,255,255,0.05);">{{ item.order.status|upper }}</div>
                 </div>
             </div>
             {% empty %}
-            <div style="text-align: center; color: var(--text-muted); padding: 20px;">
-                <i class="fas fa-box-open" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i>
-                <p>No recent orders</p>
+            <div style="text-align: center; color: var(--text-muted); padding: 40px 0;">
+                <i class="fas fa-box-open" style="font-size: 1.5rem; margin-bottom: 10px; opacity: 0.3;"></i>
+                <p style="font-size: 0.7rem;">No recent orders detected</p>
             </div>
             {% endfor %}
-            <a href="#" style="color: var(--accent-primary); text-decoration: none; font-size: 0.9rem; text-align: center; margin-top: 10px;">View All Orders</a>
+            <a href="{% url 'carify_app:seller_products' %}" style="color: var(--accent-primary); text-decoration: none; font-size: 0.8rem; text-align: center; margin-top: 20px; text-transform: uppercase; letter-spacing: 0.1em;">Manage All Assets</a>
         </div>
     </div>
 </div>
@@ -90,30 +90,34 @@
 
 {% block extra_js %}
 <script>
-    // Initialize Chart.js with dummy data for sales
+    // Initialize Chart.js with real financial data
     const ctx = document.getElementById('revenueChart').getContext('2d');
     
     // Gradient fill
     let gradient = ctx.createLinearGradient(0, 0, 0, 400);
-    gradient.addColorStop(0, 'rgba(99, 102, 241, 0.5)'); // primary accent
-    gradient.addColorStop(1, 'rgba(99, 102, 241, 0.0)');
+    gradient.addColorStop(0, 'rgba(184, 115, 51, 0.4)'); // Bronze gradient top
+    gradient.addColorStop(1, 'rgba(184, 115, 51, 0.0)'); // fade out
     
+    // Receive JSON context from backend
+    const chartLabels = {{ chart_labels|safe }};
+    const chartData = {{ chart_data|safe }};
+
     const revenueChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            labels: chartLabels,
             datasets: [{
                 label: 'Revenue ($)',
-                data: [1200, 1900, 1500, 2200, 1800, 3100, 2800],
-                borderColor: '#6366F1', // primary accent
+                data: chartData,
+                borderColor: '#b87333', // Copper accent
                 backgroundColor: gradient,
                 borderWidth: 2,
-                pointBackgroundColor: '#EC4899', // secondary accent
+                pointBackgroundColor: '#b87333',
                 pointBorderColor: '#fff',
                 pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: '#EC4899',
+                pointHoverBorderColor: '#b87333',
                 fill: true,
-                tension: 0.4 // Smooth curves
+                tension: 0.4
             }]
         },
         options: {
@@ -133,6 +137,7 @@
             },
             scales: {
                 y: {
+                    beginAtZero: true,
                     grid: { color: 'rgba(255, 255, 255, 0.05)', borderDash: [5, 5] },
                     ticks: { color: '#9CA3AF' }
                 },

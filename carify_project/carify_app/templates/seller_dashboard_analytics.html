@@ -1,0 +1,106 @@
+{% extends 'seller_base.html' %}
+{% block title %}Acquisition Analytics | Carify Partner{% endblock %}
+
+{% block content %}
+<div class="section-header">
+    <h1 class="section-title">Performance Analytics</h1>
+</div>
+
+<div class="dashboard-grid" style="grid-template-columns: repeat(3, 1fr);">
+    <div class="stat-card">
+        <span class="stat-title">GROSS REVENUE</span>
+        <div class="stat-value copper-text">${{ total_revenue|floatformat:2 }}</div>
+        <div class="stat-change positive">LIFETIME</div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-title">FULFILLMENTS</span>
+        <div class="stat-value">{{ total_orders }}</div>
+        <div class="stat-change positive">SECURED</div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-title">AVG ORDER VALUE</span>
+        <div class="stat-value">${{ aov|floatformat:2 }}</div>
+        <div class="stat-change"><i class="fas fa-minus"></i> Stable</div>
+    </div>
+</div>
+
+<div class="content-section" style="margin-top: 40px; display: grid; grid-template-columns: 2fr 1fr; gap: 30px;">
+    <!-- CHART MODULE -->
+    <div>
+        <h2 class="section-title">30-Day Growth Trajectory</h2>
+        <div style="height: 350px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-subtle); padding: 20px; border-radius: 4px;">
+            <canvas id="revenueChart"></canvas>
+        </div>
+    </div>
+
+    <!-- TOP PERFORMERS -->
+    <div>
+        <h2 class="section-title">Top Specimens</h2>
+        <div style="background: rgba(0,0,0,0.2); border: 1px solid var(--border-subtle); padding: 20px; border-radius: 4px; min-height: 350px;">
+            {% for item in top_products %}
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <div style="display: flex; flex-direction: column;">
+                        <span class="font-heading" style="font-size: 0.8rem; letter-spacing: 0.1em; color: var(--text-pure);">{{ item.product__name|truncatechars:20 }}</span>
+                        <span style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase;">{{ item.qty_sold }} Units Dispatched</span>
+                    </div>
+                    <span class="font-heading copper-text" style="font-size: 0.85rem;">${{ item.rev|floatformat:2 }}</span>
+                </div>
+            {% empty %}
+                <p style="color: var(--text-muted); font-size: 0.8rem; font-style: italic; text-align: center; margin-top: 40px;">No metrics recorded yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('revenueChart').getContext('2d');
+    
+    // Create Gradient
+    let gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(215, 126, 44, 0.5)'); // Copper
+    gradient.addColorStop(1, 'rgba(215, 126, 44, 0.0)');
+    
+    const rawLabels = JSON.parse('{{ chart_labels|escapejs }}');
+    const rawData = JSON.parse('{{ chart_data|escapejs }}');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: rawLabels,
+            datasets: [{
+                label: 'Gross Revenue ($)',
+                data: rawData,
+                borderColor: '#d77e2c',
+                backgroundColor: gradient,
+                borderWidth: 2,
+                pointBackgroundColor: '#121212',
+                pointBorderColor: '#d77e2c',
+                pointHoverBackgroundColor: '#fff',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                    ticks: { color: '#a1a1aa', font: { family: 'Outfit', size: 10 } }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { color: '#a1a1aa', font: { family: 'Outfit', size: 10 } }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

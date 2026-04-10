@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="section" style="padding: 100px 0;">
+    <div class="container tracking-wrapper" style="max-width: 900px;">
+        <span style="color: var(--electric-blue); font-weight: 800; letter-spacing: 0.3em; font-size: 0.65rem; font-family: var(--font-mono);">SYSTEM_TRACKING_ACTIVE</span>
+        <h1 style="font-size: 4rem; margin: 15px 0 10px; letter-spacing: -3px;">ORDER_PROGRESS</h1>
+        <p style="color: var(--text-muted); margin-bottom: 60px; font-size: 0.9rem;">Monitor the logistical status of your precision components in real-time.</p>
+
+        <!-- SEARCH INTERFACE -->
+        <div class="glass-panel" style="padding: 30px; margin-bottom: 60px;">
+            <form method="GET" style="display: flex; gap: 15px;">
+                <input type="text" name="tracking_id" value="{{ query|default:'' }}" 
+                       placeholder="INPUT_TRACKING_HASH (e.g., CA-2024-XXXX)" 
+                       class="form-input" style="flex: 1; height: 60px; font-family: var(--font-mono); font-size: 0.8rem;">
+                <button type="submit" class="btn btn-primary" style="height: 60px; padding: 0 40px; font-size: 0.8rem; letter-spacing: 0.1em;">LOCATE_ASSET</button>
+            </form>
+        </div>
+
+        {% if order %}
+        <div class="order-status-card glass-panel" style="padding: 60px;">
+            <div class="tracking-meta" style="display: flex; justify-content: space-between; margin-bottom: 80px; border-bottom: 1px solid var(--border); padding-bottom: 30px;">
+                <div class="meta-item">
+                    <span style="font-size: 0.6rem; color: var(--text-muted); font-family: var(--font-mono); display: block; margin-bottom: 5px;">ASSET_ID</span>
+                    <strong style="font-size: 1.2rem; letter-spacing: 1px;">#{{ order.tracking_id|default:order.id|upper }}</strong>
+                </div>
+                <div class="meta-item text-right">
+                    <span style="font-size: 0.6rem; color: var(--text-muted); font-family: var(--font-mono); display: block; margin-bottom: 5px;">ESTIMATED_ARRIVAL</span>
+                    <strong style="font-size: 1.2rem;">{{ order.created_at|date:"M d, Y" }}</strong>
+                </div>
+            </div>
+
+            <!-- AWS/AMAZON STYLE PROGRESS BAR -->
+            <div class="tracking-pipeline">
+                <div class="pipeline-bar">
+                    <div class="pipeline-progress" id="progressFill"></div>
+                </div>
+                
+                <div class="pipeline-steps">
+                    {% with status=order.status|lower %}
+                    <div class="step {% if status == 'pending' or status == 'paid' or status == 'packed' or status == 'shipped' or status == 'out_for_delivery' or status == 'delivered' %}active{% endif %}">
+                        <div class="step-blob"></div>
+                        <span class="step-label">ORDERED</span>
+                    </div>
+                    <div class="step {% if status == 'packed' or status == 'shipped' or status == 'out_for_delivery' or status == 'delivered' %}active{% endif %}">
+                        <div class="step-blob"></div>
+                        <span class="step-label">PACKED</span>
+                    </div>
+                    <div class="step {% if status == 'shipped' or status == 'out_for_delivery' or status == 'delivered' %}active{% endif %}">
+                        <div class="step-blob"></div>
+                        <span class="step-label">SHIPPED</span>
+                    </div>
+                    <div class="step {% if status == 'out_for_delivery' or status == 'delivered' %}active{% endif %}">
+                        <div class="step-blob"></div>
+                        <span class="step-label">OUT_FOR_DELIVERY</span>
+                    </div>
+                    <div class="step {% if status == 'delivered' %}active{% endif %}">
+                        <div class="step-blob"></div>
+                        <span class="step-label">DELIVERED</span>
+                    </div>
+                    {% endwith %}
+                </div>
+            </div>
+
+            <!-- SHIPMENT LOGS -->
+            <div class="status-logs" style="margin-top: 100px;">
+                <h4 style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--electric-blue); margin-bottom: 30px;">SHIPMENT_LOG_FILES</h4>
+                
+                <div class="log-entry" style="display: flex; gap: 30px; margin-bottom: 25px; border-left: 1px solid var(--border); padding-left: 20px;">
+                    <div class="log-time" style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-muted); width: 120px;">{{ order.updated_at|date:"H:i T" }}</div>
+                    <div class="log-content">
+                        <div style="font-weight: 800; font-size: 0.8rem; margin-bottom: 5px;">STATUS: {{ order.get_status_display|default:order.status|upper }}</div>
+                        <p style="font-size: 0.75rem; color: var(--text-muted);">Package has successfully entered the [{{ order.status|upper }}] phase at our regional logistics hub.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% elif query %}
+        <div class="glass-panel" style="padding: 60px; text-align: center; border-color: rgba(231, 76, 60, 0.3);">
+            <i class="fas fa-exclamation-triangle" style="font-size: 2rem; color: #e74c3c; margin-bottom: 20px;"></i>
+            <h4 style="margin-bottom: 15px;">ASSET_NOT_FOUND</h4>
+            <p style="color: var(--text-muted); font-size: 0.8rem;">The tracking ID "<strong>{{ query }}</strong>" returned no search hits in our secure database.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+.tracking-pipeline {
+    position: relative;
+    padding: 0 40px;
+}
+
+.pipeline-bar {
+    position: absolute;
+    top: 5px;
+    left: 45px;
+    right: 45px;
+    height: 1px;
+    background: var(--border);
+    z-index: 1;
+}
+
+.pipeline-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: var(--electric-blue);
+    width: 0%; /* Dynamic based on status */
+    transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 0 15px var(--electric-blue);
+}
+
+.pipeline-steps {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    z-index: 2;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    opacity: 0.3;
+    transition: 0.5s;
+}
+
+.step.active {
+    opacity: 1;
+}
+
+.step-blob {
+    width: 12px;
+    height: 12px;
+    background: var(--border);
+    border: 2px solid var(--surface);
+    transition: 0.5s;
+}
+
+.step.active .step-blob {
+    background: var(--electric-blue);
+    box-shadow: 0 0 10px var(--electric-blue);
+    transform: scale(1.3);
+}
+
+.step-label {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+}
+
+.step.active .step-label {
+    color: var(--text-white);
+}
+
+/* Logic for Progress Width */
+{% with status=order.status|lower %}
+    #progressFill {
+        {% if status == 'pending' or status == 'paid' %} width: 0%; 
+        {% elif status == 'packed' %} width: 25%;
+        {% elif status == 'shipped' %} width: 50%;
+        {% elif status == 'out_for_delivery' %} width: 75%;
+        {% elif status == 'delivered' %} width: 100%;
+        {% endif %}
+    }
+{% endwith %}
+</style>
+{% endblock %}

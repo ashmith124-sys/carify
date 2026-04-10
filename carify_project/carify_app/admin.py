@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-from .models import Category, Product, ProductMedia, Order, OrderItem, Payment, SellerProfile, Service, Wishlist
+from .models import Category, Product, ProductMedia, Order, OrderItem, Payment, SellerProfile, Service, Wishlist, ProductQuestion, ProductAnswer
 
 class ProductMediaInline(admin.TabularInline):
     model = ProductMedia
@@ -145,3 +145,20 @@ class WishlistAdmin(admin.ModelAdmin):
     
     def services_count(self, obj):
         return obj.services.count()
+
+class ProductAnswerInline(admin.TabularInline):
+    model = ProductAnswer
+    extra = 1
+
+@admin.register(ProductQuestion)
+class ProductQuestionAdmin(admin.ModelAdmin):
+    list_display = ('product', 'user', 'created_at')
+    list_filter = ('created_at',)
+    search_fields = ('question', 'product__name', 'user__username')
+    inlines = [ProductAnswerInline]
+
+@admin.register(ProductAnswer)
+class ProductAnswerAdmin(admin.ModelAdmin):
+    list_display = ('question', 'user', 'is_seller_response', 'created_at')
+    list_filter = ('is_seller_response', 'created_at')
+    search_fields = ('answer', 'user__username')

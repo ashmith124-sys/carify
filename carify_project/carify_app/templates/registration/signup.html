@@ -1,74 +1,52 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Seller Registration | Carify{% endblock %}
-
 {% block content %}
-<div class="section" style="background: var(--bg-surface); min-height: 90vh; display: flex; align-items: center; justify-content: center;">
-    <div class="container" style="max-width: 600px;">
-        <div style="background: var(--bg-main); border: 2px solid var(--border-strong); padding: 50px; border-radius: 4px; box-shadow: 0 40px 100px rgba(0,0,0,0.5);">
-            <div style="text-align: center; margin-bottom: 40px;">
-                <h1 style="font-size: 2.5rem; letter-spacing: -2px; margin-bottom: 15px;">SELLER PORTAL</h1>
-                <p style="color: var(--text-muted); font-family: var(--font-heading); font-weight: 700; font-size: 0.8rem; letter-spacing: 2px;">JOIN THE NETWORK</p>
-            </div>
+<div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 140px 20px 100px;">
+    <div class="glass-panel" style="width: 100%; max-width: 500px; padding: 50px 40px; border-radius: 4px;">
+        <span class="font-heading" style="color: var(--bronze); font-weight: 800; letter-spacing: 0.2rem; font-size: 0.7rem; display: block; margin-bottom: 10px;">JOIN THE PLATFORM</span>
+        <h2 class="font-heading" style="margin-bottom: 15px; font-size: 2.5rem; letter-spacing: -1px;">{{ user_type|upper }} REGISTRATION</h2>
+        <p class="font-serif" style="color: var(--text-muted); font-size: 1rem; margin-bottom: 40px; font-style: italic;">
+            {% if user_type == 'Seller' %}
+                Partner with us to offer your premium car care services and products to our discerning clientele.
+            {% else %}
+                Gain access to the world's most advanced automotive preservation collection.
+            {% endif %}
+        </p>
 
-            <form method="post" novalidate>
-                {% csrf_token %}
-                
-                {% if form.non_field_errors %}
-                    <div style="background: rgba(220, 38, 38, 0.1); border: 1px solid #dc2626; color: #ef4444; padding: 15px; border-radius: 4px; margin-bottom: 25px;">
-                        {% for error in form.non_field_errors %}
-                            <p style="margin: 0; font-size: 0.9rem;">{{ error }}</p>
-                        {% endfor %}
-                    </div>
+        <form method="POST">
+            {% csrf_token %}
+            {% for field in form %}
+            <div style="margin-bottom: 25px;">
+                <label class="font-heading" style="font-size: 0.65rem; letter-spacing: 0.15em; color: var(--text-pure); display: block; margin-bottom: 10px;">{{ field.label|upper }}</label>
+                <input type="{{ field.field.widget.input_type|default:'text' }}" 
+                       name="{{ field.name }}" 
+                       style="width: 100%; background: rgba(255,255,255,0.02); border: 1px solid var(--border-subtle); color: var(--text-pure); padding: 15px 20px; font-family: 'Inter', sans-serif; transition: 0.3s; outline: none;" 
+                       placeholder="{{ field.help_text|striptags }}">
+                {% if field.errors %}
+                <p style="color: #ff4444; font-size: 0.7rem; margin-top: 8px;">{{ field.errors.0 }}</p>
                 {% endif %}
-
-                {% for field in form %}
-                <div style="margin-bottom: 25px;">
-                    <label for="{{ field.id_for_label }}" style="display: block; font-family: var(--font-heading); font-weight: 700; font-size: 0.8rem; letter-spacing: 1px; margin-bottom: 10px; color: var(--text-muted);">
-                        {{ field.label|upper }}
-                    </label>
-                    
-                    {{ field }}
-                    
-                    {% if field.errors %}
-                        <div style="color: #ef4444; font-size: 0.8rem; margin-top: 8px; font-weight: 600;">
-                            {% for error in field.errors %}{{ error }}{% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-                {% endfor %}
-
-                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 18px; font-size: 1rem; margin-top: 20px;">
-                    CREATE SELLER IDENTITY
-                </button>
-            </form>
-
-            <div style="margin-top: 40px; text-align: center; border-top: 1px solid var(--border-strong); padding-top: 30px;">
-                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px;">Already registered?</p>
-                <a href="/accounts/login/" style="color: var(--accent); font-family: var(--font-heading); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px;">
-                    Secure Sign In <i class="fas fa-lock" style="margin-left: 5px;"></i>
-                </a>
             </div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px; height: 60px;">REGISTER ACCOUNT</button>
+        </form>
+
+        <div style="margin-top: 40px; text-align: center; border-top: 1px solid var(--border-subtle); padding-top: 30px;">
+            <p style="font-size: 0.8rem; color: var(--text-muted);">
+                Already have an account? <a href="/accounts/login/" style="color: var(--bronze); font-weight: 600; text-decoration: none;">Login</a>
+            </p>
+            {% if user_type == 'Buyer' %}
+                <p style="font-size: 0.7rem; margin-top: 15px;">
+                    Are you a professional? <a href="{% url 'carify_app:seller_register' %}" style="text-decoration: underline; color: var(--text-elegant);">Apply for Seller Status</a>
+                </p>
+            {% else %}
+                <p style="font-size: 0.7rem; margin-top: 15px;">
+                    Just want to shop? <a href="{% url 'carify_app:buyer_register' %}" style="text-decoration: underline; color: var(--text-elegant);">Create Buyer Account</a>
+                </p>
+            {% endif %}
         </div>
     </div>
 </div>
-
-<style>
-    /* Styling the Django form inputs globally within this container */
-    input, select, textarea {
-        width: 100%;
-        padding: 15px;
-        background: var(--bg-surface) !important;
-        border: 1px solid var(--border-strong) !important;
-        color: var(--text-main) !important;
-        font-family: var(--font-body) !important;
-        border-radius: 4px !important;
-        outline: none !important;
-        transition: border-color 0.3s !important;
-    }
-    input:focus, select:focus, textarea:focus {
-        border-color: var(--accent) !important;
-    }
-</style>
 {% endblock %}
+

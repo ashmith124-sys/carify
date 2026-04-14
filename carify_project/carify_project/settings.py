@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-4tkb-k4$v0*!&ih6o+a%w4+4&a8cu5%6me8$z-fil468++$#9s')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_DEBUG', 'False').lower() == 'true'
+DEBUG = True
 
 # Keep development hosts working out of the box while allowing overrides in env.
 default_allowed_hosts = ['127.0.0.1', 'localhost', 'testserver', 'carify-marketplace.onrender.com', '.onrender.com', '.carify.org']

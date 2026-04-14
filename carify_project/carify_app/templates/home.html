@@ -1,181 +1,1674 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block content %}
-<!-- CINEMATIC SHOP SLIDESHOW HERO -->
-<section class="lifestyle-section" style="min-height: 100vh;">
-    <!-- Slides container -->
-    <div id="heroSlider" style="position: absolute; inset: 0; width: 100%; height: 100%;">
-        <div class="hero-slide active" style="position: absolute; inset: 0; width: 100%; height: 100%; opacity: 1; transition: opacity 1.5s ease-in-out;">
-            <div class="lifestyle-bg" style="background-image: url('{% static 'images/hero_ceramic.png' %}'); filter: brightness(0.6) contrast(1.1);"></div>
-        </div>
-        <div class="hero-slide" style="position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1.5s ease-in-out;">
-            <div class="lifestyle-bg" style="background-image: url('https://images.unsplash.com/photo-1621359983321-3957bd9cc2bc?auto=format&fit=crop&q=80&w=1600'); filter: brightness(0.6) contrast(1.1);"></div>
-        </div>
-        <div class="hero-slide" style="position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1.5s ease-in-out;">
-            <div class="lifestyle-bg" style="background-image: url('{% static 'images/protection_ppf.png' %}'); filter: brightness(0.5) contrast(1.2);"></div>
-        </div>
-    </div>
-    
-    <div class="lifestyle-overlay"></div>
-
-    <div class="container lifestyle-content" style="max-width: 900px;">
-        <div data-appear>
-            <span class="font-heading" style="color: var(--bronze); font-size: 0.8rem; letter-spacing: 0.3em; margin-bottom: 25px; display: block;">THE ELITE COLLECTION</span>
-            <h1 class="font-heading" style="font-size: clamp(3rem, 8vw, 5.5rem); margin-bottom: 30px; line-height: 0.95;">CINEMATIC<br>COMMERCE</h1>
-            <p class="font-serif" style="font-size: 1.4rem; font-style: italic; color: var(--text-elegant); margin-bottom: 50px; opacity: 0.9;">
-                Curated solutions for the automotive connoisseur.
-            </p>
-            <div style="display: flex; gap: 20px; justify-content: center;">
-                <a href="{% url 'carify_app:product_list' %}" class="btn btn-primary" style="padding: 1.25rem 3rem;">SHOP THE COLLECTION</a>
-            </div>
-            
-            <!-- Slide Indicators -->
-            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 60px;" id="sliderDots">
-                <span class="slider-dot active" data-index="0"></span>
-                <span class="slider-dot" data-index="1"></span>
-                <span class="slider-dot" data-index="2"></span>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ABOUT US / THE LEGACY BRAND STATEMENT -->
-<section class="section-padding" style="background: var(--bg-main); text-align: center; border-bottom: 1px solid var(--border-subtle);">
-    <div class="container" style="max-width: 800px;" data-appear>
-        <div style="margin-bottom: 30px;">
-            <i class="fas fa-gem" style="font-size: 2rem; color: var(--bronze); opacity: 0.8;"></i>
-        </div>
-        <span class="font-heading" style="color: var(--bronze); font-size: 0.75rem; letter-spacing: 0.3em; margin-bottom: 20px; display: block; text-transform: uppercase;">Our Philosophy</span>
-        <h2 class="font-heading" style="font-size: 2.5rem; margin-bottom: 30px; letter-spacing: -1px;">THE ART OF PRESERVATION</h2>
-        <p style="color: var(--text-elegant); font-size: 1.1rem; line-height: 1.8; margin-bottom: 40px; font-family: var(--font-serif); font-style: italic;">
-            Carify operates at the intersection of automotive engineering and cosmetic perfection. We are not merely a marketplace; we are the curators of the world's most advanced chemical enhancements. Our mission is to bridge the gap between elite detailing artisans and the uncompromising enthusiast.
-        </p>
-        <a href="{% url 'carify_app:about' %}" class="font-heading" style="font-size: 0.75rem; letter-spacing: 0.1em; color: var(--text-pure); border-bottom: 1px solid var(--bronze); padding-bottom: 5px; text-decoration: none; transition: 0.3s;" onmouseover="this.style.color='var(--bronze)'" onmouseout="this.style.color='var(--text-pure)'">READ THE FULL MANIFESTO</a>
-    </div>
-</section>
-
-<!-- LIFESTYLE HIGHLIGHT: ALTERNATING ROW 1 -->
-<section class="section-padding" style="background: var(--surface);">
-    <div class="container" style="max-width: var(--container-max); padding: 0;">
-        <div class="lifestyle-row">
-            <div class="lifestyle-image hover-lift" data-appear>
-                <img src="{% static 'images/hero_ceramic.png' %}" alt="Ceramic Coverage" style="width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.5);">
-            </div>
-            <div class="lifestyle-text" data-appear>
-                <span class="font-heading" style="font-size: 0.7rem; color: var(--bronze); letter-spacing: 0.2em; margin-bottom: 20px; display: inline-block;">SIGNATURE SERIES</span>
-                <h2 class="font-heading" style="font-size: 3rem; margin-bottom: 30px;">GLASS<br>ARMOR</h2>
-                <p style="color: var(--text-muted); font-size: 1.1rem; line-height: 1.8; margin-bottom: 40px;">
-                    Our flagship ceramic formulation delivers extreme gloss and hydrophobic resilience, ensuring your vehicle maintains a showroom finish in any environment.
-                </p>
-                <a href="{% url 'carify_app:product_list' %}" class="btn btn-outline">EXPLORE CERAMICS</a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- LIFESTYLE HIGHLIGHT: ALTERNATING ROW 2 -->
-<section class="section-padding">
-    <div class="container" style="max-width: var(--container-max); padding: 0;">
-        <div class="lifestyle-row reverse">
-            <div class="lifestyle-image hover-lift" data-appear>
-                <img src="{% static 'images/protection_ppf.png' %}" alt="PPF Films" style="width: 100%; height: 100%; object-fit: cover; filter: contrast(1.2);">
-            </div>
-            <div class="lifestyle-text" data-appear>
-                <span class="font-heading" style="font-size: 0.7rem; color: var(--bronze); letter-spacing: 0.2em; margin-bottom: 20px; display: inline-block;">PERFORMANCE METRICS</span>
-                <h2 class="font-heading" style="font-size: 3rem; margin-bottom: 30px;">INVISIBLE<br>SHIELD</h2>
-                <p style="color: var(--text-muted); font-size: 1.1rem; line-height: 1.8; margin-bottom: 40px;">
-                    Self-healing, optical-grade Paint Protection Films that defend against high-velocity debris while enhancing the natural depth of your paintwork.
-                </p>
-                <a href="{% url 'carify_app:product_list' %}" class="btn btn-outline">SHOP FILMS</a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- FEATURED COMMERCE GRID -->
-<section class="section-padding" style="background: var(--surface-soft); border-top: 1px solid var(--border-subtle);">
-    <div class="container">
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 60px;" data-appear>
-            <div>
-                <span class="font-heading" style="color: var(--bronze); letter-spacing: 0.2em; font-size: 0.75rem;">CURATED</span>
-                <h2 class="font-heading" style="font-size: 2.5rem; letter-spacing: -1px; margin-top: 10px;">LATEST ARRIVALS</h2>
-            </div>
-            <a href="{% url 'carify_app:product_list' %}" class="font-heading" style="font-size: 0.75rem; letter-spacing: 0.1em; color: var(--text-pure); border-bottom: 1px solid var(--text-pure); padding-bottom: 5px; text-decoration: none;">VIEW ALL</a>
-        </div>
-        
-        <div class="collection-grid" data-appear data-stagger="true">
-            {% for product in products|slice:":8" %}
-            <div class="shop-card stagger-item">
-                <a href="{% url 'carify_app:product_detail' product.id %}" style="text-decoration: none; display: block; height: 100%;">
-                    <div class="shop-image-wrapper">
-                        {% if product.first_media_image_url %}
-                            <img src="{{ product.first_media_image_url }}" alt="{{ product.name }}" class="shop-img">
-                        {% else %}
-                            <img src="https://images.unsplash.com/photo-1607603750909-408e1938f8c7?auto=format&fit=crop&q=80&w=400" class="shop-img" style="opacity: 0.4;">
-                        {% endif %}
-                        <!-- Quick Add Hover Overlay -->
-                        <div class="quick-add-overlay">
-                            <span class="btn btn-primary" style="width: 80%; font-size: 0.65rem; padding: 0.8rem 1rem;">VIEW DETAILS</span>
-                        </div>
-                    </div>
-                    <div class="shop-info">
-                        <span class="shop-vendor font-heading">{{ product.category.name|default:"CARIFY EXCLUSIVE" }}</span>
-                        <h4 class="shop-title font-heading">{{ product.name }}</h4>
-                        <span class="shop-price font-heading copper-text">${{ product.price }}</span>
-                    </div>
-                </a>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-
+{% block extra_css %}
 <style>
-    /* Slider Dots */
-    .slider-dot { width: 40px; height: 2px; background: rgba(255,255,255,0.2); cursor: pointer; transition: 0.3s; }
-    .slider-dot.active { background: var(--bronze); }
-    
-    /* Lifestyle Row */
-    .lifestyle-row { display: grid; grid-template-columns: 1fr; align-items: center; gap: 0; min-height: 80vh; }
-    @media (min-width: 992px) { 
-        .lifestyle-row { grid-template-columns: 1fr 1fr; } 
-        .lifestyle-row.reverse .lifestyle-image { order: 2; }
-        .lifestyle-row.reverse .lifestyle-text { order: 1; padding: 100px 100px 100px 50px; }
-        .lifestyle-text { padding: 100px 50px 100px 100px; }
-    }
-    .lifestyle-image { height: 100%; min-height: 400px; overflow: hidden; }
-    .lifestyle-text { padding: 50px 20px; }
-    
-    
-    .stagger-item { opacity: 0; transform: translateY(25px); transition: all 1s var(--transition-premium); }
-    .stagger-item.visible { opacity: 1; transform: translateY(0); }
-</style>
+    /* ════════════════════════════════════════════════════════════
+   CARIFY GARAGE — Inspired by CRED Garage
+   Font: Outfit (map to Gilroy-like w800), pure #000 bg
+   Design: Full-bleed hero image, centered statement text,
+           feature cards, horizontal scroll products
+════════════════════════════════════════════════════════════ */
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Cinematic Slider Logic
-    const slides = document.querySelectorAll('.hero-slide');
-    const dots = document.querySelectorAll('.slider-dot');
-    let currentSlide = 0;
-    
-    function showSlide(index) {
-        slides.forEach(s => s.style.opacity = '0');
-        dots.forEach(d => d.classList.remove('active'));
-        
-        slides[index].style.opacity = '1';
-        dots[index].classList.add('active');
-        currentSlide = index;
+    :root {
+        --clr-bg: #000000;
+        --clr-white: #ffffff;
+        --clr-muted: rgba(255, 255, 255, 0.38);
+        --clr-dimmed: rgba(255, 255, 255, 0.15);
+        --clr-copper: #d9915a;
+        --clr-gold: #f5c882;
+        --clr-surface: #0d0c0b;
+        --clr-border: rgba(255, 255, 255, 0.06);
+        --font-h: 'Outfit', sans-serif;
+        --font-s: 'Playfair Display', serif;
+        --ease: cubic-bezier(0.16, 1, 0.3, 1);
     }
-    
-    setInterval(() => {
-        let nxt = (currentSlide + 1) % slides.length;
-        showSlide(nxt);
-    }, 6000);
-    
-    dots.forEach((dot, idx) => {
-        dot.addEventListener('click', () => showSlide(idx));
-    });
-});
+
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        background: var(--clr-bg) !important;
+        color: var(--clr-white);
+        overflow-x: hidden;
+    }
+
+    /* ── HERO ─────────────────────────────────────────── */
+    .cg-hero {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        min-height: 640px;
+        overflow: hidden;
+        background: #000;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+    }
+
+    /* Full-bleed background carousel */
+    .cg-slides {
+        position: absolute;
+        inset: 0;
+    }
+
+    .cg-slide {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        transition: opacity 1.2s var(--ease);
+    }
+
+    .cg-slide.on {
+        opacity: 1;
+        z-index: 1;
+    }
+
+    .cg-slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 30%;
+        filter: brightness(1.0) saturate(1.2);
+        transform: scale(1.06);
+        transition: transform 7s var(--ease);
+    }
+
+    .cg-slide.on img {
+        transform: scale(1.0);
+    }
+
+    /* Layered overlays — bottom heavy, like CRED Garage */
+    .cg-hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        background: linear-gradient(to top,
+                rgba(0, 0, 0, 0.6) 0%,
+                rgba(0, 0, 0, 0.3) 25%,
+                rgba(0, 0, 0, 0.05) 60%,
+                transparent 100%);
+    }
+
+    .cg-hero::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        background: linear-gradient(to bottom,
+                rgba(0, 0, 0, 0.1) 0%,
+                transparent 35%);
+    }
+
+    /* CRED Garage-style: central bottom-anchored text */
+    .cg-hero__body {
+        position: relative;
+        z-index: 5;
+        width: 100%;
+        max-width: 900px;
+        padding: 0 6vw 7vh;
+        text-align: center;
+    }
+
+    .cg-hero__tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-family: var(--font-h);
+        font-size: .55rem;
+        font-weight: 700;
+        letter-spacing: .5em;
+        text-transform: uppercase;
+        color: var(--clr-copper);
+        margin-bottom: 1.4rem;
+    }
+
+    .cg-hero__tag::before,
+    .cg-hero__tag::after {
+        content: '';
+        display: block;
+        width: 22px;
+        height: 1px;
+        background: var(--clr-copper);
+        opacity: .5;
+    }
+
+    /* CRED Garage uses huge, condensed, centered heading */
+    .cg-hero__h1 {
+        font-family: var(--font-h);
+        font-size: clamp(3rem, 9vw, 8.5rem);
+        font-weight: 800;
+        line-height: .87;
+        letter-spacing: -.045em;
+        color: var(--clr-white);
+        margin-bottom: 1.8rem;
+    }
+
+    .cg-hero__h1 em {
+        font-style: normal;
+        display: block;
+        background: linear-gradient(100deg, var(--clr-copper) 0%, var(--clr-gold) 60%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .cg-hero__h1 .ghost {
+        -webkit-text-stroke: 1.5px rgba(255, 255, 255, .2);
+        color: transparent;
+    }
+
+    /* CRED Garage tagline: small, light, italic */
+    .cg-hero__sub {
+        font-family: var(--font-s);
+        font-size: 1rem;
+        font-style: italic;
+        color: var(--clr-muted);
+        letter-spacing: .02em;
+        margin-bottom: 2.2rem;
+        line-height: 1.6;
+    }
+
+    .cg-hero__cta-row {
+        display: flex;
+        gap: 14px;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    /* CRED-style: pill button, white bg */
+    .cg-btn-primary {
+        display: inline-block;
+        font-family: var(--font-h);
+        font-size: .68rem;
+        font-weight: 700;
+        letter-spacing: .18em;
+        text-transform: uppercase;
+        color: #fff;
+        background: var(--clr-copper);
+        padding: .9rem 2.4rem;
+        text-decoration: none;
+        transition: background .3s, color .3s, transform .3s;
+        border-radius: 2px;
+    }
+
+    .cg-btn-primary:hover {
+        background: #fff;
+        color: #000;
+        transform: translateY(-2px);
+    }
+
+    .cg-btn-ghost {
+        font-family: var(--font-h);
+        font-size: .65rem;
+        font-weight: 600;
+        letter-spacing: .18em;
+        text-transform: uppercase;
+        color: var(--clr-dimmed);
+        text-decoration: none;
+        border-bottom: 1px solid rgba(255, 255, 255, .1);
+        padding-bottom: 3px;
+        transition: .3s;
+    }
+
+    .cg-btn-ghost:hover {
+        color: var(--clr-copper);
+        border-color: var(--clr-copper);
+    }
+
+    /* Slide dots (CRED uses thin horizontal bars) */
+    .cg-hero__nav {
+        display: flex;
+        gap: 6px;
+        justify-content: center;
+        margin-bottom: 2rem;
+    }
+
+    .cg-dot {
+        width: 28px;
+        height: 2px;
+        background: rgba(255, 255, 255, .18);
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        transition: .4s;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cg-dot.on {
+        background: rgba(255, 255, 255, .12);
+        width: 48px;
+    }
+
+    .cg-dot::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 0;
+        background: var(--clr-copper);
+        transition: none;
+    }
+
+    .cg-dot.on::after {
+        width: 100%;
+        transition: width 6s linear;
+    }
+
+    /* Scroll hint */
+    .cg-scroll {
+        position: absolute;
+        bottom: 1.8rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 5;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        opacity: .25;
+        animation: sc-bounce 2.4s ease-in-out infinite;
+    }
+
+    .cg-scroll span {
+        font-family: var(--font-h);
+        font-size: .42rem;
+        letter-spacing: .45em;
+        text-transform: uppercase;
+        color: #fff;
+    }
+
+    .cg-scroll i {
+        font-size: .7rem;
+        color: #fff;
+    }
+
+    @keyframes sc-bounce {
+
+        0%,
+        100% {
+            transform: translateX(-50%) translateY(0)
+        }
+
+        50% {
+            transform: translateX(-50%) translateY(8px)
+        }
+    }
+
+    /* ── STATEMENT (CRED: "manage, maintain, and obsess") ── */
+    .cg-statement {
+        background: var(--clr-bg);
+        padding: 7rem 6vw;
+        text-align: center;
+        border-bottom: 1px solid var(--clr-border);
+    }
+
+    .cg-statement__h2 {
+        font-family: var(--font-h);
+        font-size: clamp(2rem, 5vw, 4.5rem);
+        font-weight: 800;
+        line-height: 1.05;
+        letter-spacing: -.03em;
+        color: var(--clr-white);
+        max-width: 720px;
+        margin: 0 auto 1.6rem;
+    }
+
+    .cg-statement__h2 em {
+        font-style: italic;
+        font-family: var(--font-s);
+        font-size: clamp(2.2rem, 5.5vw, 5rem);
+        font-weight: 400;
+        color: var(--clr-muted);
+        font-weight: 400;
+    }
+
+    .cg-statement__sub {
+        font-family: var(--font-h);
+        font-size: .7rem;
+        font-weight: 500;
+        letter-spacing: .08em;
+        color: var(--clr-copper);
+        text-transform: uppercase;
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    /* ── MARQUEE ──────────────────────────────────────── */
+    .cg-marquee {
+        overflow: hidden;
+        position: relative;
+        background: var(--clr-bg);
+        border-top: 1px solid var(--clr-border);
+        border-bottom: 1px solid var(--clr-border);
+        padding: 1.1rem 0;
+    }
+
+    .cg-marquee::before,
+    .cg-marquee::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 80px;
+        z-index: 2;
+    }
+
+    .cg-marquee::before {
+        left: 0;
+        background: linear-gradient(to right, #000, transparent);
+    }
+
+    .cg-marquee::after {
+        right: 0;
+        background: linear-gradient(to left, #000, transparent);
+    }
+
+    .cg-marquee__track {
+        display: inline-flex;
+        animation: cg-run 20s linear infinite;
+        white-space: nowrap;
+    }
+
+    .cg-marquee__track:hover {
+        animation-play-state: paused;
+    }
+
+    @keyframes cg-run {
+        to {
+            transform: translateX(-50%);
+        }
+    }
+
+    .cg-marquee__item {
+        display: inline-flex;
+        align-items: center;
+        gap: 16px;
+        padding: 0 24px;
+        font-family: var(--font-h);
+        font-size: .58rem;
+        font-weight: 700;
+        letter-spacing: .4em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, .14);
+        transition: color .3s;
+        cursor: default;
+    }
+
+    .cg-marquee__item:hover {
+        color: var(--clr-copper);
+    }
+
+    .cg-marquee__dot {
+        width: 3px;
+        height: 3px;
+        border-radius: 50%;
+        background: var(--clr-copper);
+        opacity: .45;
+        flex-shrink: 0;
+    }
+
+    /* ── FEATURE CARDS (CRED Garage style 4-up grid) ─── */
+    .cg-features {
+        background: var(--clr-bg);
+        padding: 5rem 5vw 4rem;
+    }
+
+    .cg-features__head {
+        margin-bottom: 3rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .cg-features__pretitle {
+        font-family: var(--font-h);
+        font-size: .52rem;
+        font-weight: 700;
+        letter-spacing: .45em;
+        text-transform: uppercase;
+        color: var(--clr-copper);
+        margin-bottom: .7rem;
+        display: block;
+    }
+
+    .cg-features__title {
+        font-family: var(--font-h);
+        font-size: clamp(1.7rem, 3.5vw, 2.6rem);
+        font-weight: 800;
+        letter-spacing: -.03em;
+        color: var(--clr-white);
+    }
+
+    /* 4-column grid like CRED Garage */
+    .cg-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+    }
+
+    @media(max-width:1024px) {
+        .cg-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media(max-width:600px) {
+        .cg-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .cg-feat-card {
+        background: var(--clr-surface);
+        border: 1px solid var(--clr-border);
+        overflow: hidden;
+        position: relative;
+        cursor: pointer;
+        transition: transform .5s var(--ease), box-shadow .5s;
+    }
+
+    .cg-feat-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 24px 50px rgba(0, 0, 0, .7), 0 0 0 1px rgba(217, 145, 90, .12);
+    }
+
+    .cg-feat-card__img-w {
+        aspect-ratio: 4/3;
+        overflow: hidden;
+        position: relative;
+        background: #0a0908;
+    }
+
+    .cg-feat-card__img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(.65) saturate(.7);
+        transition: transform .9s var(--ease), filter .6s;
+    }
+
+    .cg-feat-card:hover .cg-feat-card__img {
+        transform: scale(1.07);
+        filter: brightness(.85) saturate(1.1);
+    }
+
+    .cg-feat-card__overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, .8) 0%, transparent 60%);
+        opacity: .7;
+        transition: opacity .4s;
+    }
+
+    .cg-feat-card:hover .cg-feat-card__overlay {
+        opacity: 1;
+    }
+
+    .cg-feat-card__body {
+        padding: 18px 20px 22px;
+    }
+
+    .cg-feat-card__tag {
+        font-family: var(--font-h);
+        font-size: .47rem;
+        font-weight: 700;
+        letter-spacing: .4em;
+        text-transform: uppercase;
+        color: var(--clr-copper);
+        margin-bottom: 7px;
+        display: block;
+    }
+
+    .cg-feat-card__name {
+        font-family: var(--font-h);
+        font-size: 1.05rem;
+        font-weight: 800;
+        letter-spacing: -.02em;
+        color: var(--clr-white);
+        line-height: 1.15;
+        margin-bottom: 8px;
+    }
+
+    .cg-feat-card__desc {
+        font-family: var(--font-h);
+        font-size: .78rem;
+        font-weight: 400;
+        color: var(--clr-muted);
+        line-height: 1.6;
+        margin-bottom: 14px;
+    }
+
+    .cg-feat-card__link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: var(--font-h);
+        font-size: .58rem;
+        font-weight: 700;
+        letter-spacing: .18em;
+        text-transform: uppercase;
+        color: var(--clr-white);
+        text-decoration: none;
+        transition: .3s;
+    }
+
+    .cg-feat-card__link i {
+        font-size: .6rem;
+        transition: transform .3s;
+    }
+
+    .cg-feat-card__link:hover {
+        color: var(--clr-copper);
+    }
+
+    .cg-feat-card__link:hover i {
+        transform: translateX(4px);
+    }
+
+    /* ── FULL-BLEED FEATURE (CRED: "enter garage" section) ── */
+    .cg-bleed {
+        position: relative;
+        height: 85vh;
+        min-height: 500px;
+        overflow: hidden;
+        display: flex;
+        align-items: flex-end;
+    }
+
+    .cg-bleed__img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(.35);
+        transition: transform 8s var(--ease);
+    }
+
+    .cg-bleed:hover .cg-bleed__img {
+        transform: scale(1.04);
+    }
+
+    .cg-bleed::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, .96) 0%, rgba(0, 0, 0, .2) 55%, transparent 100%);
+    }
+
+    .cg-bleed__body {
+        position: relative;
+        z-index: 2;
+        padding: 4rem 6vw 5rem;
+        max-width: 700px;
+    }
+
+    .cg-bleed__tag {
+        font-family: var(--font-h);
+        font-size: .52rem;
+        font-weight: 700;
+        letter-spacing: .45em;
+        text-transform: uppercase;
+        color: var(--clr-copper);
+        margin-bottom: 1.2rem;
+        display: block;
+    }
+
+    .cg-bleed__h2 {
+        margin-bottom: 2rem;
+    }
+
+    .cg-armor-title {
+        display: flex;
+        flex-direction: column;
+        line-height: 0.8;
+    }
+
+    .cg-armor-title .glass {
+        font-family: var(--font-h);
+        font-weight: 300;
+        text-transform: uppercase;
+        font-size: 0.7em;
+        color: var(--clr-white);
+        letter-spacing: 0.5em;
+        /* Extremely wide tracking */
+        margin-bottom: 0.2rem;
+        opacity: 0.8;
+    }
+
+    .cg-armor-title .armor {
+        font-family: var(--font-h);
+        font-weight: 900;
+        text-transform: uppercase;
+        font-size: 1.3em;
+        letter-spacing: -0.02em;
+        color: var(--clr-white);
+        background: linear-gradient(to right, var(--clr-copper), var(--clr-gold));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: none;
+    }
+
+
+    .cg-bleed__p {
+        font-family: var(--font-s);
+        font-size: 1rem;
+        font-style: italic;
+        color: var(--clr-muted);
+        line-height: 1.75;
+        max-width: 400px;
+        margin-bottom: 2rem;
+    }
+
+    /* ── THE VAULT (ELITE INVENTORY) ────────────────── */
+    .cg-vault {
+        background: var(--clr-bg);
+        padding: 5rem 5vw 4rem;
+        border-top: 1px solid var(--clr-border);
+    }
+
+    .cg-vault__grid {
+        display: grid;
+        grid-template-columns: 1.8fr 1fr;
+        gap: 12px;
+        margin-top: 3rem;
+    }
+
+    @media(max-width:1000px) {
+        .cg-vault__grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .cg-vhero {
+        position: relative;
+        height: 600px;
+        overflow: hidden;
+        background: #080706;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+    }
+
+    .cg-vhero__img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(.4);
+        transition: transform 1.5s var(--ease), filter .8s;
+    }
+
+    .cg-vhero:hover .cg-vhero__img {
+        transform: scale(1.04);
+        filter: brightness(.6);
+    }
+
+    .cg-vhero__body {
+        position: relative;
+        z-index: 2;
+        padding: 40px;
+    }
+
+    .cg-vhero__tag {
+        font-family: var(--font-h);
+        font-size: .52rem;
+        font-weight: 700;
+        letter-spacing: .4em;
+        text-transform: uppercase;
+        color: var(--clr-copper);
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    .cg-vhero__h3 {
+        font-family: var(--font-h);
+        font-size: 2.2rem;
+        font-weight: 800;
+        letter-spacing: -.03em;
+        color: #fff;
+        line-height: .9;
+        margin-bottom: 2rem;
+    }
+
+    .cg-vhero__specs {
+        display: flex;
+        gap: 40px;
+        margin-bottom: 2.5rem;
+    }
+
+    .cg-vspec {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .cg-vspec__v {
+        font-family: var(--font-h);
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: #fff;
+    }
+
+    .cg-vspec__l {
+        font-family: var(--font-h);
+        font-size: .44rem;
+        font-weight: 700;
+        letter-spacing: .3em;
+        text-transform: uppercase;
+        color: var(--clr-muted);
+    }
+
+    .cg-vcard {
+        position: relative;
+        height: calc(50% - 6px);
+        background: var(--clr-surface);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+    }
+
+    .cg-vcard__img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(.35);
+        transition: transform .8s var(--ease);
+    }
+
+    .cg-vcard:hover .cg-vcard__img {
+        transform: scale(1.08);
+    }
+
+    .cg-vcard__body {
+        position: relative;
+        z-index: 2;
+        padding: 28px;
+    }
+
+    .cg-vcard__h4 {
+        font-family: var(--font-h);
+        font-size: .9rem;
+        font-weight: 800;
+        color: #fff;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+    }
+
+    .cg-vcard__link {
+        font-family: var(--font-h);
+        font-size: .52rem;
+        font-weight: 700;
+        letter-spacing: .2em;
+        color: var(--clr-copper);
+        text-decoration: none;
+        margin-top: 8px;
+        display: inline-block;
+        transition: color .3s;
+    }
+
+    .cg-vcard__link:hover {
+        color: #fff;
+    }
+
+
+    /* ── STATS ───────────────────────────────────────── */
+    .cg-stats {
+        background: var(--clr-surface);
+        border-top: 1px solid var(--clr-border);
+        border-bottom: 1px solid var(--clr-border);
+        padding: 4.5rem 5vw;
+    }
+
+    .cg-stats__row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    @media(max-width:640px) {
+        .cg-stats__row {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+    }
+
+    .cg-stat {
+        text-align: center;
+        padding: 1rem;
+        border-right: 1px solid var(--clr-border);
+    }
+
+    .cg-stat:last-child {
+        border-right: none;
+    }
+
+    .cg-stat__n {
+        display: block;
+        font-family: var(--font-h);
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        font-weight: 800;
+        letter-spacing: -.04em;
+        background: linear-gradient(120deg, #fff 0%, var(--clr-copper) 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: .4rem;
+    }
+
+    .cg-stat__l {
+        font-family: var(--font-h);
+        font-size: .5rem;
+        font-weight: 700;
+        letter-spacing: .4em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, .22);
+    }
+
+    /* ── PRODUCTS ─────────────────────────────────────── */
+    .cg-products {
+        background: var(--clr-bg);
+        padding: 5rem 0 4rem;
+        border-top: 1px solid var(--clr-border);
+    }
+
+    .cg-products__head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        padding: 0 5vw 2rem;
+        gap: 1rem;
+    }
+
+    .cg-products__pretitle {
+        font-family: var(--font-h);
+        font-size: .5rem;
+        font-weight: 700;
+        letter-spacing: .45em;
+        text-transform: uppercase;
+        color: var(--clr-copper);
+        margin-bottom: .6rem;
+        display: block;
+    }
+
+    .cg-products__title {
+        font-family: var(--font-h);
+        font-size: clamp(1.6rem, 3.5vw, 2.5rem);
+        font-weight: 800;
+        letter-spacing: -.03em;
+        color: #fff;
+    }
+
+    .cg-products__all {
+        font-family: var(--font-h);
+        font-size: .58rem;
+        font-weight: 700;
+        letter-spacing: .22em;
+        text-transform: uppercase;
+        color: var(--clr-dimmed);
+        text-decoration: none;
+        border-bottom: 1px solid rgba(255, 255, 255, .07);
+        padding-bottom: 3px;
+        transition: .3s;
+        white-space: nowrap;
+    }
+
+    .cg-products__all:hover {
+        color: var(--clr-copper);
+        border-color: var(--clr-copper);
+    }
+
+    /* Horizontal drag-scroll row */
+    .cg-prow {
+        display: flex !important;
+        gap: 12px;
+        overflow-x: auto;
+        padding: 0 5vw 1.5rem;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+        cursor: grab;
+    }
+
+    .cg-prow:active {
+        cursor: grabbing;
+    }
+
+    .cg-prow::-webkit-scrollbar {
+        display: none;
+    }
+
+    .cg-pcard {
+        flex: 0 0 270px;
+        background: var(--clr-surface);
+        border: 1px solid var(--clr-border);
+        scroll-snap-align: start;
+        text-decoration: none;
+        color: inherit;
+        display: block;
+        transition: transform .5s var(--ease), box-shadow .5s;
+    }
+
+    .cg-pcard:hover {
+        transform: translateY(-7px);
+        box-shadow: 0 26px 55px rgba(0, 0, 0, .8), 0 0 0 1px rgba(217, 145, 90, .1);
+    }
+
+    .cg-pcard__img-w {
+        aspect-ratio: 4/5;
+        overflow: hidden;
+        position: relative;
+        background: #0d0c0b;
+        margin-bottom: 24px;
+    }
+
+    .cg-pcard__img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(.7);
+        transition: transform 1s var(--ease), filter .6s;
+    }
+
+    .cg-pcard:hover .cg-pcard__img {
+        transform: scale(1.05);
+        filter: brightness(.9);
+    }
+
+    .cg-pcard__hover {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, .8) 0%, transparent 60%);
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.6s var(--ease);
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        padding: 30px;
+    }
+
+    .cg-pcard:hover .cg-pcard__hover {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .cg-pcard__hover span {
+        font-family: var(--font-h);
+        font-size: .55rem;
+        font-weight: 700;
+        letter-spacing: .25em;
+        text-transform: uppercase;
+        color: #fff;
+        background: var(--clr-copper);
+        padding: .9rem 1.6rem;
+        width: 90%;
+        text-align: center;
+        display: block;
+        transition: background .3s, transform .3s;
+    }
+
+    .cg-pcard__hover span:hover {
+        background: var(--clr-gold);
+        color: #000;
+        transform: scale(1.02);
+    }
+
+    .cg-pcard__info {
+        padding: 10px 0;
+        text-align: left;
+    }
+
+    .cg-pcard__cat {
+        font-family: var(--font-h);
+        font-size: .45rem;
+        font-weight: 700;
+        letter-spacing: .38em;
+        text-transform: uppercase;
+        color: var(--clr-copper);
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .cg-pcard__name {
+        font-family: var(--font-h);
+        font-size: .85rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 6px;
+        line-height: 1.3;
+    }
+
+    .cg-pcard__price {
+        font-family: var(--font-h);
+        font-size: .82rem;
+        font-weight: 800;
+        background: linear-gradient(120deg, var(--clr-copper), var(--clr-gold));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    /* ── SCROLL REVEAL ─────────────────────────────── */
+    [data-cg-appear] {
+        opacity: 0;
+        transform: translateY(40px);
+        transition: opacity .9s var(--ease), transform .9s var(--ease);
+    }
+
+    [data-cg-appear].in {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* ── ABOUT SECTION ─────────────────────────────── */
+    .cg-about {
+        background: var(--clr-bg);
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        min-height: 80vh;
+    }
+
+    @media(max-width:900px) {
+        .cg-about {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .cg-about__img-w {
+        position: relative;
+        overflow: hidden;
+        min-height: 400px;
+    }
+
+    .cg-about__img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(.7);
+    }
+
+    .cg-about__content {
+        padding: 5rem 6vw;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background: var(--clr-surface);
+        border-left: 1px solid var(--clr-border);
+    }
+
+    .cg-about__h2 {
+        font-family: var(--font-h);
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 800;
+        letter-spacing: -.03em;
+        line-height: 1;
+        margin-bottom: 2rem;
+    }
+
+    .cg-about__h2 em {
+        display: block;
+        font-family: var(--font-s);
+        font-style: italic;
+        font-weight: 400;
+        color: var(--clr-copper);
+    }
+
+    .cg-about__p {
+        font-family: var(--font-s);
+        font-size: 1.1rem;
+        font-style: italic;
+        color: var(--clr-muted);
+        line-height: 1.8;
+        max-width: 480px;
+        margin-bottom: 2.5rem;
+    }
+
+    /* ── PROTOCOL (HOW IT WORKS) ─────────────────────── */
+    .cg-protocol {
+        background: var(--clr-bg);
+        padding: 7rem 5vw;
+        border-top: 1px solid var(--clr-border);
+    }
+
+    .cg-protocol__grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 40px;
+        max-width: 1200px;
+        margin: 4rem auto 0;
+    }
+
+    @media(max-width:800px) {
+        .cg-protocol__grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .cg-step {
+        position: relative;
+        padding-top: 3rem;
+    }
+
+    .cg-step__num {
+        position: absolute;
+        top: 0;
+        left: 0;
+        font-family: var(--font-h);
+        font-size: 3.5rem;
+        font-weight: 900;
+        color: rgba(255, 255, 255, .03);
+        line-height: 1;
+        z-index: 1;
+    }
+
+    .cg-step__h3 {
+        position: relative;
+        z-index: 2;
+        font-family: var(--font-h);
+        font-size: .9rem;
+        font-weight: 800;
+        letter-spacing: .15em;
+        text-transform: uppercase;
+        color: var(--clr-copper);
+        margin-bottom: 1rem;
+    }
+
+    .cg-step__p {
+        font-family: var(--font-h);
+        font-size: .85rem;
+        color: var(--clr-muted);
+        line-height: 1.6;
+    }
+
+    /* ── JOURNAL (BLOG) ──────────────────────────────── */
+    .cg-journal {
+        background: var(--clr-surface);
+        padding: 7rem 5vw;
+        border-top: 1px solid var(--clr-border);
+    }
+
+    .cg-journal__grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-top: 3.5rem;
+    }
+
+    @media(max-width:800px) {
+        .cg-journal__grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .cg-post {
+        position: relative;
+        height: 500px;
+        overflow: hidden;
+        text-decoration: none;
+        display: block;
+    }
+
+    .cg-post__img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(.4) saturate(.8);
+        transition: transform 1s var(--ease), filter .6s;
+    }
+
+    .cg-post:hover .cg-post__img {
+        transform: scale(1.05);
+        filter: brightness(.6) saturate(1);
+    }
+
+    .cg-post__body {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 3rem;
+        z-index: 2;
+    }
+
+    .cg-post__date {
+        font-family: var(--font-h);
+        font-size: .5rem;
+        font-weight: 700;
+        letter-spacing: .3em;
+        text-transform: uppercase;
+        color: var(--clr-copper);
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    .cg-post__h3 {
+        font-family: var(--font-h);
+        font-size: 1.6rem;
+        font-weight: 800;
+        letter-spacing: -.02em;
+        color: #fff;
+        line-height: 1.2;
+        max-width: 320px;
+    }
+
+    /* ── RESPONSIVE ─────────────────────────────────── */
+    @media(max-width:768px) {
+        .cg-hero__h1 {
+            letter-spacing: -.03em;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ══════════════════════════════════════════════
+     SECTION 1 — HERO (CRED Garage full-bleed)
+══════════════════════════════════════════════ -->
+<section class="cg-hero" id="cgHero">
+
+    <!-- Slides -->
+    <div class="cg-slides">
+        <div class="cg-slide on">
+            <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1800&q=85"
+                alt="Luxury car ceramic" loading="eager">
+        </div>
+        <div class="cg-slide">
+            <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=1800&q=85"
+                alt="PPF Protection" loading="lazy">
+        </div>
+        <div class="cg-slide">
+            <img src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&w=1800&q=85"
+                alt="Detailing" loading="lazy">
+        </div>
+        <div class="cg-slide">
+            <img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1800&q=85"
+                alt="Precision" loading="lazy">
+        </div>
+    </div>
+
+    <!-- Content (bottom-centered, CRED Garage style) -->
+    <div class="cg-hero__body" data-cg-appear>
+        <p class="cg-hero__tag">The Elite Collection</p>
+
+        <h1 class="cg-hero__h1">
+            manage,<br>
+            maintain,<br>
+            <em>and obsess.</em>
+        </h1>
+
+        <p class="cg-hero__sub">
+            your vehicle. all the care it deserves. all in one space.
+        </p>
+
+        <!-- Slide dots above CTAs -->
+        <div class="cg-hero__nav" id="cgDots">
+            <button class="cg-dot on" data-i="0"></button>
+            <button class="cg-dot" data-i="1"></button>
+            <button class="cg-dot" data-i="2"></button>
+            <button class="cg-dot" data-i="3"></button>
+        </div>
+
+        <div class="cg-hero__cta-row">
+            <a href="{% url 'carify_app:product_list' %}" class="cg-btn-primary">
+                EXPLORE COLLECTION
+            </a>
+            <a href="{% url 'carify_app:about' %}" class="cg-btn-ghost">
+                OUR PHILOSOPHY
+            </a>
+        </div>
+    </div>
+
+    <!-- Scroll hint -->
+    <div class="cg-scroll">
+        <span>scroll</span>
+        <i class="fas fa-chevron-down"></i>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 2 — STATEMENT
+     (Replaces repeated Glass Armor with Story)
+══════════════════════════════════════════════ -->
+<section class="cg-statement" data-cg-appear>
+    <span class="cg-statement__sub">CARIFY GARAGE</span>
+    <h2 class="cg-statement__h2">
+        protect the metal.<br>
+        <em>preserve the obsession.</em>
+    </h2>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     ABOUT CARIFY (The Standard)
+══════════════════════════════════════════════ -->
+<section class="cg-about" data-cg-appear>
+    <div class="cg-about__img-w">
+        <img class="cg-about__img"
+            src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1200&q=85"
+            alt="Detailing Excellence">
+    </div>
+    <div class="cg-about__content">
+        <h2 class="cg-about__h2">
+            A standard beyond<br><em>the showroom floor.</em>
+        </h2>
+        <p class="cg-about__p">
+            We don't just sell products; we curate a standard of perfection.
+            Every specimen in our collection is vetted for the most demanding
+            enthusiasts on the planet.
+        </p>
+        <div style="display:flex;gap:20px;">
+            <a href="{% url 'carify_app:about' %}" class="cg-btn-ghost">OUR PHILOSOPHY</a>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     MARQUEE
+══════════════════════════════════════════════ -->
+<div class="cg-marquee">
+    <div class="cg-marquee__track">
+        {% for _ in "12345"|make_list %}
+        <span class="cg-marquee__item">CERAMIC COATING <span class="cg-marquee__dot"></span></span>
+        <span class="cg-marquee__item">PPF PROTECTION <span class="cg-marquee__dot"></span></span>
+        <span class="cg-marquee__item">WHEEL CARE <span class="cg-marquee__dot"></span></span>
+        <span class="cg-marquee__item">PAINT CORRECTION <span class="cg-marquee__dot"></span></span>
+        <span class="cg-marquee__item">AERODYNAMICS <span class="cg-marquee__dot"></span></span>
+        <span class="cg-marquee__item">GLASS ARMOR <span class="cg-marquee__dot"></span></span>
+        <span class="cg-marquee__item">DETAILING <span class="cg-marquee__dot"></span></span>
+        <span class="cg-marquee__item">INTERIOR CARE <span class="cg-marquee__dot"></span></span>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 3 — THE VAULT (Elite Inventory)
+══════════════════════════════════════════════ -->
+<section class="cg-vault" data-cg-appear>
+    <div class="cg-features__head">
+        <div>
+            <span class="cg-features__pretitle">CURRENT SPECIMENS</span>
+            <h2 class="cg-features__title">THE VAULT CLASSIX</h2>
+        </div>
+        <a href="{% url 'carify_app:product_list' %}" class="cg-btn-ghost">VIEW ENTIRE GARAGE</a>
+    </div>
+
+    <div class="cg-vault__grid">
+        <!-- PRIMARY HERO: Porsche -->
+        <div class="cg-vhero">
+            <img class="cg-vhero__img"
+                src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1400&q=90"
+                alt="Porsche 964">
+            <div class="cg-vhero__body">
+                <span class="cg-vhero__tag">Restomod Prototype</span>
+                <h3 class="cg-vhero__h3">SPECIMEN 01:<br>THE 964 OUTLAW</h3>
+
+                <div class="cg-vhero__specs">
+                    <div class="cg-vspec">
+                        <span class="cg-vspec__v">3.6L</span>
+                        <span class="cg-vspec__l">AIR-COOLED</span>
+                    </div>
+                    <div class="cg-vspec">
+                        <span class="cg-vspec__v">310</span>
+                        <span class="cg-vspec__l">MAX BHP</span>
+                    </div>
+                    <div class="cg-vspec">
+                        <span class="cg-vspec__v">1,180</span>
+                        <span class="cg-vspec__l">CURB WT (KG)</span>
+                    </div>
+                </div>
+
+                <a href="/products/" class="cg-btn-primary" style="background:#fff; color:#000;">REQUEST DOSSIER</a>
+            </div>
+        </div>
+
+        <!-- SECONDARY COLUMN -->
+        <div style="display:flex; flex-direction:column; gap:12px;">
+            <div class="cg-vcard">
+                <img class="cg-vcard__img"
+                    src="https://images.unsplash.com/photo-1592193660924-d2188432b62d?auto=format&fit=crop&w=800&q=80"
+                    alt="Ferrari Roma">
+                <div class="cg-vcard__body">
+                    <h4 class="cg-vcard__h4">MODERN ICON: ROMA</h4>
+                    <a href="/products/" class="cg-vcard__link">TECHNICAL DATA <i class="fas fa-chevron-right"
+                            style="font-size:8px;"></i></a>
+                </div>
+            </div>
+            <div class="cg-vcard">
+                <img class="cg-vcard__img"
+                    src="https://images.unsplash.com/photo-1614200179396-2bdb77ebf81b?auto=format&fit=crop&w=800&q=80"
+                    alt="Mercedes 300SL">
+                <div class="cg-vcard__body">
+                    <h4 class="cg-vcard__h4">HERITAGE: 300SL LEGACY</h4>
+                    <a href="/products/" class="cg-vcard__link">TECHNICAL DATA <i class="fas fa-chevron-right"
+                            style="font-size:8px;"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 4 — PROTOCOL (How Carify Works)
+══════════════════════════════════════════════ -->
+<section class="cg-protocol" data-cg-appear>
+    <div style="text-align:center; max-width:700px; margin:0 auto;">
+        <span class="cg-features__pretitle">THE PROCESS</span>
+        <h2 class="cg-features__title">HOW CARIFY WORKS</h2>
+    </div>
+
+    <div class="cg-protocol__grid">
+        <div class="cg-step">
+            <span class="cg-step__num">01</span>
+            <h3 class="cg-step__h3">The Selection</h3>
+            <p class="cg-step__p">Curated specimens sourced from elite manufacturers and private collections across the
+                globe.</p>
+        </div>
+        <div class="cg-step">
+            <span class="cg-step__num">02</span>
+            <h3 class="cg-step__h3">The Treatment</h3>
+            <p class="cg-step__p">Every vehicle undergoes a molecular protection protocol utilizing our proprietary
+                Glass Armor series.</p>
+        </div>
+        <div class="cg-step">
+            <span class="cg-step__num">03</span>
+            <h3 class="cg-step__h3">The Heritage</h3>
+            <p class="cg-step__p">End-to-end management of your automotive legacy with door-to-door enclosed delivery.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 5 — STATS
+══════════════════════════════════════════════ -->
+<section class="cg-stats" data-cg-appear id="cgStats">
+    <div class="cg-stats__row">
+        <div class="cg-stat">
+            <span class="cg-stat__n" data-count="150" data-sfx="+">0</span>
+            <span class="cg-stat__l">Specimens</span>
+        </div>
+        <div class="cg-stat">
+            <span class="cg-stat__n" data-count="10" data-sfx="+">0</span>
+            <span class="cg-stat__l">Categories</span>
+        </div>
+        <div class="cg-stat">
+            <span class="cg-stat__n" data-count="99" data-sfx="%">0</span>
+            <span class="cg-stat__l">GCC Delivery</span>
+        </div>
+        <div class="cg-stat">
+            <span class="cg-stat__n" data-count="24" data-sfx="/7">0</span>
+            <span class="cg-stat__l">Support</span>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     PRODUCTS — LATEST ARRIVALS
+══════════════════════════════════════════════ -->
+<section class="cg-products" data-cg-appear>
+    <div class="cg-products__head">
+        <div>
+            <span class="cg-products__pretitle">CURATED</span>
+            <h2 class="cg-products__title">LATEST ARRIVALS</h2>
+        </div>
+        <a href="{% url 'carify_app:product_list' %}" class="cg-products__all">
+            VIEW ALL <i class="fas fa-arrow-right" style="font-size:.45rem;margin-left:4px;"></i>
+        </a>
+    </div>
+
+    <div class="cg-prow" id="cgProw">
+        {% for product in products|slice:":12" %}
+        <a href="{% url 'carify_app:product_detail' product.id %}" class="cg-pcard">
+            <div class="cg-pcard__img-w">
+                {% if product.first_media_image_url %}
+                <img src="{{ product.first_media_image_url }}" alt="{{ product.name }}" class="cg-pcard__img"
+                    loading="lazy">
+                {% else %}
+                <img src="https://images.unsplash.com/photo-1607603750909-408e1938f8c7?auto=format&fit=crop&q=80&w=400"
+                    class="cg-pcard__img" loading="lazy" style="opacity:.35;">
+                {% endif %}
+                <div class="cg-pcard__hover">
+                    <span>VIEW DETAILS</span>
+                </div>
+            </div>
+            <div class="cg-pcard__info">
+                <span class="cg-pcard__cat">{{ product.category.name|default:"CARIFY EXCLUSIVE" }}</span>
+                <div class="cg-pcard__name">{{ product.name }}</div>
+                <div class="cg-pcard__price">${{ product.price }}</div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 6 — THE JOURNAL (Blog)
+══════════════════════════════════════════════ -->
+<section class="cg-journal" data-cg-appear>
+    <div class="cg-features__head">
+        <div>
+            <span class="cg-features__pretitle">CARIFY JOURNAL</span>
+            <h2 class="cg-features__title">THE ART OF THE OBSESSION</h2>
+        </div>
+        <a href="#" class="cg-btn-ghost">READ ALL ARTICLES</a>
+    </div>
+
+    <div class="cg-journal__grid">
+        <a href="#" class="cg-post">
+            <img src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&w=1000&q=85"
+                alt="Blog 1" class="cg-post__img">
+            <div class="cg-post__body">
+                <span class="cg-post__date">Oct 12 / Maintenance</span>
+                <h3 class="cg-post__h3">Molecular Depth: The Chemistry of the Glass Armor Series</h3>
+            </div>
+        </a>
+        <a href="#" class="cg-post">
+            <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=1000&q=85"
+                alt="Blog 2" class="cg-post__img">
+            <div class="cg-post__body">
+                <span class="cg-post__date">Oct 08 / Heritage</span>
+                <h3 class="cg-post__h3">Asset Preservation: Why Detail is the Best Investment</h3>
+            </div>
+        </a>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SCRIPTS
+══════════════════════════════════════════════ -->
+<script>
+    (function () {
+        'use strict';
+
+        /* ── HERO CAROUSEL ── */
+        const slides = document.querySelectorAll('.cg-slide');
+        const dots = document.querySelectorAll('.cg-dot');
+        const DUR = 6000;
+        let cur = 0, timer;
+
+        function go(n) {
+            slides[cur].classList.remove('on');
+            dots[cur].classList.remove('on');
+            cur = (n + slides.length) % slides.length;
+            slides[cur].classList.add('on');
+            dots[cur].classList.add('on');
+            clearTimeout(timer);
+            timer = setTimeout(() => go(cur + 1), DUR);
+        }
+        timer = setTimeout(() => go(1), DUR);
+        dots.forEach(d => d.addEventListener('click', () => go(+d.dataset.i)));
+
+        // Touch swipe
+        let tx = 0;
+        const hero = document.getElementById('cgHero');
+        hero.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+        hero.addEventListener('touchend', e => {
+            const dx = e.changedTouches[0].clientX - tx;
+            if (Math.abs(dx) > 45) go(dx < 0 ? cur + 1 : cur - 1);
+        });
+
+        /* ── SCROLL REVEAL ── */
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+        }, { threshold: 0.07 });
+        document.querySelectorAll('[data-cg-appear]').forEach(el => obs.observe(el));
+
+        /* ── STAT COUNTERS ── */
+        const sObs = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                entry.target.querySelectorAll('[data-count]').forEach(el => {
+                    const target = +el.dataset.count;
+                    const sfx = el.dataset.sfx || '';
+                    let v = 0;
+                    const step = target / 60;
+                    const t = setInterval(() => {
+                        v = Math.min(v + step, target);
+                        el.textContent = Math.round(v) + sfx;
+                        if (v >= target) clearInterval(t);
+                    }, 18);
+                });
+                sObs.unobserve(entry.target);
+            });
+        }, { threshold: 0.35 });
+        const st = document.getElementById('cgStats');
+        if (st) sObs.observe(st);
+
+        /* ── DRAG SCROLL ── */
+        const row = document.getElementById('cgProw');
+        if (row) {
+            let down = false, sx, sl;
+            row.addEventListener('mousedown', e => { down = true; sx = e.pageX - row.offsetLeft; sl = row.scrollLeft; });
+            row.addEventListener('mouseleave', () => { down = false; });
+            row.addEventListener('mouseup', () => { down = false; });
+            row.addEventListener('mousemove', e => {
+                if (!down) return;
+                e.preventDefault();
+                row.scrollLeft = sl - (e.pageX - row.offsetLeft - sx) * 1.6;
+            });
+        }
+    })();
 </script>
+
 {% endblock %}

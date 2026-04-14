@@ -1,11 +1,12 @@
-from rest_framework import viewsets, status, filters
+from rest_framework import viewsets, status, filters, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import (
     Category, Product, ProductMedia, Order, OrderItem, Payment, 
-    SellerProfile, Service, Wishlist, ProductVariant, Review, Cart, CartItem
+    SellerProfile, Service, Wishlist, ProductVariant, Review, Cart, CartItem,
+    ProductQuestion, ProductAnswer
 )
 from .serializers import (
     CategorySerializer, ProductSerializer, ProductMediaSerializer,
@@ -49,6 +50,10 @@ class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy', 'toggle_helpful']:
+            return [permissions.IsAuthenticated()]
+        return [permissions.AllowAny()]
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
@@ -69,6 +74,10 @@ class ProductQuestionViewSet(viewsets.ModelViewSet):
     queryset = ProductQuestion.objects.all()
     serializer_class = ProductQuestionSerializer
 
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [permissions.IsAuthenticated()]
+        return [permissions.AllowAny()]
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
@@ -143,6 +152,7 @@ class CartItemViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         product_id = request.data.get('product_id')
+        service_id = request.data.get('service_id')
         variant_id = request.data.get('variant_id')
         quantity = int(request.data.get('quantity', 1))
 
@@ -157,7 +167,13 @@ class CartItemViewSet(viewsets.ModelViewSet):
             cart, _ = Cart.objects.get_or_create(session_id=session_id)
 
         # Check for existing item
-        item = CartItem.objects.filter(cart=cart, product_id=product_id, variant_id=variant_id).first()
+        if product_id:
+            item = CartItem.objects.filter(cart=cart, product_id=product_id, variant_id=variant_id).first()
+        elif service_id:
+            item = CartItem.objects.filter(cart=cart, service_id=service_id).first()
+        else:
+            return Response({'error': 'Specify a Specimen or Ritual.'}, status=status.HTTP_400_BAD_REQUEST)
+
         if item:
             item.quantity += quantity
             item.save()
@@ -169,6 +185,7 @@ class CartItemViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save(cart=cart)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
     @action(detail=True, methods=['post'])
     def toggle_saved(self, request, pk=None):

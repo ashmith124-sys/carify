@@ -12,21 +12,23 @@
     --bronze: #d9915a;
     --surface: #120f0e;
     --surface-soft: #1c1816;
-    
+
     --text-pure: #FFFFFF;
     --text-elegant: #E5E5E5;
     --text-muted: #8E8E93;
-    
+
     --border-subtle: rgba(255, 255, 255, 0.06);
     --border-elegant: rgba(217, 145, 90, 0.2);
-    
+
     --success: #10B981;
-    --warning: #d9915a; /* Bronze warning */
-    --danger: #9b5a2b;  /* Copper danger */
-    
+    --warning: #d9915a;
+    /* Bronze warning */
+    --danger: #9b5a2b;
+    /* Copper danger */
+
     --font-heading: 'Outfit', sans-serif;
     --font-body: 'Inter', sans-serif;
-    
+
     --transition-premium: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -109,7 +111,8 @@ body {
     transition: 0.3s;
 }
 
-.nav-link:hover, .nav-link.active {
+.nav-link:hover,
+.nav-link.active {
     color: var(--bronze);
     background: rgba(217, 145, 90, 0.05);
 }
@@ -224,7 +227,18 @@ body {
 
 /* MOBILE RESPONSIVENESS */
 @media (max-width: 1024px) {
-    .sidebar { width: 0; overflow: hidden; border-right: none; }
-    .main-content { margin-left: 0; padding: 20px; }
-    .dashboard-grid { grid-template-columns: 1fr !important; }
+    .sidebar {
+        width: 0;
+        overflow: hidden;
+        border-right: none;
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 20px;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr !important;
+    }
 }

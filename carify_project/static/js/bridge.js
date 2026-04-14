@@ -103,15 +103,24 @@ const CarifyBridge = {
             } else {
                 cartItemsContainer.innerHTML = activeItems.map(item => {
                     const priceVal = parseFloat(item.get_cost) || 0;
+                    const itemImg = (item.product && item.product.first_image) ? item.product.first_image : 
+                                   (item.product && item.product.image) ? item.product.image :
+                                   (item.service && item.service.image) ? item.service.image : 
+                                   'https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&q=80&w=200';
+                    const itemName = item.product ? item.product.name : (item.service ? item.service.name : 'Unknown');
+                    
                     return `
                     <div style="display: flex; gap: 15px; margin-bottom: 25px; padding-bottom: 25px; border-bottom: 1px solid var(--border-subtle);">
                         <div style="width: 80px; height: 100px; background: var(--surface); flex-shrink: 0; overflow: hidden; border-radius: 2px;">
-                            <img src="${item.product.first_image || (item.product.image ? item.product.image : 'https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&q=80&w=200')}" style="width: 100%; height: 100%; object-fit: cover;">
+                            <img src="${itemImg}" style="width: 100%; height: 100%; object-fit: cover;">
                         </div>
+
                         <div style="flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
                             <div>
-                                <h4 class="font-heading" style="font-size: 0.85rem; margin-bottom: 5px;">${item.product.name}</h4>
-                                <span style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em;">${item.variant ? item.variant.name : 'Standard'} // QTY: ${item.quantity}</span>
+                                <h4 class="font-heading" style="font-size: 0.85rem; margin-bottom: 5px;">${itemName}</h4>
+                                <span style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em;">
+                                    ${item.product ? (item.variant ? item.variant.name : 'Standard') : 'RITUAL PROTOCOL'} // QTY: ${item.quantity}
+                                </span>
                             </div>
                             <div style="display: flex; justify-content: space-between; align-items: flex-end;">
                                 <span class="font-heading copper-text" style="font-size: 1rem;">$${priceVal.toFixed(2)}</span>
@@ -124,24 +133,34 @@ const CarifyBridge = {
                     </div>
                 `}).join('');
             }
+
             
             // Render Saved
             if (savedItemsSection && savedItemsContainer) {
                 if (savedItems.length > 0) {
                     savedItemsSection.style.display = 'block';
-                    savedItemsContainer.innerHTML = savedItems.map(item => `
+                    savedItemsContainer.innerHTML = savedItems.map(item => {
+                        const savedImg = (item.product && item.product.first_image) ? item.product.first_image : 
+                                        (item.product && item.product.image) ? item.product.image :
+                                        (item.service && item.service.image) ? item.service.image : 
+                                        'https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&q=80&w=200';
+                        const savedName = item.product ? item.product.name : (item.service ? item.service.name : 'Unknown');
+                        
+                        return `
                         <div style="display: flex; gap: 10px; margin-bottom: 15px; opacity: 0.6; transition: 0.3s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">
-                            <img src="${item.product.first_image || (item.product.image ? item.product.image : 'https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&q=80&w=200')}" style="width: 50px; height: 60px; object-fit: cover; border-radius: 2px;">
+                            <img src="${savedImg}" style="width: 50px; height: 60px; object-fit: cover; border-radius: 2px;">
                             <div style="flex: 1;">
-                                <h4 class="font-heading" style="font-size: 0.75rem;">${item.product.name}</h4>
+                                <h4 class="font-heading" style="font-size: 0.75rem;">${savedName}</h4>
+
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
                                     <button onclick="window.CarifyBridge.toggleSavedItem(${item.id})" class="copper-text" style="background: none; border: none; font-size: 0.6rem; cursor: pointer; letter-spacing: 0.1em; padding: 0;">MOVE TO CART</button>
                                     <button onclick="window.CarifyBridge.removeItem(${item.id})" style="background: none; border: none; color: var(--text-muted); font-size: 0.6rem; cursor: pointer;">REMOVE</button>
                                 </div>
                             </div>
                         </div>
-                    `).join('');
+                    `}).join('');
                 } else {
+
                     savedItemsSection.style.display = 'none';
                 }
             }
@@ -184,6 +203,40 @@ const CarifyBridge = {
         }
     },
 
+    async addItemToCart(productId, type = 'product', quantity = 1, variantId = null) {
+        console.log(`--- BRIDGE: ATTEMPTING_ACQUISITION [ID:${productId}, TYPE:${type}] ---`);
+        try {
+            const body = { quantity: quantity };
+            if (type === 'product') {
+                body.product_id = productId;
+                if (variantId) body.variant_id = variantId;
+            } else {
+                body.service_id = productId;
+            }
+
+            const data = await this.request('/api/cart-items/', {
+                method: 'POST',
+                body: JSON.stringify(body)
+            });
+
+            console.log('--- ACQUISITION_SUCCESS ---', data);
+            await this.syncState();
+            
+            // UI FEEDBACK: Open cart drawer
+            const drawer = document.getElementById('cartDrawer');
+            const overlay = document.getElementById('globalOverlay');
+            if(drawer) drawer.classList.add('active');
+            if(overlay) overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            return data;
+
+        } catch(err) {
+            console.error('--- ACQUISITION_FAILED ---', err);
+            throw err;
+        }
+    },
+
     async request(url, options = {}) {
         const defaultHeaders = {
             'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value,
@@ -195,7 +248,8 @@ const CarifyBridge = {
             headers: { ...defaultHeaders, ...options.headers }
         });
         if(!response.ok) throw new Error(`Status: ${response.status}`);
-        return await response.json();
+        const text = await response.text();
+        return text ? JSON.parse(text) : {};
     }
 };
 

@@ -1,39 +1,43 @@
 /* CARIFY OBSIDIAN DESIGN SYSTEM */
 :root {
     /* Color Palette (HSL) */
-    --background: 15 43% 4%; /* #0c0806 - Deepest Brown */
-    --foreground: 210 3% 91%; /* #e6e7e8 */
-    
-    --surface: 17 18% 8%; /* #1a120f - Dark Brown Surface */
+    --background: 15 43% 4%;
+    /* #0c0806 - Deepest Brown */
+    --foreground: 210 3% 91%;
+    /* #e6e7e8 */
+
+    --surface: 17 18% 8%;
+    /* #1a120f - Dark Brown Surface */
     --surface-foreground: 210 3% 91%;
-    
+
     --card: 17 18% 10%;
     --card-foreground: 210 3% 91%;
-    
+
     --popover: 15 43% 6%;
     --popover-foreground: 210 3% 91%;
-    
-    --primary: 28 80% 52%; /* #e67e22 - Vibrant Dark Orange */
+
+    --primary: 28 80% 52%;
+    /* #e67e22 - Vibrant Dark Orange */
     --primary-foreground: 0 0% 100%;
-    
+
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
-    
+
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;
-    
+
     --accent: 240 3.7% 15.9%;
     --accent-foreground: 0 0% 98%;
-    
+
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    
+
     --border: 240 3.7% 20%;
     --input: 240 3.7% 15.9%;
     --ring: 263.4 70% 50.4%;
-    
+
     --radius: 0.75rem;
-    
+
     /* Fonts */
     --font-heading: 'Outfit', sans-serif;
     --font-body: 'Inter', sans-serif;
@@ -55,7 +59,12 @@ body {
     line-height: 1.6;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-family: var(--font-heading);
     font-weight: 700;
     letter-spacing: -0.02em;
@@ -120,76 +129,241 @@ a {
     border-color: hsl(var(--primary));
 }
 
-/* Header & Nav */
+/* Header & Nav REDESIGN */
 .site-header {
-    position: fixed;
+    position: fixed !important;
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 100;
-    padding: 1.25rem 0;
-    transition: all 0.3s ease;
+    z-index: 1000000;
+    padding: 1.5rem 0;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateZ(10px);
+    will-change: transform, top, padding;
+    pointer-events: none;
 }
 
 .site-header.scrolled {
-    padding: 0.75rem 0;
-    background: rgba(5, 5, 5, 0.8);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid hsl(var(--border));
+    top: 1.25rem !important;
+    padding: 0;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
-.header-inner {
+.main-nav-layout {
+    display: grid !important;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1.5rem;
+    width: 95%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: auto;
+}
+
+.site-header.scrolled .main-nav-layout {
+    background: rgba(8, 7, 7, 0.9) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(217, 145, 90, 0.4) !important;
+    border-radius: 999px;
+    padding: 0.7rem 3rem;
+    max-width: 1000px;
+    box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8);
+}
+
+.brand-wrapper {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 1.5rem;
 }
 
 .brand {
-    font-size: 1.75rem;
+    font-size: 2rem;
     font-weight: 800;
-    display: inline-block;
-    background: linear-gradient(135deg, #fff 0%, hsl(var(--primary)) 100%);
+    letter-spacing: -0.06em;
+    text-transform: uppercase;
+    background: linear-gradient(to right, #fff, hsl(var(--primary)));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    letter-spacing: -0.05em;
+    transition: all 0.4s ease;
 }
 
-.nav-links {
+.site-header.scrolled .brand {
+    font-size: 1.4rem;
+}
+
+.desktop-nav {
     display: flex;
+    gap: 2.5rem;
+    align-items: center;
+}
+
+.nav-left {
+    justify-content: flex-end;
+}
+
+.nav-right {
+    justify-content: flex-start;
+}
+
+.nav-right-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
     gap: 2.5rem;
 }
 
 .nav-link {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: hsl(var(--muted-foreground));
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(255, 255, 255, 0.4);
+    white-space: nowrap;
     position: relative;
+    transition: all 0.4s ease;
 }
 
-.nav-link:hover, .nav-link.active {
-    color: hsl(var(--foreground));
+.nav-link:hover,
+.nav-link.active {
+    color: #fff;
+    letter-spacing: 0.3em;
 }
 
 .nav-link::after {
     content: '';
     position: absolute;
-    bottom: -4px;
-    left: 0;
-    width: 0%;
+    bottom: -6px;
+    left: 50%;
+    width: 0;
     height: 2px;
-    background-color: hsl(var(--primary));
-    transition: width 0.3s ease;
+    background: hsl(var(--primary));
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateX(-50%);
 }
 
 .nav-link:hover::after {
-    width: 100%;
+    width: 25px;
 }
 
 .header-actions {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: 1.75rem;
+}
+
+.icon-trigger {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.icon-trigger:hover {
+    color: hsl(var(--primary));
+    transform: translateY(-2px);
+}
+
+/* ── CUSTOM LANGUAGE SELECTOR ────────────────── */
+.cg-lang-selector {
+    position: relative;
+    user-select: none;
+}
+
+.cg-lang-trigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.4s var(--transition-premium);
+}
+
+.cg-lang-trigger:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.cg-lang-trigger i {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.cg-lang-trigger span {
+    font-family: var(--font-heading);
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: var(--text-pure);
+}
+
+.cg-lang-list {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    width: 140px;
+    background: rgba(10, 10, 10, 0.85);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-elegant);
+    padding: 8px;
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.5s var(--transition-premium);
+}
+
+.cg-lang-selector.active .cg-lang-list {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.cg-lang-option {
+    padding: 10px 14px;
+    font-family: var(--font-heading);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.3s;
+    border-left: 2px solid transparent;
+}
+
+.cg-lang-option:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-pure);
+    border-left-color: var(--copper);
+}
+
+.cg-lang-option.active {
+    color: var(--copper);
+    background: rgba(217, 145, 90, 0.05);
+}
+
+
+.pos-relative {
+    position: relative;
+}
+
+.badge-dot {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 8px;
+    height: 8px;
+    background: hsl(var(--primary));
+    border-radius: 50%;
+    border: 2px solid #000;
+    display: none;
 }
 
 /* Section Styling */
@@ -224,7 +398,7 @@ a {
 .card:hover {
     border-color: hsl(var(--primary) / 0.5);
     transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
 /* Footer */
@@ -319,9 +493,9 @@ a {
     top: 1rem;
     right: 1rem;
     padding: 0.35rem 0.75rem;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(8px);
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 99px;
     font-size: 0.7rem;
     font-weight: 700;
@@ -390,7 +564,8 @@ a {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
-    margin-top: -5rem; /* Overlap with hero slightly */
+    margin-top: -5rem;
+    /* Overlap with hero slightly */
     position: relative;
     z-index: 20;
 }

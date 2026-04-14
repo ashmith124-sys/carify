@@ -13,11 +13,12 @@ from django.db.models.functions import TruncDate
 import json
 from .models import (
     Product, ProductMedia, Order, OrderItem, Payment, OTPToken, 
-    SellerProfile, Cart, CartItem, ProductVariant, Category
+    SellerProfile, Cart, CartItem, ProductVariant, Category,
+    Service, Booking
 )
 from .forms import (
     ProductForm, ProductMediaFormset, SellerRegistrationForm, 
-    BuyerRegistrationForm, OTPVerifyForm
+    BuyerRegistrationForm, OTPVerifyForm, ServiceForm
 )
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -41,14 +42,42 @@ def home(request):
     return render(request, 'home.html', {'products': products, 'categories': categories})
 
 def product_list(request):
-    """Display list of products with discovery infrastructure."""
+    """Display list of products with search and category filtering."""
+    query = request.GET.get('search', '')
+    category_id = request.GET.get('category')
+    
+    products = Product.objects.all().prefetch_related('media', 'reviews')
+    
+    if query:
+        products = products.filter(
+            Q(name__icontains=query) | 
+            Q(description__icontains=query) |
+            Q(category__name__icontains=query)
+        )
+    
+    if category_id:
+        products = products.filter(category_id=category_id)
+        
     categories = Category.objects.all()
-    return render(request, 'product_list.html', {'categories': categories})
+    
+    return render(request, 'product_list.html', {
+        'products': products,
+        'categories': categories,
+        'search_query': query,
+        'selected_category': int(category_id) if category_id else None
+    })
 
 def product_detail(request, product_id):
     """Display product detail with gallery, variants, and reviews."""
     product = get_object_or_404(Product, id=product_id)
-    return render(request, 'product_detail.html', {'product': product})
+    related_products = Product.objects.filter(category=product.category).exclude(id=product.id)[:4]
+    user_has_reviewed = product.reviews.filter(user=request.user).exists() if request.user.is_authenticated else False
+    
+    return render(request, 'product_detail.html', {
+        'product': product,
+        'related_products': related_products,
+        'user_has_reviewed': user_has_reviewed
+    })
 
 def buyer_register(request):
     """Register a new buyer account."""
@@ -152,36 +181,42 @@ def create_checkout_session(request):
         messages.error(request, "Empty_Cart_Cache. Please add items to initialize checkout.")
         return redirect('carify_app:product_list')
 
-    # Create Order
-    order = Order.objects.create(
-        buyer=request.user,
-        total_amount=cart.get_total_price()
-    )
-
-    line_items = []
-    for item in active_items:
-        # Create OrderItem
-        unit_price = item.get_cost() / item.quantity
-        OrderItem.objects.create(
-            order=order,
-            product=item.product,
-            quantity=item.quantity,
-            price=unit_price
+    try:
+        # Create Order
+        order = Order.objects.create(
+            buyer=request.user,
+            total_amount=cart.get_total_price()
         )
 
-        line_items.append({
-            'price_data': {
-                'currency': 'usd',
-                'product_data': {
-                    'name': f"{item.product.name} ({item.variant.name if item.variant else 'Standard'})",
-                    'description': item.product.description[:200],
+        line_items = []
+        for item in active_items:
+            # Create OrderItem
+            unit_price = item.get_cost() / item.quantity
+            OrderItem.objects.create(
+                order=order,
+                product=item.product,
+                service=item.service,
+                quantity=item.quantity,
+                price=unit_price
+            )
+
+            item_name = ""
+            if item.product:
+                item_name = f"{item.product.name} ({item.variant.name if item.variant else 'Standard'})"
+            else:
+                item_name = f"Ritual: {item.service.name}"
+
+            line_items.append({
+                'price_data': {
+                    'currency': 'usd',
+                    'product_data': {
+                        'name': item_name,
+                        'description': (item.product.description if item.product else item.service.description)[:200],
+                    },
+                    'unit_amount': int(unit_price * 100),
                 },
-                'unit_amount': int(unit_price * 100),
-            },
-            'quantity': item.quantity,
-        })
-    
-    try:
+                'quantity': item.quantity,
+            })
         # DEV BYPASS: If using the default dummy keys, simulate a successful redirect
         if settings.STRIPE_SECRET_KEY == 'sk_test_your_stripe_secret_key_here':
             active_items.delete()
@@ -190,7 +225,7 @@ def create_checkout_session(request):
             return redirect('/payment/success/')
 
         checkout_session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
+            payment_method_types=['card', 'klarna', 'affirm'],
             line_items=line_items,
             mode='payment',
             success_url=request.build_absolute_uri('/payment/success/'),
@@ -242,9 +277,9 @@ def stripe_webhook(request):
                     status='completed'
                 )
 
-                # Deduct inventory quantities
-                for item in order.orderitem_set.all():
-                    if item.product.quantity >= item.quantity:
+                # Deduct inventory quantities for products
+                for item in order.items.all():
+                    if item.product and item.product.quantity >= item.quantity:
                         item.product.quantity -= item.quantity
                         item.product.save()
 
@@ -332,6 +367,82 @@ def seller_add_product(request):
         formset = ProductMediaFormset(queryset=ProductMedia.objects.none())
     return render(request, 'product_create.html', {'form': form, 'formset': formset})
 
+def services_catalog(request):
+    """Render the dynamic Elite Solutions catalog."""
+    services = Service.objects.all().select_related('seller', 'category')
+    return render(request, 'services.html', {'services': services})
+
+@login_required
+def add_service(request):
+    """Handle administrative creation of new car care ceremonies."""
+    if not request.user.is_superuser:
+        messages.error(request, "Clearance_Error: SuperAdmin protocol required.")
+        return redirect('carify_app:services')
+
+    if request.method == 'POST':
+        form = ServiceForm(request.POST, request.FILES)
+        if form.is_valid():
+            service = form.save(commit=False)
+            service.seller = request.user
+            service.save()
+            messages.success(request, f"Ceremony '{service.name}' initialized in the catalog.")
+            return redirect('carify_app:services')
+    else:
+        form = ServiceForm()
+
+    return render(request, 'service_create.html', {'form': form})
+
+@login_required
+def delete_service(request, service_id):
+    """Terminate an existing ritual from the catalog."""
+    if not request.user.is_superuser:
+        messages.error(request, "Clearance_Error: SuperAdmin required for termination.")
+        return redirect('carify_app:services')
+    
+    service = get_object_or_404(Service, id=service_id)
+    name = service.name
+    service.delete()
+    messages.success(request, f"Ritual Protocol '{name}' has been terminated.")
+    return redirect('carify_app:services')
+
+@login_required
+@require_POST
+def book_service(request):
+    """Handle service ceremony booking requests with optional Cart clearing."""
+    service_id = request.POST.get('service_id')
+    # Align with form field names in cart.html and services.html
+    preferred_date = request.POST.get('preferred_date') or request.POST.get('date')
+    preferred_time = request.POST.get('preferred_time') or request.POST.get('time')
+    vehicle_details = request.POST.get('vehicle_details') or request.POST.get('vehicle')
+    notes = request.POST.get('additional_notes') or request.POST.get('notes', '')
+    
+    redirect_to_cart = request.POST.get('redirect_to_cart') == 'true'
+
+    service = get_object_or_404(Service, id=service_id)
+
+    try:
+        Booking.objects.create(
+            user=request.user,
+            service=service,
+            preferred_date=preferred_date,
+            preferred_time=preferred_time,
+            vehicle_details=vehicle_details,
+            additional_notes=notes
+        )
+        
+        # Clear from cart if present
+        if request.user.is_authenticated:
+            CartItem.objects.filter(cart__user=request.user, service=service).delete()
+        
+        messages.success(request, f"Ritual Protocol '{service.name}' initiated. Our curators will finalize the scheduling shortly.")
+    except Exception as e:
+        messages.error(request, f"Protocol_Error: {str(e)}")
+
+    if redirect_to_cart:
+        return redirect('carify_app:cart_view')
+    return redirect('carify_app:services')
+
+
 def static_page(request, page_type):
     """Render informational pages with premium luxury content."""
     pages = {
@@ -344,11 +455,6 @@ def static_page(request, page_type):
             'title': 'THE_MANIFESTO',
             'subtitle': 'Our Guiding Principles',
             'content': 'We believe that preservation is a form of art. Every vehicle tells a story, and every product we select is chosen to ensure that story continues for generations.'
-        },
-        'services': {
-            'title': 'ELITE_SOLUTIONS',
-            'subtitle': 'Professional Preservation',
-            'content': 'From nanoscopic ceramic application to high-impact film solutions, our network of certified partners delivers the gold standard in vehicle protection.'
         },
         'privacy': {
             'title': 'THE_PROTOCOL',
@@ -419,3 +525,27 @@ def seller_analytics(request):
 @login_required
 def seller_settings(request):
     return render(request, 'seller_dashboard_settings.html')
+
+@login_required
+def cart_view(request):
+    """Render the dedicated full-page acquisition portfolio."""
+    cart, created = Cart.objects.get_or_create(user=request.user)
+    return render(request, 'cart.html', {'cart': cart})
+
+
+@require_POST
+def subscribe_newsletter(request):
+    try:
+        data = json.loads(request.body)
+        email = data.get('email')
+        if not email:
+            return JsonResponse({'status': 'error', 'message': 'Email is required.'}, status=400)
+        
+        from .models import NewsletterSubscription
+        if NewsletterSubscription.objects.filter(email=email).exists():
+            return JsonResponse({'status': 'success', 'message': 'You are already in the loop.'})
+        
+        NewsletterSubscription.objects.create(email=email)
+        return JsonResponse({'status': 'success', 'message': 'Welcome to the loop! We will keep you updated.'})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)

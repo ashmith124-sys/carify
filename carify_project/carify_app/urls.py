@@ -46,16 +46,24 @@ urlpatterns = [
     
     # NEW Informational Pages
     path('about/', views.static_page, {'page_type': 'about'}, name='about'),
-    path('services/', views.static_page, {'page_type': 'services'}, name='services'),
+    path('services/', views.services_catalog, name='services'),
+    path('services/create/', views.add_service, name='add_service'),
+    path('services/delete/<int:service_id>/', views.delete_service, name='delete_service'),
+    path('book-service/', views.book_service, name='book_service'),
+
     path('manifesto/', views.static_page, {'page_type': 'manifesto'}, name='manifesto'),
     path('privacy/', views.static_page, {'page_type': 'privacy'}, name='privacy'),
+
 
     # Seller Dashboard Extensions
     path('seller/orders/', views.seller_orders, name='seller_orders'),
     path('seller/analytics/', views.seller_analytics, name='seller_analytics'),
     path('seller/settings/', views.seller_settings, name='seller_settings'),
+    path('cart/', views.cart_view, name='cart_view'),
+
     
     path('payment/success/', views.payment_success, name='payment_success'),
     path('payment/cancel/', views.payment_cancel, name='payment_cancel'),
     path('stripe/webhook/', views.stripe_webhook, name='stripe_webhook'),
+    path('newsletter/subscribe/', views.subscribe_newsletter, name='subscribe_newsletter'),
 ]

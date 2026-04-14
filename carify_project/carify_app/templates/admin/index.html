@@ -1,0 +1,128 @@
+{% extends 'unfold/layouts/base_simple.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="px-4 py-8 md:px-10">
+    <!-- Header -->
+    <div class="mb-10">
+        <h1 class="text-3xl font-extrabold tracking-tight text-white mb-2">PLATFORM COMMAND CENTER</h1>
+        <p class="text-gray-400 font-medium">Real-time marketplace oversight and business intelligence.</p>
+    </div>
+
+    <!-- KPI Metrics -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        <div class="admin-stat-card">
+            <span class="admin-stat-label">TOTAL GMV</span>
+            <div class="admin-stat-value text-copper">${{ platform_stats.gmv|floatformat:2 }}</div>
+        </div>
+        <div class="admin-stat-card">
+            <span class="admin-stat-label">ACTIVE ORDERS</span>
+            <div class="admin-stat-value">{{ platform_stats.orders }}</div>
+        </div>
+        <div class="admin-stat-card">
+            <span class="admin-stat-label">AVG ORDER VALUE</span>
+            <div class="admin-stat-value text-copper">${{ platform_stats.aov|floatformat:2 }}</div>
+        </div>
+        <div class="admin-stat-card">
+            <span class="admin-stat-label">LOW STOCK ITEMS</span>
+            <div class="admin-stat-value text-red-500">{{ platform_stats.low_stock }}</div>
+        </div>
+        <div class="admin-stat-card">
+            <span class="admin-stat-label">SPECIMEN REVIEWS</span>
+            <div class="admin-stat-value text-white">{{ platform_stats.total_reviews }}</div>
+        </div>
+        <div class="admin-stat-card">
+            <span class="admin-stat-label">OPEN INQUIRIES</span>
+            <div class="admin-stat-value {% if platform_stats.open_inquiries > 0 %}text-orange-500{% else %}text-white{% endif %}">
+                {{ platform_stats.open_inquiries }}
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Growth Chart -->
+    <div class="mb-10 lg:grid lg:grid-cols-3 lg:gap-8">
+        <div class="lg:col-span-2">
+            <div class="unfold-card p-6" style="height: 450px;">
+                <h3 class="admin-stat-label mb-6">REVENUE TRAJECTORY (30 DAYS)</h3>
+                <div style="height: calc(100% - 40px);">
+                    <canvas id="adminRevenueChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- TOP PERFORMERS -->
+        <div class="bg-gray-900/40 rounded-xl border border-white/5 p-6 border-elegant">
+             <h3 class="admin-stat-label mb-6">TOP SPECIMENS (PLATFORM)</h3>
+             <div class="space-y-4">
+                 {% for item in top_products %}
+                 <div class="flex justify-between items-center py-3 border-b border-white/5">
+                     <div class="flex flex-col">
+                         <span class="text-xs font-bold text-white uppercase tracking-wider">{{ item.product__name|truncatechars:20 }}</span>
+                         <span class="text-[10px] text-gray-500 uppercase">{{ item.qty_sold }} UNITS</span>
+                     </div>
+                     <span class="text-xs font-bold text-copper">${{ item.rev|floatformat:2 }}</span>
+                 </div>
+                 {% empty %}
+                 <p class="text-xs text-gray-500 italic">No metrics recorded.</p>
+                 {% endfor %}
+             </div>
+             
+             <div class="mt-8 pt-8 border-t border-white/5">
+                 <a href="/admin/carify_app/order/" class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] hover:text-white transition-colors">VIEW ALL TRANSACTIONS</a>
+             </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('adminRevenueChart').getContext('2d');
+    
+    let gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(215, 126, 44, 0.4)');
+    gradient.addColorStop(1, 'rgba(215, 126, 44, 0.0)');
+    
+    const labels = JSON.parse('{{ chart_labels|safe }}');
+    const data = JSON.parse('{{ chart_data|safe }}');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Gross Platform Revenue ($)',
+                data: data,
+                borderColor: '#d77e2c',
+                backgroundColor: gradient,
+                borderWidth: 2,
+                pointBackgroundColor: '#0a0a0a',
+                pointBorderColor: '#d77e2c',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: 'rgba(255, 255, 255, 0.03)' },
+                    ticks: { color: 'rgba(255, 255, 255, 0.4)', font: { size: 10 } }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { color: 'rgba(255, 255, 255, 0.4)', font: { size: 10 } }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

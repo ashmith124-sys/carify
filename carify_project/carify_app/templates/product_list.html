@@ -5,8 +5,8 @@
 
 {% block content %}
 <!-- COLLECTION HEADER -->
-<div class="glass-panel" style="border: none; border-radius: 0; background: var(--surface); padding-top: 140px; padding-bottom: 60px;">
-    <div class="container" style="text-align: center;" data-appear>
+<div class="glass-panel collection-hero">
+    <div class="container collection-hero-inner" data-appear>
         <span class="hero-eyebrow" style="margin-bottom: 15px;">Curated Series</span>
         <h1 style="font-size: clamp(2.5rem, 8vw, 4.5rem); letter-spacing: -3px;">THE COLLECTION</h1>
         <p style="font-family: var(--font-serif); font-style: italic; color: var(--text-muted); margin-top: 10px;">Select your specimen for preservation.</p>
@@ -14,8 +14,8 @@
 </div>
 
 <!-- STICKY CONTROL MODULE (MOBILE) -->
-<div class="d-lg-none" style="position: sticky; top: 65px; z-index: 900; background: var(--glass-heavy); backdrop-filter: var(--glass-blur); border-bottom: 1px solid var(--border-subtle);">
-    <div class="container" style="display: flex; justify-content: space-between; padding: 15px 0;">
+<div class="collection-mobile-bar d-lg-none">
+    <div class="container collection-mobile-bar-inner">
         <button id="mobileFilterTrigger" class="btn btn-outline" style="padding: 10px 20px; font-size: 0.6rem;">FILTER</button>
         <select id="mobileSortSelect" style="background: transparent; border: 1px solid var(--border-elegant); color: white; font-size: 0.6rem; padding: 0 15px; font-family: var(--font-heading); text-transform: uppercase;">
             <option value="-created_at">LATEST</option>
@@ -26,19 +26,19 @@
     </div>
 </div>
 
-<div class="container" style="display: grid; grid-template-columns: 1fr; gap: 60px; padding: 80px 0;">
+<div class="container collection-layout">
     <!-- SIDEBAR PERSPECTIVE (DESKTOP) -->
-    <aside class="d-none d-lg-block" style="width: 280px; border-right: 1px solid var(--border-subtle); padding-right: 50px;">
-        <div style="position: sticky; top: 120px;">
+    <aside class="collection-sidebar d-none d-lg-block">
+        <div class="collection-sidebar-inner">
             {% include 'includes/filter_sidebar.html' %}
         </div>
     </aside>
 
     <!-- CONTENT MODULE -->
-    <main style="flex: 1;">
+    <main class="collection-content">
         <!-- DESKTOP CONTROLS -->
-        <div class="d-none d-lg-flex" style="justify-content: space-between; align-items: center; margin-bottom: 60px; padding-bottom: 20px; border-bottom: 1px solid var(--border-subtle);">
-            <div id="resultsCount" style="font-size: 0.7rem; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.2em;">
+        <div class="collection-toolbar d-none d-lg-flex">
+            <div id="resultsCount" class="collection-results-copy">
                 Discover our selection
             </div>
             <select id="sortSelect" style="background: transparent; border: none; color: white; font-size: 0.75rem; font-family: var(--font-heading); text-transform: uppercase; cursor: pointer;">
@@ -49,7 +49,7 @@
             </select>
         </div>
 
-        <div id="productGrid" class="grid-main" style="grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));">
+        <div id="productGrid" class="grid-main collection-grid collection-product-grid">
             <!-- Products will be injected via AJAX -->
             <div style="grid-column: 1 / -1; text-align: center; padding: 120px 0;">
                 <i class="fas fa-circle-notch fa-spin" style="font-size: 1.5rem; color: var(--copper);"></i>
@@ -59,15 +59,15 @@
 </div>
 
 <!-- FILTER OVERLAY (MOBILE) -->
-<div id="filterDrawer" class="glass-panel" style="position: fixed; inset: 0; left: 100%; width: 100%; z-index: 2200; transition: transform 0.8s var(--transition-premium); display: flex; flex-direction: column;">
-    <div style="padding: 24px; border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;">
+<div id="filterDrawer" class="glass-panel collection-filter-drawer">
+    <div class="collection-filter-drawer-head">
         <h3 class="font-heading" style="font-size: 1rem; letter-spacing: 0.1em;">FILTER_SELECTION</h3>
         <button id="closeFilter" style="background: none; border: none; color: var(--text-pure); cursor: pointer;"><i class="fas fa-xmark" style="font-size: 1.25rem;"></i></button>
     </div>
-    <div style="flex: 1; padding: 40px 24px;">
+    <div class="collection-filter-drawer-body">
         {% include 'includes/filter_sidebar.html' %}
     </div>
-    <div style="padding: 24px; border-top: 1px solid var(--border-subtle);">
+    <div class="collection-filter-drawer-foot">
         <button id="applyFiltersMobile" class="btn btn-primary" style="width: 100%;">APPLY CHANGES</button>
     </div>
 </div>
@@ -119,30 +119,40 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
 
-                productGrid.innerHTML = products.map((product, idx) => `
+                productGrid.innerHTML = products.map((product, idx) => {
+                    const fallbackImg = 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&q=80&w=800';
+                    const itemImg = product.first_image || product.image || fallbackImg;
+                    
+                    return `
                     <div class="shop-card stagger-item" id="p-${product.id}">
-                        <a href="/product/${product.id}/" style="text-decoration: none; display: block; height: 100%;">
-                            <div class="shop-image-wrapper">
-                                <img src="${product.first_image || product.image || 'https://images.unsplash.com/photo-1486491830252-1719446d670a?auto=format&fit=crop&q=80&w=400'}" alt="${product.name}" class="shop-img">
-                                <div class="quick-add-overlay">
-                                    <span class="btn btn-primary" style="width: 80%; font-size: 0.65rem; padding: 0.8rem 1rem;">VIEW DETAILS</span>
-                                </div>
+                        <div class="shop-image-wrapper">
+                            <a href="/product/${product.id}/" style="display: block; height: 100%;">
+                                <img src="${itemImg}" 
+                                     alt="${product.name}" 
+                                     class="shop-img" 
+                                     onerror="this.src='${fallbackImg}'; this.style.filter='grayscale(1) brightness(0.5)';"
+                                >
+                            </a>
+                            <div class="quick-add-overlay">
+                                <span class="btn btn-primary" onclick="window.CarifyBridge.addItemToCart(${product.id})" style="width: 80%; font-size: 0.65rem; padding: 0.8rem 1rem;">SECURE SPECIMEN</span>
                             </div>
+                        </div>
+                        <a href="/product/${product.id}/" style="text-decoration: none; display: block;">
                             <div class="shop-info">
                                 <span class="shop-vendor font-heading">${product.category_name || 'CARIFY EXCLUSIVE'}</span>
                                 <h4 class="shop-title font-heading">${product.name}</h4>
-                                <div style="display: flex; justify-content: center; align-items: center; margin-top: 5px;">
-                                    <span class="shop-price font-heading copper-text">$${product.price}</span>
-                                </div>
+                                <span class="shop-price font-heading copper-text">$${parseFloat(product.price).toLocaleString()}</span>
                             </div>
                         </a>
                     </div>
-                `).join('');
+                `}).join('');
 
                 // Staggered appearance
                 setTimeout(() => {
                     document.querySelectorAll('.stagger-item').forEach((el, i) => {
-                        setTimeout(() => el.classList.add('visible'), i * 80);
+                        if(!el.classList.contains('visible')) {
+                             setTimeout(() => el.classList.add('visible'), i * 60);
+                        }
                     });
                 }, 50);
 
@@ -228,13 +238,118 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <style>
     .d-none { display: none; }
+    .d-lg-none { display: block; }
     .d-lg-block { display: none; }
     .d-lg-flex { display: none; }
+    .collection-hero {
+        border: none;
+        border-radius: 0;
+        background: var(--surface);
+        padding-top: 140px;
+        padding-bottom: 60px;
+    }
+    .collection-hero-inner {
+        text-align: center;
+    }
+    .collection-mobile-bar {
+        position: sticky;
+        top: 65px;
+        z-index: 900;
+        background: var(--glass-heavy);
+        backdrop-filter: var(--glass-blur);
+        border-bottom: 1px solid var(--border-subtle);
+    }
+    .collection-mobile-bar-inner {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 15px 0;
+    }
+    .collection-layout {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 48px;
+        padding: 56px 0 80px;
+        align-items: start;
+    }
+    .collection-sidebar {
+        width: 100%;
+        min-width: 0;
+        border-right: 1px solid var(--border-subtle);
+        padding-right: 40px;
+    }
+    .collection-sidebar-inner {
+        position: sticky;
+        top: 120px;
+    }
+    .collection-content {
+        min-width: 0;
+    }
+    .collection-toolbar {
+        justify-content: space-between;
+        align-items: center;
+        gap: 24px;
+        margin-bottom: 48px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--border-subtle);
+    }
+    .collection-results-copy {
+        font-size: 0.7rem;
+        font-weight: 500;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+    }
+    .collection-product-grid {
+        padding-bottom: 60px;
+        align-items: start;
+    }
+    .collection-filter-drawer {
+        position: fixed;
+        inset: 0;
+        left: 100%;
+        width: 100%;
+        z-index: 2200;
+        transition: transform 0.8s var(--transition-premium);
+        display: flex;
+        flex-direction: column;
+    }
+    .collection-filter-drawer-head {
+        padding: 24px;
+        border-bottom: 1px solid var(--border-subtle);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .collection-filter-drawer-body {
+        flex: 1;
+        padding: 40px 24px;
+    }
+    .collection-filter-drawer-foot {
+        padding: 24px;
+        border-top: 1px solid var(--border-subtle);
+    }
+    .collection-grid {
+        grid-template-columns: 1fr;
+        gap: 48px 24px;
+    }
     @media (min-width: 1024px) {
         .d-none { display: block; }
+        .d-lg-none { display: none; }
         .d-lg-block { display: block; }
         .d-lg-flex { display: flex; }
-        .container { grid-template-columns: 280px 1fr !important; }
+        .collection-layout {
+            grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+            gap: 56px;
+        }
+        .collection-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+    }
+    @media (min-width: 640px) and (max-width: 1023px) {
+        .collection-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
     }
     
     .stagger-item { opacity: 0; transform: translateY(15px); transition: all 1s var(--transition-premium); }

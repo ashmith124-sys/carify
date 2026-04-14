@@ -1,56 +1,129 @@
-/* Custom admin styles for Carify */
-.admin-interface .sidebar {
-    background: linear-gradient(135deg, #0c0806 0%, #1a120f 100%);
+/* Carify Premium Admin Design System - Obsidian/Copper Theme */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+:root {
+    --copper: #d77e2c;
+    --copper-dark: #b56620;
+    --obsidian: #0a0a0a;
+    --surface: rgba(26, 26, 26, 0.4);
+    --border-elegant: rgba(255, 255, 255, 0.05);
+    --text-pure: #ffffff;
+    --text-muted: rgba(255, 255, 255, 0.5);
+    --font-heading: 'Outfit', sans-serif;
 }
 
-.admin-interface .main-content {
-    background: #0c0806;
-    color: #e6e7e8;
+/* Global Overrides */
+body {
+    background-color: var(--obsidian) !important;
+    font-family: var(--font-heading) !important;
+    color: var(--text-pure) !important;
 }
 
-.admin-interface .card {
-    background: #1a120f;
-    color: #e6e7e8;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    border: 1px solid #2c1e18;
+/* Unfold Sidebar Customization */
+.unfold-sidebar {
+    background: #0a0a0a !important;
+    border-right: 1px solid var(--border-elegant) !important;
+    backdrop-filter: blur(20px);
 }
 
-.admin-interface .btn-primary {
-    background: linear-gradient(135deg, #8d4004 0%, #e67e22 100%);
-    border: none;
-    border-radius: 8px;
-    color: white;
+.unfold-sidebar .sidebar-logo {
+    padding: 30px 20px !important;
 }
 
-.admin-interface .btn-primary:hover {
-    background: linear-gradient(135deg, #e67e22 0%, #8d4004 100%);
+.unfold-sidebar-link:hover {
+    background: rgba(215, 126, 44, 0.05) !important;
+    color: var(--copper) !important;
+}
+
+.unfold-sidebar-link.active {
+    background: rgba(215, 126, 44, 0.1) !important;
+    color: var(--copper) !important;
+    border-right: 3px solid var(--copper);
+}
+
+/* Cards & Content Panels */
+.unfold-card,
+.module,
+.dashboard-item {
+    background: var(--surface) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-elegant) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.unfold-card:hover {
+    border-color: rgba(215, 126, 44, 0.3) !important;
+}
+
+/* Buttons */
+.unfold-button-primary {
+    background: var(--copper) !important;
+    border-radius: 6px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.05em !important;
+    text-transform: uppercase !important;
+    font-size: 0.75rem !important;
+    transition: all 0.3s ease !important;
+}
+
+.unfold-button-primary:hover {
+    background: var(--copper-dark) !important;
+    box-shadow: 0 0 20px rgba(215, 126, 44, 0.3) !important;
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
 }
 
-.admin-interface .table {
-    background: #333333;
-    color: #e6e7e8;
-    border-radius: 8px;
-    overflow: hidden;
+/* Tables */
+.unfold-table-row:hover {
+    background: rgba(255, 255, 255, 0.02) !important;
 }
 
-.admin-interface .table th,
-.admin-interface .table td {
-    border-color: #444444;
+.unfold-table-header {
+    background: rgba(255, 255, 255, 0.02) !important;
+    border-bottom: 1px solid var(--border-elegant) !important;
+    color: var(--copper) !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    font-size: 0.65rem !important;
 }
 
-.admin-interface .form-control {
-    background: #333333;
-    color: #e6e7e8;
-    border-radius: 8px;
-    border: 2px solid #444444;
+/* Stats Widgets (Custom Dash) */
+.admin-stat-card {
+    padding: 25px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 100%);
+    border: 1px solid var(--border-elegant);
+    border-radius: 12px;
 }
 
-.admin-interface .form-control:focus {
-    border-color: #f3811f;
-    box-shadow: 0 0 0 0.2rem rgba(243, 129, 31, 0.25);
-    background: #333333;
-    color: #e6e7e8;
+.admin-stat-label {
+    color: var(--copper);
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.admin-stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-pure);
+}
+
+/* Inputs */
+input,
+select,
+textarea {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid var(--border-elegant) !important;
+    border-radius: 6px !important;
+    color: white !important;
+}
+
+input:focus {
+    border-color: var(--copper) !important;
+    background: rgba(215, 126, 44, 0.02) !important;
 }

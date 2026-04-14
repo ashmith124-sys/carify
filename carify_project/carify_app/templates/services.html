@@ -1,148 +1,380 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Service Protocols | CARIFY{% endblock %}
+{% block title %}ELITE SOLUTIONS | CARIFY Rituals{% endblock %}
+
+{% block extra_css %}
+<style>
+    .cg-solutions-hero {
+        height: 60vh;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), var(--clr-bg)),
+            url('https://images.unsplash.com/photo-1599256621730-535171e28e50?auto=format&fit=crop&w=1600&q=80');
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 0 5vw;
+    }
+
+    .cg-service-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 20px;
+        padding: 4rem 5vw;
+        background: var(--clr-bg);
+    }
+
+    .cg-scard {
+        position: relative;
+        height: 500px;
+        overflow: hidden;
+        border: 1px solid var(--clr-border);
+        transition: transform 0.6s var(--ease);
+    }
+
+    .cg-scard:hover {
+        transform: translateY(-8px);
+    }
+
+    .cg-scard__img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(.4);
+        transition: transform 0.8s var(--ease);
+    }
+
+    .cg-scard:hover .cg-scard__img {
+        transform: scale(1.05);
+    }
+
+    .cg-scard__body {
+        position: absolute;
+        inset: 0;
+        padding: 3rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        z-index: 2;
+    }
+
+    .cg-scard__cat {
+        font-family: var(--font-h);
+        font-size: .5rem;
+        font-weight: 700;
+        letter-spacing: .4em;
+        text-transform: uppercase;
+        color: var(--clr-copper);
+        margin-bottom: 1rem;
+    }
+
+    .cg-scard__h3 {
+        font-family: var(--font-h);
+        font-size: 1.8rem;
+        font-weight: 800;
+        line-height: 1.1;
+        color: #fff;
+        margin-bottom: 1.5rem;
+    }
+
+    .cg-scard__desc {
+        font-size: .85rem;
+        color: var(--clr-muted);
+        line-height: 1.6;
+        margin-bottom: 2rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .cg-scard__footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 1.5rem;
+    }
+
+    .cg-scard__price {
+        font-family: var(--font-h);
+        font-size: .9rem;
+        font-weight: 700;
+        color: #fff;
+    }
+
+    /* ── BOOKING MODAL ── */
+    .cg-booking-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(15px);
+        z-index: 3000;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.5s;
+    }
+
+    .cg-booking-overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .cg-booking-panel {
+        width: 100%;
+        max-width: 500px;
+        height: 100%;
+        background: #0a0a0a;
+        border-left: 1px solid var(--clr-border);
+        padding: 5rem 3rem;
+        transform: translateX(100%);
+        transition: transform 0.6s cubic-bezier(0.2, 1, 0.3, 1);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .cg-booking-overlay.active .cg-booking-panel {
+        transform: translateX(0);
+    }
+
+    .cg-booking__h2 {
+        font-family: var(--font-h);
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: -.03em;
+        line-height: 1.1;
+        margin-bottom: 3rem;
+    }
+
+    .cg-input-group {
+        margin-bottom: 2rem;
+    }
+
+    .cg-input-label {
+        display: block;
+        font-family: var(--font-h);
+        font-size: .55rem;
+        font-weight: 700;
+        letter-spacing: .2em;
+        text-transform: uppercase;
+        color: var(--clr-copper);
+        margin-bottom: 10px;
+    }
+
+    .cg-input {
+        width: 100%;
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid var(--clr-border);
+        color: #fff;
+        padding: 12px 0;
+        font-size: .9rem;
+        outline: none;
+        transition: border-color 0.3s;
+    }
+
+    .cg-input:focus {
+        border-bottom-color: var(--clr-copper);
+    }
+
+    select.cg-input option {
+        background: #111;
+        color: #fff;
+    }
+
+    .cg-book-btn {
+        margin-top: auto;
+        width: 100%;
+        background: #fff;
+        color: #000;
+        border: none;
+        padding: 1.2rem;
+        font-family: var(--font-h);
+        font-size: .7rem;
+        font-weight: 800;
+        letter-spacing: .2em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .cg-book-btn:hover {
+        background: var(--clr-copper);
+        color: #fff;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-
-<!-- CINEMATIC SERVICE HERO -->
-<section class="section-padding" style="padding-top: 160px; position: relative; overflow: hidden;">
-    <div style="position: absolute; top: -100px; left: -100px; width: 400px; height: 400px; background: var(--copper); filter: blur(200px); opacity: 0.1;"></div>
-    <div class="container" style="text-align: center; max-width: 900px;" data-appear>
-        <span class="hero-eyebrow">Service Protocols</span>
-        <h1 class="font-heading" style="font-size: clamp(2.5rem, 8vw, 4.5rem); letter-spacing: -3px; margin-bottom: 25px;">PROFESSIONAL CARE</h1>
-        <p class="font-serif" style="font-size: 1.25rem; font-style: italic; color: var(--text-muted); line-height: 1.8;">
-            From precision protection to elite performance builds, our network of authorized specialists delivers preservation services that match your standards.
-        </p>
-    </div>
+<section class="cg-solutions-hero" data-cg-appear>
+    <span class="cg-statement__sub">PROFESSIONAL CURATION</span>
+    <h1 class="cg-hero__h1" style="font-size: clamp(3rem, 8vw, 6rem);">ELITE SOLUTIONS</h1>
+    <p class="cg-about__p" style="max-width: 600px; margin: 2rem 0 0;">
+        From molecular ceramic encapsulation to precision interior rituals,
+        our solutions ensure your vehicle remains a timeless specimen.
+    </p>
+    {% if user.is_superuser %}
+    <a href="{% url 'carify_app:add_service' %}" class="cg-btn-ghost"
+        style="margin-top: 2rem; border-color: var(--clr-copper); color: var(--clr-copper);">PROPOSE NEW RITUAL</a>
+    {% endif %}
 </section>
 
-<!-- MAIN SERVICE MODULES -->
-<section class="section-padding" style="border-top: 1px solid var(--border-subtle); background: var(--surface);">
-    <div class="container">
-        <div class="grid-main" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px;" data-stagger="true" data-appear>
-            
-            <!-- Protocol 1 -->
-            <div class="glass-panel stagger-item" style="border-radius: 0; padding: 0; overflow: hidden;">
-                <div style="height: 240px; background: var(--obsidian); display: flex; align-items: center; justify-content: center; position: relative;">
-                    <img src="{% static 'images/hero_ceramic.png' %}" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.3;">
-                    <i class="fa-solid fa-spray-can-sparkles" style="font-size: 3rem; color: var(--bronze); position: relative; z-index: 1;"></i>
-                </div>
-                <div style="padding: 40px;">
-                    <h3 class="font-heading" style="font-size: 1.15rem; margin-bottom: 15px; letter-spacing: 0.1em;">CERAMIC COATING</h3>
-                    <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 30px;">
-                        Multi-layer nano-ceramic protection shielding your acquisition from environmental elements. engineered for extreme depth and clarity.
-                    </p>
-                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 25px;">
-                        <span class="copper-text" style="font-weight: 700; font-family: var(--font-heading);">FROM $299</span>
-                        <a href="{% url 'carify_app:product_list' %}" class="btn btn-outline" style="padding: 10px 20px; font-size: 0.65rem;">DISCOVER</a>
-                    </div>
-                </div>
-            </div>
+<div class="cg-service-grid" data-cg-appear>
+    {% for service in services %}
+    <div class="cg-scard">
+        {% if service.image %}
+        <img class="cg-scard__img" src="{{ service.image.url }}" alt="{{ service.name }}">
+        {% else %}
+        <img class="cg-scard__img"
+            src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1000&q=80"
+            alt="{{ service.name }}">
+        {% endif %}
+        <div class="cg-scard__body">
+            <span class="cg-scard__cat">{{ service.category.name|default:"PRESERVATION" }}</span>
+            <h3 class="cg-scard__h3">{{ service.name }}</h3>
+            <p class="cg-scard__desc">{{ service.description }}</p>
 
-            <!-- Protocol 2 -->
-            <div class="glass-panel stagger-item" style="border-radius: 0; padding: 0; overflow: hidden; border-color: var(--border-elegant);">
-                <div style="height: 240px; background: var(--obsidian); display: flex; align-items: center; justify-content: center; position: relative;">
-                    <img src="{% static 'images/protection_ppf.png' %}" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.4;">
-                    <i class="fa-solid fa-wrench" style="font-size: 3rem; color: var(--bronze); position: relative; z-index: 1;"></i>
-                </div>
-                <div style="padding: 40px;">
-                    <span class="font-heading" style="font-size: 0.55rem; color: var(--bronze); border: 1px solid var(--bronze); padding: 4px 10px; border-radius: 0; margin-bottom: 15px; display: inline-block; letter-spacing: 0.2em;">ELITE STATUS</span>
-                    <h3 class="font-heading" style="font-size: 1.15rem; margin-bottom: 15px; letter-spacing: 0.1em;">PERFORMANCE TUNING</h3>
-                    <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 30px;">
-                        ECU remapping and complete mechanical builds by certified specialists. Unlocking the true potential of your vehicle.
-                    </p>
-                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 25px;">
-                        <span class="copper-text" style="font-weight: 700; font-family: var(--font-heading);">FROM $499</span>
-                        <a href="{% url 'carify_app:product_list' %}" class="btn btn-outline" style="padding: 10px 20px; font-size: 0.65rem;">DISCOVER</a>
-                    </div>
-                </div>
-            </div>
+            {% if service.contact_info %}
+            <p
+                style="font-size: .6rem; color: var(--clr-copper); margin-top: -1rem; margin-bottom: 2rem; letter-spacing: .1em;">
+                <i class="fas fa-phone-alt" style="margin-right: 5px;"></i> {{ service.contact_info }}
+            </p>
+            {% endif %}
 
-            <!-- Protocol 3 -->
-            <div class="glass-panel stagger-item" style="border-radius: 0; padding: 0; overflow: hidden;">
-                <div style="height: 240px; background: var(--obsidian); display: flex; align-items: center; justify-content: center; position: relative;">
-                    <img src="https://images.unsplash.com/photo-1621359983321-3957bd9cc2bc?auto=format&fit=crop&q=80&w=1000" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.3; filter: grayscale(1);">
-                    <i class="fa-solid fa-car" style="font-size: 3rem; color: var(--bronze); position: relative; z-index: 1;"></i>
+            <div class="cg-scard__footer">
+                <span class="cg-scard__price">Starts at ${{ service.price }}</span>
+                <div style="display: flex; gap: 10px;">
+                    {% if service.video %}
+                    <button class="cg-btn-ghost"
+                        style="border-radius: 0; padding: .6rem 1.2rem; font-size: .55rem; background: rgba(255,255,255,0.1);"
+                        onclick="playCinematic('{{ service.video.url }}')"><i class="fas fa-play"
+                            style="margin-right: 5px;"></i> RITUAL FILM</button>
+                    {% endif %}
+                    <button class="cg-btn-ghost" style="border-radius: 0; padding: .6rem 1.2rem; font-size: .55rem;"
+                        onclick="window.CarifyBridge.addItemToCart('{{ service.id }}', 'service')">ADD TO
+                        PORTFOLIO</button>
+                    <button class="cg-btn-ghost" style="border-radius: 0; padding: .6rem 1.2rem; font-size: .55rem;"
+                        onclick="openBooking('{{ service.id }}', '{{ service.name }}')">BOOK CEREMONY</button>
+
                 </div>
-                <div style="padding: 40px;">
-                    <h3 class="font-heading" style="font-size: 1.15rem; margin-bottom: 15px; letter-spacing: 0.1em;">FULL DETAILING</h3>
-                    <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 30px;">
-                        Paint correction and interior transformation. Our most comprehensive preservation protocol for the elite collector.
-                    </p>
-                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 25px;">
-                        <span class="copper-text" style="font-weight: 700; font-family: var(--font-heading);">FROM $199</span>
-                        <a href="{% url 'carify_app:product_list' %}" class="btn btn-outline" style="padding: 10px 20px; font-size: 0.65rem;">DISCOVER</a>
-                    </div>
-                </div>
+
+
             </div>
         </div>
     </div>
-</section>
 
-<!-- EXTENDED SERVICES -->
-<section class="section-padding">
-    <div class="container">
-        <div style="text-align: center; margin-bottom: 80px;" data-appear>
-            <span class="hero-eyebrow">Extended Protocols</span>
-            <h2 class="font-heading" style="font-size: 2.25rem;">CURATED SOLUTIONS</h2>
-        </div>
-
-        <div class="grid-main" style="grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 30px;" data-stagger="true" data-appear>
-            <div class="glass-panel stagger-item" style="display: flex; align-items: center; gap: 30px; padding: 30px; border-radius: 0;">
-                <div style="min-width: 70px; height: 70px; background: var(--obsidian); border: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: center;">
-                    <i class="fa-solid fa-film" style="font-size: 1.5rem; color: var(--bronze);"></i>
-                </div>
-                <div>
-                    <h4 class="font-heading" style="font-size: 0.9rem; margin-bottom: 8px; letter-spacing: 0.1em;">PPF (Paint Protection Film)</h4>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.6;">Self-healing thermoplastic film absorbing rock chips and scratch damage.</p>
-                </div>
-            </div>
-            <div class="glass-panel stagger-item" style="display: flex; align-items: center; gap: 30px; padding: 30px; border-radius: 0;">
-                <div style="min-width: 70px; height: 70px; background: var(--obsidian); border: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: center;">
-                    <i class="fa-solid fa-palette" style="font-size: 1.5rem; color: var(--bronze);"></i>
-                </div>
-                <div>
-                    <h4 class="font-heading" style="font-size: 0.9rem; margin-bottom: 8px; letter-spacing: 0.1em;">Custom Wrapping</h4>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.6;">Full body vinyl wraps in bespoke finishes. Reversible and paint-safe.</p>
-                </div>
-            </div>
-            <div class="glass-panel stagger-item" style="display: flex; align-items: center; gap: 30px; padding: 30px; border-radius: 0;">
-                <div style="min-width: 70px; height: 70px; background: var(--obsidian); border: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: center;">
-                    <i class="fa-solid fa-gears" style="font-size: 1.5rem; color: var(--bronze);"></i>
-                </div>
-                <div>
-                    <h4 class="font-heading" style="font-size: 0.9rem; margin-bottom: 8px; letter-spacing: 0.1em;">Suspension Precision</h4>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.6;">Full air suspension setups and precision 4-wheel technical alignment.</p>
-                </div>
-            </div>
-            <div class="glass-panel stagger-item" style="display: flex; align-items: center; gap: 30px; padding: 30px; border-radius: 0;">
-                <div style="min-width: 70px; height: 70px; background: var(--obsidian); border: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: center;">
-                    <i class="fa-solid fa-screwdriver-wrench" style="font-size: 1.5rem; color: var(--bronze);"></i>
-                </div>
-                <div>
-                    <h4 class="font-heading" style="font-size: 0.9rem; margin-bottom: 8px; letter-spacing: 0.1em;">Maintenance Protocol</h4>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.6;">Scheduled servicing and technical fluid flushes by master technicians.</p>
-                </div>
-            </div>
-        </div>
+    {% empty %}
+    <div style="grid-column: 1/-1; text-align: center; padding: 100px 0; opacity: 0.5;">
+        <p class="font-heading">ACTIVE PROTOCOLS NOT FOUND</p>
     </div>
-</section>
+    {% endfor %}
+</div>
 
-<!-- CALL TO ACTION -->
-<section class="section-padding" style="border-top: 1px solid var(--border-subtle); background: radial-gradient(circle at center, rgba(155, 90, 43, 0.08) 0%, transparent 70%);">
-    <div class="container" style="text-align: center; max-width: 700px;" data-appear>
-        <h2 class="font-heading" style="font-size: 2.5rem; margin-bottom: 20px;">INITIATE SESSISON</h2>
-        <p class="font-serif" style="font-size: 1.15rem; color: var(--text-muted); margin-bottom: 50px; line-height: 1.8;">
-            Connect with our global network of authorized service specialists and secure your preservation appointment.
-        </p>
-        <div style="display: flex; gap: 20px; justify-content: center;">
-            <a href="{% url 'carify_app:product_list' %}" class="btn btn-primary" style="padding: 0 40px; height: 60px;">BROWSE SOLUTIONS</a>
-            <a href="{% url 'carify_app:seller_register' %}" class="btn btn-outline" style="padding: 0 40px; height: 60px;">JOIN NETWORK</a>
+<!-- BOOKING OVERLAY -->
+<div class="cg-booking-overlay" id="bookingOverlay">
+    <div class="cg-booking-panel">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <h2 class="cg-booking__h2">REQUEST<br><span id="bookingServiceName"
+                    style="color:var(--clr-copper);">PROTOCOL</span></h2>
+            <button onclick="closeBooking()" style="background:none; border:none; color:#fff; cursor:pointer;"><i
+                    class="fas fa-times"></i></button>
         </div>
+
+        <form action="{% url 'carify_app:book_service' %}" method="POST"
+            style="flex:1; display:flex; flex-direction:column; margin-top:2rem;">
+            {% csrf_token %}
+            <input type="hidden" name="service_id" id="bookingServiceId">
+
+            <div class="cg-input-group">
+                <label class="cg-input-label">Select Date</label>
+                <input type="date" name="preferred_date" class="cg-input" required>
+            </div>
+
+            <div class="cg-input-group">
+                <label class="cg-input-label">Select Time</label>
+                <input type="time" name="preferred_time" class="cg-input" required>
+            </div>
+
+            <div class="cg-input-group">
+                <label class="cg-input-label">Vehicle Details</label>
+                <input type="text" name="vehicle_details" class="cg-input" placeholder="e.g. 2024 Ferrari SF90"
+                    required>
+            </div>
+
+            <div class="cg-input-group">
+                <label class="cg-input-label">Ceremony Notes</label>
+                <textarea name="additional_notes" class="cg-input" rows="3"
+                    placeholder="Special requirements..."></textarea>
+            </div>
+
+            <button type="submit" class="cg-book-btn">TRANSMIT REQUEST</button>
+        </form>
     </div>
-</section>
+</div>
+
+
+<!-- VIDEO OVERLAY -->
+<div class="cg-booking-overlay" id="videoOverlay" style="justify-content:center;">
+    <div class="cg-booking-panel" style="max-width:90%; height:auto; padding:2rem; background:rgba(0,0,0,0.9);">
+        <div style="display:flex; justify-content:flex-end; margin-bottom:1rem;">
+            <button onclick="closeVideo()" style="background:none; border:none; color:#fff; cursor:pointer;"><i
+                    class="fas fa-times"></i></button>
+        </div>
+        <video id="ritualVideo" controls style="width:100%; border:1px solid var(--clr-border);">
+            <source src="" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+</div>
 
 {% endblock %}
+
+{% block extra_js %}
+<script>
+    function openBooking(id, name) {
+        document.getElementById('bookingServiceId').value = id;
+        document.getElementById('bookingServiceName').innerText = name.toUpperCase();
+        document.getElementById('bookingOverlay').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeBooking() {
+        document.getElementById('bookingOverlay').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    function playCinematic(url) {
+        const overlay = document.getElementById('videoOverlay');
+        const video = document.getElementById('ritualVideo');
+        video.src = url;
+        overlay.classList.add('active');
+        video.play();
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeVideo() {
+        const overlay = document.getElementById('videoOverlay');
+        const video = document.getElementById('ritualVideo');
+        video.pause();
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // Close on escape
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeBooking();
+            closeVideo();
+        }
+    });
+
+    // addToPortfolio removed in favor of window.CarifyBridge.addItemToCart
+</script>
 
 {% endblock %}

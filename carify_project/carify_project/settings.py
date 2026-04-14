@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
+import dj_database_url
 from pathlib import Path
 from django.utils.translation import gettext_lazy as _
 
@@ -21,12 +23,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-4tkb-k4$v0*!&ih6o+a%w4+4&a8cu5%6me8$z-fil468++$#9s'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-4tkb-k4$v0*!&ih6o+a%w4+4&a8cu5%6me8$z-fil468++$#9s')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = []
+# Keep development hosts working out of the box while allowing overrides in env.
+default_allowed_hosts = ['127.0.0.1', 'localhost', 'testserver', '.render.com', '.carify.org']
+env_allowed_hosts = os.environ.get('DJANGO_ALLOWED_HOSTS', '')
+ALLOWED_HOSTS = [
+    host.strip() for host in env_allowed_hosts.split(',') if host.strip()
+] or default_allowed_hosts
 
 
 # Application definition
@@ -54,6 +61,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -117,52 +125,34 @@ TEMPLATES = [
 WSGI_APPLICATION = 'carify_project.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-import os
-
+# Database configuration with production overrides
 DATABASES = {
-    'default': {
+    'default': dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600
+    )
+}
+
+# Preserve explicit MySQL config if environment variables are present
+if all(os.environ.get(k) for k in ['DB_NAME', 'DB_USER']):
+    DATABASES['default'].update({
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('DB_NAME', 'carify_db'),
-        'USER': os.environ.get('DB_USER', 'carify_user'),
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
         'PASSWORD': os.environ.get('DB_PASSWORD', ''),
         'HOST': os.environ.get('DB_HOST', 'localhost'),
         'PORT': os.environ.get('DB_PORT', '3306'),
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         },
-    }
-}
-
-# Fallback to SQLite for development if MySQL is not configured/available
-if os.environ.get('USE_SQLITE', 'True') == 'True':
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+    })
 
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
 # Password validation disabled for rapid development/testing
-AUTH_PASSWORD_VALIDATORS = [
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    # },
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    # },
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    # },
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    # },
-]
+AUTH_PASSWORD_VALIDATORS = []
 
 
 # Internationalization
@@ -193,13 +183,24 @@ LOCALE_PATHS = [
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# Whitenoise compression and caching
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
 # Stripe settings
-STRIPE_PUBLIC_KEY = 'pk_test_your_stripe_publishable_key_here'  # Replace with your actual key
-STRIPE_SECRET_KEY = 'sk_test_your_stripe_secret_key_here'  # Replace with your actual key
-STRIPE_WEBHOOK_SECRET = 'whsec_your_webhook_secret_here'  # Replace with your actual webhook secret
+STRIPE_PUBLIC_KEY = os.environ.get('STRIPE_PUBLIC_KEY', '')
+STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', '')
+STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET', '')
 
 # UNFOLD settings
 UNFOLD = {
@@ -226,17 +227,17 @@ UNFOLD = {
     ],
     "COLORS": {
         "primary": {
-            "50": "230 231 232",  # #e6e7e8 - light gray
-            "100": "230 231 232",
-            "200": "230 231 232",
-            "300": "230 231 232",
-            "400": "243 129 31",  # #f3811f - orange
-            "500": "243 129 31",
-            "600": "243 129 31",
-            "700": "35 31 32",    # #231f20 - dark gray
-            "800": "35 31 32",
-            "900": "35 31 32",
-            "950": "35 31 32",
+            "50": "250 245 240",
+            "100": "245 235 225",
+            "200": "235 215 195",
+            "300": "225 185 155",
+            "400": "215 155 115",
+            "500": "215 126 44",   # #d77e2c (Core Copper)
+            "600": "195 105 35",
+            "700": "165 85 25",
+            "800": "135 65 20",
+            "900": "110 55 15",
+            "950": "65 35 10",
         },
     },
     "SIDEBAR": {
@@ -244,29 +245,88 @@ UNFOLD = {
         "show_all_applications": True,
         "navigation": [
             {
-                "title": _("Navigation"),
+                "title": _("PLATFORM OVERVIEW"),
                 "separator": True,
-                "collapsible": True,
                 "items": [
                     {
-                        "title": _("Dashboard"),
+                        "title": _("Command Center"),
                         "icon": "dashboard",
                         "link": "/admin/",
                     },
+                ],
+            },
+            {
+                "title": _("COMMERCE ENGINE"),
+                "separator": True,
+                "items": [
                     {
-                        "title": _("Products"),
-                        "icon": "shopping_cart",
+                        "title": _("Inventory / Specimens"),
+                        "icon": "inventory_2",
                         "link": "/admin/carify_app/product/",
                     },
                     {
-                        "title": _("Orders"),
-                        "icon": "receipt",
-                        "link": "/admin/carify_app/order/",
+                        "title": _("Global Catalogs"),
+                        "icon": "folder_special",
+                        "link": "/admin/carify_app/category/",
                     },
                     {
-                        "title": _("Categories"),
-                        "icon": "folder",
-                        "link": "/admin/carify_app/category/",
+                        "title": _("Regional Orders"),
+                        "icon": "receipt_long",
+                        "link": "/admin/carify_app/order/",
+                    },
+                ],
+            },
+            {
+                "title": _("PRESERVATION RITUALS"),
+                "separator": True,
+                "items": [
+                    {
+                        "title": _("Elite Solutions"),
+                        "icon": "auto_fix_high",
+                        "link": "/admin/carify_app/service/",
+                    },
+                    {
+                        "title": _("Ceremony Bookings"),
+                        "icon": "event",
+                        "link": "/admin/carify_app/booking/",
+                    },
+                ],
+            },
+            {
+                "title": _("MARKETPLACE PARTNERS"),
+                "separator": True,
+                "items": [
+                    {
+                        "title": _("Seller Profiles"),
+                        "icon": "storefront",
+                        "link": "/admin/carify_app/sellerprofile/",
+                    },
+                ],
+            },
+            {
+                "title": _("AUDIENCE & GROWTH"),
+                "separator": True,
+                "items": [
+                    {
+                        "title": _("Newsletter Registry"),
+                        "icon": "mail",
+                        "link": "/admin/carify_app/newslettersubscription/",
+                    },
+                ],
+            },
+            {
+                "title": _("COMMUNITY & TRUST"),
+                "separator": True,
+                "items": [
+                    {
+                        "title": _("Specimen Reviews"),
+                        "icon": "reviews",
+                        "link": "/admin/carify_app/review/",
+                    },
+                    {
+                        "title": _("User Inquiries"),
+                        "icon": "contact_support",
+                        "link": "/admin/carify_app/productquestion/",
                     },
                 ],
             },
@@ -292,4 +352,3 @@ REST_FRAMEWORK = {
 
 # Email Routing - Pipe to console for dev environments to prevent ConnectionRefusedError during Signup.
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-

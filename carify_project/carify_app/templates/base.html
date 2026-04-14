@@ -11,7 +11,13 @@
     
     <!-- Design System -->
     <link rel="stylesheet" href="{% static 'css/global.css' %}">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Bridge Engine -->
+    <script src="{% static 'js/bridge.js' %}" defer></script>
+    <!-- 3D Animation Engine (Cred-style) -->
+    <script src="{% static 'js/animations.js' %}" defer></script>
     
     {% block extra_css %}{% endblock %}
 </head>
@@ -32,45 +38,56 @@
 
     <!-- ELITE SHELL -->
     <header class="site-header">
-        <div class="header-container">
-            <!-- Mobile Trigger -->
-            <i class="fas fa-bars-staggered icon-trigger d-lg-none" id="menuTrigger"></i>
-
-            <a href="{% url 'carify_app:home' %}" class="brand copper-text">CARIFY</a>
-            
-            <nav class="desktop-nav">
+        <div class="header-container main-nav-layout">
+            <!-- LEFT NAVIGATION -->
+            <nav class="desktop-nav nav-left">
                 <a href="{% url 'carify_app:product_list' %}" class="nav-link">Collection</a>
                 <a href="{% url 'carify_app:services' %}" class="nav-link">Solutions</a>
-                <a href="{% url 'carify_app:track_order' %}" class="nav-link">Logistics</a>
-                <a href="{% url 'carify_app:about' %}" class="nav-link">Legacy</a>
             </nav>
-            
-            <div class="header-actions">
-                <i class="fas fa-search icon-trigger" id="searchTrigger"></i>
-                
-                <!-- Hybrid Language Engine (No Form) -->
-                <div style="position: relative; display: flex; align-items: center;">
-                    <i class="fas fa-globe icon-trigger" style="margin-right: 5px; font-size: 1rem;"></i>
-                    <select id="hybridLangSelect" onchange="runHybridTranslation(this.value)" 
-                        style="background: transparent; border: none; color: var(--text-pure); font-family: 'Outfit', sans-serif; font-size: 0.75rem; letter-spacing: 0.1em; outline: none; cursor: pointer; text-transform: uppercase; appearance: none; padding-right: 15px;">
-                        <option value="en" style="background: var(--obsidian); color: var(--text-pure);">EN</option>
-                        <option value="es" style="background: var(--obsidian); color: var(--text-pure);">ES</option>
-                        <option value="fr" style="background: var(--obsidian); color: var(--text-pure);">FR</option>
-                        <option value="ar" style="background: var(--obsidian); color: var(--text-pure);">AR</option>
-                        <option value="ja" style="background: var(--obsidian); color: var(--text-pure);">JP</option>
-                    </select>
-                </div>
 
-                <a href="javascript:void(0)" id="cartTrigger" style="position: relative; margin-left: 10px;">
-                    <i class="fas fa-shopping-bag icon-trigger"></i>
-                    <span id="cartCountBadge" class="badge-dot" style="position: absolute; top: -2px; right: -2px; width: 8px; height: 8px; background: var(--bronze); border-radius: 50%; border: 2px solid var(--obsidian); display: none;"></span>
-                </a>
-                
-                {% if user.is_authenticated %}
-                    <a href="{% url 'carify_app:seller_dashboard' %}" class="icon-trigger d-none d-md-flex"><i class="far fa-user"></i></a>
-                {% else %}
-                    <a href="/accounts/login/" class="icon-trigger d-none d-md-flex"><i class="far fa-user"></i></a>
-                {% endif %}
+            <!-- CENTER BRAND -->
+            <div class="brand-wrapper">
+                <a href="{% url 'carify_app:home' %}" class="brand">CARIFY</a>
+                <i class="fas fa-bars-staggered icon-trigger d-lg-none" id="menuTrigger"></i>
+            </div>
+            
+            <!-- RIGHT NAVIGATION + ACTIONS -->
+            <div class="nav-right-wrapper">
+                <nav class="desktop-nav nav-right">
+                    <a href="{% url 'carify_app:track_order' %}" class="nav-link">Logistics</a>
+                    <a href="{% url 'carify_app:about' %}" class="nav-link">Legacy</a>
+                </nav>
+
+                <div class="header-actions">
+                    <i class="fas fa-search icon-trigger" id="searchTrigger"></i>
+                    
+                    <div class="cg-lang-selector" id="customLangSelector">
+                        <div class="cg-lang-trigger">
+                            <i class="fas fa-globe"></i>
+                            <span id="currentLangLabel">EN</span>
+                            <i class="fas fa-chevron-down" style="font-size: 0.5rem; opacity: 0.5;"></i>
+                        </div>
+                        <div class="cg-lang-list">
+                            <div class="cg-lang-option active" data-value="en">English</div>
+                            <div class="cg-lang-option" data-value="es">Español</div>
+                            <div class="cg-lang-option" data-value="fr">Français</div>
+                            <div class="cg-lang-option" data-value="ar">العربية</div>
+                            <div class="cg-lang-option" data-value="ja">日本語</div>
+                        </div>
+                    </div>
+
+
+                    <a href="javascript:void(0)" id="cartTrigger" class="pos-relative">
+                        <i class="fas fa-shopping-bag icon-trigger"></i>
+                        <span id="cartCountBadge" class="badge-dot"></span>
+                    </a>
+                    
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'carify_app:seller_dashboard' %}" class="icon-trigger d-none d-md-flex"><i class="far fa-user"></i></a>
+                    {% else %}
+                        <a href="/accounts/login/" class="icon-trigger d-none d-md-flex"><i class="far fa-user"></i></a>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </header>
@@ -100,21 +117,95 @@
         {% block content %}{% endblock %}
     </main>
 
-    <!-- ELITE FOOTER -->
-    <footer class="section-padding" style="border-top: 1px solid var(--border-subtle); margin-top: 100px;">
+    <!-- ELITE FOOTER (RAPID REDESIGN) -->
+    <footer style="background: #000; border-top: 1px solid var(--border-subtle); padding: 80px 0 40px; margin-top: 100px;">
         <div class="container">
-            <div style="display: flex; flex-direction: column; align-items: center; gap: 40px;">
-                <h2 class="brand copper-text" style="font-size: 1.5rem;">CARIFY</h2>
-                
-                <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; border-top: 1px solid var(--border-subtle); padding-top: 40px; width: 100%;">
-                    <a href="{% url 'carify_app:product_list' %}" class="nav-link" style="font-size: 0.65rem;">Collection</a>
-                    <a href="{% url 'carify_app:track_order' %}" class="nav-link" style="font-size: 0.65rem;">Logistics</a>
-                    <a href="{% url 'carify_app:seller_register' %}" class="nav-link" style="font-size: 0.65rem;">Partners</a>
-                    <a href="{% url 'carify_app:privacy' %}" class="nav-link" style="font-size: 0.65rem;">Privacy Protocol</a>
+            <div style="display: grid; grid-template-columns: 1.5fr 0.6fr 0.6fr 0.6fr 1.5fr; gap: 40px; margin-bottom: 80px;">
+                <!-- Brand Info -->
+                <div style="max-width: 300px;">
+                    <h2 class="font-heading" style="font-size: 1.8rem; margin-bottom: 20px; letter-spacing: 0.1em; color: var(--text-pure);">CARIFY</h2>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.6;">Performance-driven parts and accessories for every need. Reliable, durable, and made to last in any condition.</p>
+                </div>
+
+                <!-- Column 1: Shop -->
+                <div>
+                    <h4 style="font-size: 0.8rem; letter-spacing: 0.1em; color: var(--text-pure); margin-bottom: 20px;">Shop</h4>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px;">
+                        <li><a href="{% url 'carify_app:product_list' %}" style="text-decoration: none; font-size: 0.8rem; color: var(--text-muted); transition: 0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-muted)'">Sale</a></li>
+                        <li><a href="{% url 'carify_app:product_list' %}" style="text-decoration: none; font-size: 0.8rem; color: var(--text-muted); transition: 0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-muted)'">Collections</a></li>
+                        <li><a href="{% url 'carify_app:product_list' %}" style="text-decoration: none; font-size: 0.8rem; color: var(--text-muted); transition: 0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-muted)'">Products</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 2: Info -->
+                <div>
+                    <h4 style="font-size: 0.8rem; letter-spacing: 0.1em; color: var(--text-pure); margin-bottom: 20px;">Info</h4>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px;">
+                        <li><a href="{% url 'carify_app:about' %}" style="text-decoration: none; font-size: 0.8rem; color: var(--text-muted); transition: 0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-muted)'">About</a></li>
+                        <li><a href="#" style="text-decoration: none; font-size: 0.8rem; color: var(--text-muted); transition: 0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-muted)'">Journal</a></li>
+                        <li><a href="{% url 'carify_app:track_order' %}" style="text-decoration: none; font-size: 0.8rem; color: var(--text-muted); transition: 0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-muted)'">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 3: Legal -->
+                <div>
+                    <h4 style="font-size: 0.8rem; letter-spacing: 0.1em; color: var(--text-pure); margin-bottom: 20px;">Legal</h4>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px;">
+                        <li><a href="{% url 'carify_app:privacy' %}" style="text-decoration: none; font-size: 0.8rem; color: var(--text-muted); transition: 0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-muted)'">Privacy</a></li>
+                        <li><a href="{% url 'carify_app:privacy' %}" style="text-decoration: none; font-size: 0.8rem; color: var(--text-muted); transition: 0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-muted)'">Refunds</a></li>
+                        <li><a href="{% url 'carify_app:track_order' %}" style="text-decoration: none; font-size: 0.8rem; color: var(--text-muted); transition: 0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-muted)'">Shipping</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 4: Subscription -->
+                <div>
+                    <h4 style="font-size: 1.2rem; color: var(--text-pure); margin-bottom: 25px;">Stay in the Loop</h4>
+                    <div style="display: flex; gap: 10px; margin-bottom: 25px;">
+                        <input type="email" id="newsletterEmail" placeholder="Your Email" style="flex: 1; background: #1a1a1a; border: 1px solid var(--border-subtle); border-radius: 4px; padding: 12px 20px; color: #fff; font-size: 0.8rem; outline: none;">
+                        <button id="newsletterSubmit" style="background: #f1c40f; color: #000; border: none; border-radius: 4px; padding: 0 20px; font-weight: 700; font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                            Subscribe <i class="fas fa-chevron-right" style="font-size: 0.6rem;"></i>
+                        </button>
+                    </div>
+                    <div style="display: flex; gap: 15px;">
+                        <a href="https://instagram.com/carify" target="_blank" style="background: #1a1a1a; width: 35px; height: 35px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #fff; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#d6249f'" onmouseout="this.style.background='#1a1a1a'"><i class="fab fa-instagram"></i></a>
+                        <a href="https://facebook.com/carify" target="_blank" style="background: #1a1a1a; width: 35px; height: 35px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #fff; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#1877f2'" onmouseout="this.style.background='#1a1a1a'"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://twitter.com/carify" target="_blank" style="background: #1a1a1a; width: 35px; height: 35px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #fff; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#1da1f2'" onmouseout="this.style.background='#1a1a1a'"><i class="fab fa-x-twitter"></i></a>
+                        <a href="https://youtube.com/carify" target="_blank" style="background: #1a1a1a; width: 35px; height: 35px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #fff; text-decoration: none; transition: 0.3s;" onmouseover="this.style.background='#ff0000'" onmouseout="this.style.background='#1a1a1a'"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Row -->
+            <div style="border-top: 1px solid var(--border-subtle); padding-top: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+                <div style="font-size: 0.75rem; color: var(--text-muted);">
+                    &copy; 2026 CARIFY. Powered by Carify Systems.
                 </div>
                 
-                <div style="text-align: center; font-size: 0.6rem; color: var(--text-muted); letter-spacing: 0.3em; margin-top: 20px;">
-                    &copy; {% now "Y" %} CARIFY. PRESERVATION_BY_DESIGN.
+                <div style="display: flex; gap: 20px; color: var(--text-muted); font-size: 1.4rem;">
+                    <i class="fab fa-cc-visa"></i>
+                    <i class="fab fa-cc-mastercard"></i>
+                    <i class="fab fa-cc-paypal"></i>
+                    <i class="fab fa-apple-pay"></i>
+                    <i class="fab fa-google-pay"></i>
+                </div>
+
+                <div style="display: flex; gap: 15px;">
+                    <div style="position: relative;">
+                        <button id="footerLangTrigger" style="background: #1a1a1a; border: 1px solid var(--border-subtle); color: #fff; font-size: 0.7rem; padding: 8px 15px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 10px;">
+                            <span id="footerLangLabel">English</span> <i class="fas fa-chevron-down" style="font-size: 0.5rem;"></i>
+                        </button>
+                    </div>
+                    <div style="position: relative;">
+                        <button id="footerCurrencyTrigger" style="background: #1a1a1a; border: 1px solid var(--border-subtle); color: #fff; font-size: 0.7rem; padding: 8px 15px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 10px;">
+                            <span id="footerCurrencyLabel">United States (USD $)</span> <i class="fas fa-chevron-down" style="font-size: 0.5rem;"></i>
+                        </button>
+                        <div id="footerCurrencyList" class="glass-panel" style="position: absolute; bottom: 100%; right: 0; margin-bottom: 10px; display: none; flex-direction: column; gap: 5px; padding: 10px; min-width: 180px; z-index: 100; border: 1px solid var(--border-subtle); background: #000;">
+                            <div class="currency-option" data-value="USD" style="cursor: pointer; font-size: 0.7rem; padding: 8px; border-radius: 4px; transition: 0.3s; color: #fff;">USD - US Dollar</div>
+                            <div class="currency-option" data-value="EUR" style="cursor: pointer; font-size: 0.7rem; padding: 8px; border-radius: 4px; transition: 0.3s; color: #fff;">EUR - Euro</div>
+                            <div class="currency-option" data-value="GBP" style="cursor: pointer; font-size: 0.7rem; padding: 8px; border-radius: 4px; transition: 0.3s; color: #fff;">GBP - GB Pound</div>
+                            <div class="currency-option" data-value="AED" style="cursor: pointer; font-size: 0.7rem; padding: 8px; border-radius: 4px; transition: 0.3s; color: #fff;">AED - UAE Dirham</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -138,7 +229,8 @@
     <div id="globalOverlay" style="position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 1500; opacity: 0; pointer-events: none; transition: 0.5s;"></div>
 
     <!-- State Engine -->
-    <script src="{% static 'js/bridge.js' %}"></script>
+    <script src="{% static 'js/bridge.js' %}?v={% now 'U' %}"></script>
+
     {% block extra_js %}{% endblock %}
 
     <style>
@@ -159,12 +251,20 @@
 
             // Cart Trigger Integration
             const cartTrigger = document.getElementById('cartTrigger');
+            const closeCart = document.getElementById('closeCart');
             if(cartTrigger) cartTrigger.addEventListener('click', () => {
                 const drawer = document.getElementById('cartDrawer');
                 const overlay = document.getElementById('globalOverlay');
                 if(drawer) drawer.classList.add('active');
                 if(overlay) overlay.classList.add('active');
                 document.body.style.overflow = 'hidden';
+            });
+            if(closeCart) closeCart.addEventListener('click', () => {
+                const drawer = document.getElementById('cartDrawer');
+                const overlay = document.getElementById('globalOverlay');
+                if(drawer) drawer.classList.remove('active');
+                if(overlay) overlay.classList.remove('active');
+                document.body.style.overflow = '';
             });
 
             // Search Trigger Integration
@@ -201,6 +301,90 @@
                 overlay.classList.remove('active');
                 document.body.style.overflow = '';
             });
+
+            // Newsletter Logic
+            const newsletterEmail = document.getElementById('newsletterEmail');
+            const newsletterSubmit = document.getElementById('newsletterSubmit');
+
+            if(newsletterSubmit && newsletterEmail) {
+                newsletterSubmit.addEventListener('click', async () => {
+                    const email = newsletterEmail.value.trim();
+                    if(!email) return;
+
+                    newsletterSubmit.disabled = true;
+                    newsletterSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+                    try {
+                        const response = await fetch('/newsletter/subscribe/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                            },
+                            body: JSON.stringify({ email: email })
+                        });
+                        const data = await response.json();
+                        
+                        // Show message (could use a toast system)
+                        alert(data.message);
+                        if(data.status === 'success') {
+                            newsletterEmail.value = '';
+                        }
+                    } catch (error) {
+                        console.error('Newsletter Error:', error);
+                    } finally {
+                        newsletterSubmit.disabled = false;
+                        newsletterSubmit.innerHTML = 'Subscribe <i class="fas fa-chevron-right" style="font-size: 0.6rem;"></i>';
+                    }
+                });
+            }
+
+            // Footer Language Trigger
+            const footerLangTrigger = document.getElementById('footerLangTrigger');
+            if(footerLangTrigger) {
+                footerLangTrigger.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const headerLangSelector = document.getElementById('customLangSelector');
+                    if(headerLangSelector) {
+                        headerLangSelector.classList.toggle('active');
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                });
+            }
+
+            // Footer Currency Logic
+            const currencyTrigger = document.getElementById('footerCurrencyTrigger');
+            const currencyList = document.getElementById('footerCurrencyList');
+            const currencyLabel = document.getElementById('footerCurrencyLabel');
+            const currencyOptions = document.querySelectorAll('.currency-option');
+
+            if(currencyTrigger && currencyList) {
+                currencyTrigger.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isVisible = currencyList.style.display === 'flex';
+                    currencyList.style.display = isVisible ? 'none' : 'flex';
+                });
+
+                currencyOptions.forEach(opt => {
+                    opt.addEventListener('click', () => {
+                        const val = opt.dataset.value;
+                        const text = opt.innerText;
+                        currencyLabel.innerText = text;
+                        currencyList.style.display = 'none';
+                        // In a real app, you'd trigger a currency conversion here
+                        console.log(`Currency switched to ${val}. Prices updated.`);
+                    });
+                    opt.addEventListener('mouseover', () => opt.style.background = 'rgba(255,255,255,0.1)');
+                    opt.addEventListener('mouseout', () => opt.style.background = 'transparent');
+                });
+            }
+
+            // Click Outside to Close selectors
+            document.addEventListener('click', () => {
+                const langSelector = document.getElementById('customLangSelector');
+                langSelector?.classList.remove('active');
+                if(currencyList) currencyList.style.display = 'none';
+            });
         });
         
         // HYBRID TRANSLATION BRIDGE LOGIC
@@ -220,15 +404,54 @@
             }
         }
         document.addEventListener('DOMContentLoaded', () => {
+            /* ── CUSTOM LANG SELECTOR LOGIC ── */
+            const langSelector = document.getElementById('customLangSelector');
+            const trigger = langSelector?.querySelector('.cg-lang-trigger');
+            const options = langSelector?.querySelectorAll('.cg-lang-option');
+            const label = document.getElementById('currentLangLabel');
+
+            if (trigger) {
+                trigger.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    langSelector.classList.toggle('active');
+                });
+            }
+
+            options?.forEach(opt => {
+                opt.addEventListener('click', () => {
+                    const val = opt.dataset.value;
+                    const text = opt.innerText.split(' ')[0].substring(0, 2).toUpperCase(); // Extract short code
+                    
+                    // Update UI
+                    label.innerText = val.toUpperCase();
+                    options.forEach(o => o.classList.remove('active'));
+                    opt.classList.add('active');
+                    
+                    // Trigger Translation
+                    if (window.runHybridTranslation) {
+                        window.runHybridTranslation(val);
+                    }
+                    
+                    langSelector.classList.remove('active');
+                });
+            });
+
+            // Click Outside to Close
+            document.addEventListener('click', () => {
+                langSelector?.classList.remove('active');
+            });
+
+            /* ── COOKIE SYNC ── */
             let match = document.cookie.match(new RegExp('(^| )googtrans=([^;]+)'));
             if (match) {
                 let val = match[2].split('/')[2];
-                let select = document.getElementById('hybridLangSelect');
-                if (select && select.querySelector(`option[value="${val}"]`)) {
-                    select.value = val;
-                }
+                if (label) label.innerText = val.toUpperCase();
+                options?.forEach(o => {
+                    o.classList.toggle('active', o.dataset.value === val);
+                });
             }
         });
+
     </script>
     
     <!-- INVISIBLE TRANSLATION CORE -->

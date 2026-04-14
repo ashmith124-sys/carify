@@ -149,13 +149,42 @@ class Service(models.Model):
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2, help_text="Starting price")
     image = models.ImageField(upload_to='services/', blank=True, null=True)
+    video = models.FileField(upload_to='service_videos/', blank=True, null=True)
+    contact_info = models.CharField(max_length=255, blank=True, null=True, help_text="Direct contact details (e.g. Phone/Email)")
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='services')
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+
     def __str__(self):
         return self.name
+
+class Booking(models.Model):
+    """Tracks appointment requests for services."""
+    STATUS_CHOICES = [
+        ('pending', 'Pending Approval'),
+        ('confirmed', 'Confirmed'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
+    ]
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bookings')
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='bookings')
+    preferred_date = models.DateField()
+    preferred_time = models.TimeField()
+    vehicle_details = models.CharField(max_length=255, help_text="e.g., 2022 Porsche 911 GT3")
+    additional_notes = models.TextField(blank=True, null=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-preferred_date', '-preferred_time']
+
+    def __str__(self):
+        return f"{self.user.username} - {self.service.name} ({self.preferred_date})"
+
 
 class Wishlist(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='wishlist')
@@ -198,6 +227,7 @@ class Order(models.Model):
     
     buyer = models.ForeignKey(User, on_delete=models.CASCADE)
     products = models.ManyToManyField(Product, through='OrderItem')
+    services = models.ManyToManyField(Service, through='OrderItem')
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     tracking_id = models.CharField(max_length=50, unique=True, blank=True, null=True)
@@ -214,13 +244,16 @@ class Order(models.Model):
         return f"Order {self.id} by {self.buyer.username}"
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, null=True, blank=True)
     quantity = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)  # Price at time of order
 
     def __str__(self):
-        return f"{self.quantity} x {self.product.name}"
+        if self.product:
+            return f"{self.quantity} x {self.product.name}"
+        return f"{self.quantity} x {self.service.name}"
 
 class Payment(models.Model):
     PAYMENT_METHOD_CHOICES = [
@@ -250,13 +283,31 @@ class Cart(models.Model):
 
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, null=True, blank=True)
     variant = models.ForeignKey(ProductVariant, on_delete=models.SET_NULL, null=True, blank=True)
     quantity = models.PositiveIntegerField(default=1)
     is_saved_for_later = models.BooleanField(default=False)
 
+    def clean(self):
+        if not self.product and not self.service:
+            raise ValidationError("A selection must contain either a physical Specimen or a Ritual Protocol.")
+        if self.product and self.service:
+            raise ValidationError("Hybrid selections in a single row are not permitted.")
+
     def get_cost(self):
+        if self.service:
+            return self.service.price * self.quantity
+        
         base_price = self.product.price
         if self.variant:
             base_price += self.variant.price_extra
         return base_price * self.quantity
+
+
+class NewsletterSubscription(models.Model):
+    email = models.EmailField(unique=True)
+    subscribed_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.email

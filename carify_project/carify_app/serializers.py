@@ -16,12 +16,13 @@ class ProductVariantSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'sku', 'price_extra', 'stock']
 
 class ReviewSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
     username = serializers.CharField(source='user.username', read_only=True)
     helpful_votes_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Review
-        fields = ['id', 'user', 'username', 'rating', 'comment', 'helpful_votes_count', 'created_at']
+        fields = ['id', 'product', 'user', 'username', 'rating', 'comment', 'helpful_votes_count', 'created_at']
 
     def get_helpful_votes_count(self, obj):
         return obj.helpful_votes.count()
@@ -34,6 +35,7 @@ class ProductAnswerSerializer(serializers.ModelSerializer):
         fields = ['id', 'question', 'user', 'username', 'answer', 'is_seller_response', 'created_at']
 
 class ProductQuestionSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
     username = serializers.CharField(source='user.username', read_only=True)
     answers = ProductAnswerSerializer(many=True, read_only=True)
 
@@ -125,13 +127,16 @@ class WishlistSerializer(serializers.ModelSerializer):
 
 class CartItemSerializer(serializers.ModelSerializer):
     product = ProductSerializer(read_only=True)
+    service = ServiceSerializer(read_only=True)
     variant = ProductVariantSerializer(read_only=True)
-    product_id = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(), source='product')
-    variant_id = serializers.PrimaryKeyRelatedField(queryset=ProductVariant.objects.all(), source='variant', required=False)
+    product_id = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(), source='product', required=False, allow_null=True)
+    service_id = serializers.PrimaryKeyRelatedField(queryset=Service.objects.all(), source='service', required=False, allow_null=True)
+    variant_id = serializers.PrimaryKeyRelatedField(queryset=ProductVariant.objects.all(), source='variant', required=False, allow_null=True)
 
     class Meta:
         model = CartItem
-        fields = ['id', 'product', 'product_id', 'variant', 'variant_id', 'quantity', 'is_saved_for_later', 'get_cost']
+        fields = ['id', 'product', 'product_id', 'service', 'service_id', 'variant', 'variant_id', 'quantity', 'is_saved_for_later', 'get_cost']
+
 
 class CartSerializer(serializers.ModelSerializer):
     items = CartItemSerializer(many=True, read_only=True)

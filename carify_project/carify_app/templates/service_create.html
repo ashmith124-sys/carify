@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}PROTOCOL_INITIALIZATION | CARIFY Admin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .cg-create-container {
+        min-height: 100vh;
+        padding: 8rem 5vw;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        background: radial-gradient(circle at top right, rgba(217, 145, 90, 0.05), transparent 40%),
+                    var(--clr-bg);
+    }
+
+    .cg-create-card {
+        width: 100%;
+        max-width: 800px;
+        background: rgba(10, 10, 10, 0.4);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--clr-border);
+        padding: 4rem;
+        position: relative;
+    }
+
+    .cg-create__h1 {
+        font-family: var(--font-h);
+        font-size: 2.5rem;
+        font-weight: 800;
+        letter-spacing: -.03em;
+        margin-bottom: 3rem;
+        color: #fff;
+    }
+
+    .cg-create__h1 span {
+        color: var(--clr-copper);
+    }
+
+    .cg-form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+
+    .full-width {
+        grid-column: 1 / -1;
+    }
+
+    .cg-input-wrapper {
+        margin-bottom: 2.5rem;
+    }
+
+    .cg-label {
+        display: block;
+        font-family: var(--font-h);
+        font-size: .55rem;
+        font-weight: 700;
+        letter-spacing: .2em;
+        text-transform: uppercase;
+        color: var(--clr-muted);
+        margin-bottom: 12px;
+    }
+
+    /* Override standard inputs for premium feel */
+    .cg-input {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid var(--clr-border);
+        color: #fff;
+        padding: 14px 18px;
+        font-size: .95rem;
+        outline: none;
+        transition: all 0.3s var(--ease);
+    }
+
+    .cg-input:focus {
+        border-color: var(--clr-copper);
+        background: rgba(255, 255, 255, 0.04);
+    }
+
+    .cg-upload-zone {
+        border: 1px dashed var(--clr-border);
+        padding: 2rem;
+        text-align: center;
+        cursor: pointer;
+        transition: 0.3s;
+        background: rgba(255, 255, 255, 0.01);
+    }
+
+    .cg-upload-zone:hover {
+        border-color: var(--clr-copper);
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    .cg-upload-zone i {
+        font-size: 1.5rem;
+        color: var(--clr-copper);
+        margin-bottom: 1rem;
+    }
+
+    .cg-submit-btn {
+        width: 100%;
+        background: var(--clr-copper);
+        color: #fff;
+        border: none;
+        padding: 1.5rem;
+        font-family: var(--font-h);
+        font-size: .75rem;
+        font-weight: 800;
+        letter-spacing: .3em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: 0.4s var(--transition-premium);
+        margin-top: 2rem;
+    }
+
+    .cg-submit-btn:hover {
+        background: #fff;
+        color: #000;
+        letter-spacing: .4em;
+    }
+
+    .cg-form-help {
+        font-size: .65rem;
+        color: var(--clr-muted);
+        margin-top: 10px;
+        font-style: italic;
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="cg-create-container" data-cg-appear>
+    <div class="cg-create-card">
+        <h1 class="cg-create__h1">PROTOCOL_<span>INITIALIZATION</span></h1>
+        
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="cg-form-grid">
+                <div class="cg-input-wrapper">
+                    <label class="cg-label">Ritual Name</label>
+                    {{ form.name }}
+                </div>
+
+                <div class="cg-input-wrapper">
+                    <label class="cg-label">Classification (Category)</label>
+                    {{ form.category }}
+                </div>
+
+                <div class="cg-input-wrapper">
+                    <label class="cg-label">Starting Price ($)</label>
+                    {{ form.price }}
+                </div>
+
+                <div class="cg-input-wrapper">
+                    <label class="cg-label">Direct Contact Access</label>
+                    {{ form.contact_info }}
+                    <span class="cg-form-help">Phone, Email, or Curated Line</span>
+                </div>
+
+                <div class="cg-input-wrapper full-width">
+                    <label class="cg-label">Ritual Narrative (Description)</label>
+                    {{ form.description }}
+                </div>
+
+                <div class="cg-input-wrapper">
+                    <label class="cg-label">Showcase Specimen (Photo)</label>
+                    <div class="cg-upload-zone" onclick="document.getElementById('id_image').click()">
+                        <i class="fas fa-camera"></i>
+                        <p style="font-size: .6rem; color: var(--clr-muted);">SELECT HIGH-FIDELITY IMAGE</p>
+                        {{ form.image }}
+                    </div>
+                </div>
+
+                <div class="cg-input-wrapper">
+                    <label class="cg-label">Cinematic Motion (Video)</label>
+                    <div class="cg-upload-zone" onclick="document.getElementById('id_video').click()">
+                        <i class="fas fa-video"></i>
+                        <p style="font-size: .6rem; color: var(--clr-muted);">SELECT CEREMONY FOOTAGE (MP4)</p>
+                        {{ form.video }}
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="cg-submit-btn">INITIATE SERVICE PROTOCOL</button>
+        </form>
+        
+        <div style="margin-top: 3rem; text-align: center;">
+            <a href="{% url 'carify_app:services' %}" class="nav-link" style="font-size: .6rem;">ABORT_INITIALIZATION</a>
+        </div>
+    </div>
+</main>
+
+<script>
+    // Hidden standard file inputs logic
+    document.addEventListener('DOMContentLoaded', () => {
+        const fileInputs = ['id_image', 'id_video'];
+        fileInputs.forEach(id => {
+            const input = document.getElementById(id);
+            if(input) input.style.display = 'none';
+        });
+    });
+</script>
+{% endblock %}

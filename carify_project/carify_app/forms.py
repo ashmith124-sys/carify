@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import modelformset_factory
-from .models import Product, ProductMedia
+from .models import Product, ProductMedia, Service
 
 class BuyerRegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True, help_text='Enter a working email address for OTP verification.')
@@ -42,6 +42,18 @@ class ProductForm(forms.ModelForm):
         fields = ['name', 'description', 'quantity', 'price', 'image', 'category']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4}),
+        }
+
+class ServiceForm(forms.ModelForm):
+    class Meta:
+        model = Service
+        fields = ['name', 'description', 'price', 'image', 'video', 'contact_info', 'category']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 4, 'class': 'cg-input', 'placeholder': 'Describe the ritual...'}),
+            'name': forms.TextInput(attrs={'class': 'cg-input', 'placeholder': 'Protocol Name'}),
+            'price': forms.NumberInput(attrs={'class': 'cg-input', 'placeholder': 'Starting Price'}),
+            'contact_info': forms.TextInput(attrs={'class': 'cg-input', 'placeholder': 'Contact details...'}),
+            'category': forms.Select(attrs={'class': 'cg-input'}),
         }
 
 ProductMediaFormset = modelformset_factory(

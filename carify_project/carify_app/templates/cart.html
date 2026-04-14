@@ -1,0 +1,545 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}ACQUISITION_PORTFOLIO | CARIFY Elite{% endblock %}
+
+{% block extra_css %}
+<style>
+    .cg-cart-container {
+        min-height: 100vh;
+        padding: 10rem 5vw 5rem;
+        background: radial-gradient(circle at top right, rgba(217, 145, 90, 0.03), transparent 40%),
+            var(--obsidian);
+    }
+
+    .cg-cart-layout {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 60px;
+        align-items: flex-start;
+    }
+
+    @media (max-width: 1100px) {
+        .cg-cart-layout {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .cg-section-h {
+        font-family: var(--font-h);
+        font-size: 0.75rem;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: var(--clr-muted);
+        margin-bottom: 3rem;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .cg-section-h::after {
+        content: '';
+        height: 1px;
+        flex: 1;
+        background: var(--clr-border);
+    }
+
+    /* --- PORTFOLIO ITEM --- */
+    .cg-pitem {
+        display: flex;
+        gap: 30px;
+        padding: 3rem 0;
+        border-bottom: 1px solid var(--clr-border);
+        transition: 0.3s;
+    }
+
+    .cg-pitem__media {
+        width: 140px;
+        height: 180px;
+        background: var(--surface);
+        overflow: hidden;
+        flex-shrink: 0;
+        border: 1px solid var(--clr-border);
+    }
+
+    .cg-pitem__media img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .cg-pitem__info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .cg-pitem__cat {
+        font-size: 0.55rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--clr-copper);
+        margin-bottom: 0.5rem;
+    }
+
+    .cg-pitem__h3 {
+        font-family: var(--font-h);
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        color: #fff;
+    }
+
+    .cg-pitem__meta {
+        font-size: 0.65rem;
+        color: var(--clr-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+
+    .cg-pitem__price {
+        font-family: var(--font-h);
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #fff;
+    }
+
+    .cg-pitem__actions {
+        display: flex;
+        gap: 20px;
+        margin-top: 1rem;
+    }
+
+    .cg-pitem-btn {
+        background: none;
+        border: none;
+        color: var(--clr-muted);
+        font-size: 0.6rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        cursor: pointer;
+        padding: 0;
+        text-decoration: underline;
+        transition: 0.3s;
+    }
+
+    .cg-pitem-btn:hover {
+        color: #fff;
+    }
+
+    /* --- SUMMARY PANEL --- */
+    .cg-summary-panel {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid var(--clr-border);
+        padding: 3rem;
+        position: sticky;
+        top: 120px;
+    }
+
+    .cg-summary-h {
+        font-family: var(--font-h);
+        font-size: 1.1rem;
+        font-weight: 800;
+        margin-bottom: 2rem;
+        letter-spacing: -0.02em;
+    }
+
+    .cg-summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        font-size: 0.75rem;
+        color: var(--clr-muted);
+    }
+
+    .cg-summary-row span:last-child {
+        color: #fff;
+        font-weight: 600;
+    }
+
+    .cg-total-row {
+        border-top: 1px solid var(--clr-border);
+        margin-top: 2rem;
+        padding-top: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+    }
+
+    .cg-checkout-btn {
+        width: 100%;
+        background: #fff;
+        color: #000;
+        border: none;
+        padding: 1.5rem;
+        margin-top: 2.5rem;
+        font-family: var(--font-h);
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: 0.4s var(--transition-premium);
+    }
+
+    .cg-checkout-btn:hover {
+        background: var(--clr-copper);
+        color: #fff;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="cg-cart-container" data-cg-appear>
+    <div class="cg-section-h">ACQUISITION_PORTFOLIO</div>
+
+    <div class="cg-cart-layout">
+        <!-- LIST SIDE -->
+        <div id="portfolioList">
+            <!-- Items injected by bridge.js -->
+            <div style="padding: 100px 0; text-align: center; opacity: 0.5;">
+                <p class="font-h">SECURE_SYNCING...</p>
+            </div>
+        </div>
+
+        <!-- SUMMARY SIDE -->
+        <aside class="cg-summary-panel">
+            <h2 class="cg-summary-h">SYNOPSIS</h2>
+
+            <div class="cg-summary-row">
+                <span>SPECIMENS_COUNT</span>
+                <span id="pCount">0</span>
+            </div>
+
+            <div class="cg-summary-row">
+                <span>RITUAL_PROTOCOLS</span>
+                <span id="rCount">0</span>
+            </div>
+
+            <div class="cg-summary-row">
+                <span>LOGISTICS_ESTIMATE</span>
+                <span>TBD</span>
+            </div>
+
+            <div class="cg-total-row">
+                <div>
+                    <span
+                        style="display:block; font-size: 0.55rem; color: var(--clr-muted); letter-spacing: 0.2em;">TOTAL_VALUE</span>
+                    <span id="pTotal"
+                        style="font-family: var(--font-h); font-size: 1.5rem; font-weight: 800; color: var(--clr-copper);">$0.00</span>
+                </div>
+            </div>
+
+            <button id="pCheckoutBtn" class="cg-checkout-btn">SECURE FINAL ACQUISITION</button>
+            <p
+                style="margin-top: 1.5rem; font-size: 0.55rem; color: var(--clr-muted); text-align: center; text-transform: uppercase; letter-spacing: 0.1em;">
+                SECURED BY CARIFY ENCRYPTION PROTOCOL
+            </p>
+        </aside>
+    </div>
+
+    <!-- SAVED FOR LATER SECTION -->
+    <div style="margin-top: 100px;">
+        <div class="cg-section-h">FUTURE_INDIVIDUALS (SAVED)</div>
+        <div id="savedGallery" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Saved items injected by bridge.js -->
+        </div>
+    </div>
+</main>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Custom Portfolio Syncing (Extension of Bridge)
+    document.addEventListener('portfolioSynced', (e) => {
+        const data = e.detail;
+        const list = document.getElementById('portfolioList');
+        const countSpan = document.getElementById('pCount');
+        const ritualSpan = document.getElementById('rCount');
+        const totalSpan = document.getElementById('pTotal');
+        const checkoutBtn = document.getElementById('pCheckoutBtn');
+        const savedGallery = document.getElementById('savedGallery');
+
+        if (!data || !data.items) return;
+
+        const activeItems = data.items.filter(i => !i.is_saved_for_later);
+        const savedItems = data.items.filter(i => i.is_saved_for_later);
+
+        const productItems = activeItems.filter(i => i.product);
+        const serviceItems = activeItems.filter(i => i.service);
+
+
+        countSpan.innerText = productItems.length;
+        ritualSpan.innerText = serviceItems.length;
+
+        let totalVal = 0;
+        activeItems.forEach(i => totalVal += parseFloat(i.get_cost));
+        totalSpan.innerText = '$' + totalVal.toFixed(2);
+
+        if (activeItems.length === 0) {
+            list.innerHTML = `
+                <div style="padding: 100px 0; text-align: center; border: 1px dashed var(--clr-border);">
+                    <p style="font-family: var(--font-h); font-size: 0.8rem; color: var(--clr-muted);">PORTFOLIO_EMPTY</p>
+                    <a href="{% url 'carify_app:product_list' %}" class="cg-btn-ghost" style="margin-top: 2rem;">EXPLORE COLLECTION</a>
+                </div>
+            `;
+            checkoutBtn.disabled = true;
+            checkoutBtn.style.opacity = '0.3';
+        } else {
+            checkoutBtn.disabled = false;
+            checkoutBtn.style.opacity = '1';
+
+            let html = '';
+
+            if (productItems.length > 0) {
+                html += `<div class="cg-section-h" style="margin-top:0; border:none; padding:0; height:auto; opacity:0.6;">PHYSICAL_SPECIMENS</div>`;
+                html += productItems.map(item => `
+                    <div class="cg-pitem">
+                        <div class="cg-pitem__media">
+                            <img src="${item.product.first_image || (item.product.image ? item.product.image : '/static/img/placeholder.png')}">
+                        </div>
+                        <div class="cg-pitem__info">
+                            <div>
+                                <span class="cg-pitem__cat">${item.product.category_name || 'SPECIMEN'}</span>
+                                <h3 class="cg-pitem__h3">${item.product.name}</h3>
+                                <div class="cg-pitem__meta">${item.variant ? item.variant.name : 'AUTHENTIC_SPECIMEN'} // QTY: ${item.quantity}</div>
+                            </div>
+                            <div class="cg-pitem__price-block" style="display:flex; justify-content:space-between; align-items:flex-end;">
+                                <div class="cg-pitem__actions">
+                                    <button class="cg-pitem-btn" onclick="window.CarifyBridge.toggleSavedItem(${item.id})">SAVE_FOR_LATER</button>
+                                    <button class="cg-pitem-btn" onclick="window.CarifyBridge.removeItem(${item.id})">REMOVE</button>
+                                </div>
+                                <span class="cg-pitem__price">$${parseFloat(item.get_cost).toFixed(2)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                html += `<button onclick="window.location.href='{% url 'carify_app:create_checkout' %}'" class="cg-checkout-btn" style="margin-bottom: 4rem;">PROCEED TO CHECKOUT</button>`;
+            }
+
+            if (serviceItems.length > 0) {
+                html += `<div class="cg-section-h" style="margin-top:2rem; border:none; padding:0; height:auto; opacity:0.6;">RITUAL_PROTOCOLS</div>`;
+                html += serviceItems.map(item => `
+                    <div class="cg-pitem" style="border-left: 2px solid var(--clr-copper); padding-left: 20px;">
+                        <div class="cg-pitem__media">
+                            <img src="${item.service.image || '/static/img/placeholder.png'}">
+                        </div>
+                        <div class="cg-pitem__info">
+                            <div>
+                                <span class="cg-pitem__cat">RITUAL</span>
+                                <h3 class="cg-pitem__h3">${item.service.name}</h3>
+                                <div class="cg-pitem__meta">PENDING_SCHEDULING // EST. $${parseFloat(item.service.price).toFixed(2)}</div>
+                            </div>
+                            <div class="cg-pitem__price-block" style="display:flex; justify-content:space-between; align-items:flex-end;">
+                                <div class="cg-pitem__actions">
+                                    <button class="cg-pitem-btn" onclick="window.CarifyBridge.removeItem(${item.id})">REMOVE</button>
+                                </div>
+                                <button onclick="initiateRitualBooking('${item.service.id}', '${item.service.name}')" class="cg-pitem-btn" style="color: var(--clr-copper); text-decoration:none; font-weight:bold;">CONFIGURE_BOOKING</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                html += `<button onclick="initiateMassBooking()" class="cg-checkout-btn" style="background: var(--clr-copper); color: #fff;">INITIATE ALL RITUALS</button>`;
+            }
+
+            list.innerHTML = html;
+        }
+
+        // Render Saved Gallery
+        if (savedItems.length === 0) {
+            savedGallery.innerHTML = '<p style="font-size: 0.6rem; color: var(--clr-muted); text-transform: uppercase;">NO ARCHIVED SPECIMENS</p>';
+        } else {
+            savedGallery.innerHTML = savedItems.map(item => {
+                const sImg = (item.product && item.product.first_image) ? item.product.first_image :
+                    (item.product && item.product.image) ? item.product.image :
+                        (item.service && item.service.image) ? item.service.image :
+                            '/static/img/placeholder.png';
+                const sName = item.product ? item.product.name : (item.service ? item.service.name : 'Unknown');
+
+                return `
+                <div class="glass-panel" style="padding: 2rem; display: flex; gap: 20px;">
+                    <img src="${sImg}" style="width: 60px; height: 80px; object-fit: cover;">
+                    <div style="flex:1;">
+                        <h4 class="font-h" style="font-size: 0.75rem; margin-bottom: 10px;">${sName}</h4>
+                        <button class="cg-pitem-btn" style="color: var(--clr-copper);" onclick="window.CarifyBridge.toggleSavedItem(${item.id})">ACTIVATE_IN_PORTFOLIO</button>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+    });
+
+    // Booking Logic
+    function initiateRitualBooking(serviceId, serviceName) {
+        document.getElementById('bookingServiceId').value = serviceId;
+        document.getElementById('bookingServiceName').innerText = serviceName.toUpperCase();
+        document.getElementById('bookingOverlay').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeBooking() {
+        document.getElementById('bookingOverlay').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    function initiateMassBooking() {
+        // Collect all services in cart and prompt for batch booking
+        // For now, prompt to book each or just the first one as an example
+        alert('BATCH_BOOKING_PROTOCOL: Please configure each ritual individually for precise scheduling.');
+    }
+
+    // Handle Checkout Session for Products
+    if (document.getElementById('pCheckoutBtn')) {
+        document.getElementById('pCheckoutBtn').addEventListener('click', () => {
+            window.location.href = '{% url "carify_app:create_checkout" %}';
+        });
+    }
+
+    // Listen to bridge sync
+    document.addEventListener('DOMContentLoaded', () => {
+        const originalSync = window.CarifyBridge.syncState;
+        window.CarifyBridge.syncState = async function () {
+            await originalSync.call(this);
+            const event = new CustomEvent('portfolioSynced', { detail: this.state });
+            document.dispatchEvent(event);
+        };
+        window.CarifyBridge.syncState();
+    });
+</script>
+
+<!-- BOOKING OVERLAY -->
+<div id="bookingOverlay" class="cg-booking-overlay" onclick="if(event.target === this) closeBooking()">
+    <div class="cg-booking-panel glass-panel">
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+            <i class="fas fa-xmark icon-trigger" style="font-size: 1.5rem;" onclick="closeBooking()"></i>
+        </div>
+
+        <h2 class="cg-booking__h2">CONFIGURE<br><span id="bookingServiceName" class="copper-text">RITUAL</span></h2>
+
+        <form id="bookingForm" action="{% url 'carify_app:book_service' %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="service_id" id="bookingServiceId">
+            <input type="hidden" name="redirect_to_cart" value="true">
+
+            <div class="cg-input-group">
+                <label class="cg-input-label">PREFERRED DATE</label>
+                <input type="date" name="preferred_date" class="cg-input" required min="{% now 'Y-m-d' %}">
+            </div>
+
+            <div class="cg-input-group">
+                <label class="cg-input-label">PREFERRED TIME</label>
+                <select name="preferred_time" class="cg-input" required>
+                    <option value="09:00">09:00 AM</option>
+                    <option value="11:00">11:00 AM</option>
+                    <option value="14:00">02:00 PM</option>
+                    <option value="16:00">04:00 PM</option>
+                </select>
+            </div>
+
+            <div class="cg-input-group">
+                <label class="cg-input-label">VEHICLE SPECIMEN</label>
+                <input type="text" name="vehicle_details" class="cg-input" placeholder="e.g. 2024 FERRARI 296 GTB"
+                    required>
+            </div>
+
+            <div class="cg-input-group">
+                <label class="cg-input-label">ADDITIONAL PROTOCOLS</label>
+                <textarea name="additional_notes" class="cg-input" style="height: 100px; resize: none;"></textarea>
+            </div>
+
+            <button type="submit" class="cg-book-btn">SUBMIT BOOKING REQUEST</button>
+        </form>
+    </div>
+</div>
+
+<style>
+    /* Overlay Styles */
+    .cg-booking-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(15px);
+        z-index: 3000;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.6s var(--transition-premium);
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .cg-booking-overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .cg-booking-panel {
+        width: 100%;
+        max-width: 500px;
+        height: 100%;
+        background: var(--obsidian);
+        border: none;
+        border-left: 1px solid var(--clr-border);
+        border-radius: 0;
+        padding: 60px 40px;
+        transform: translateX(100%);
+        transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .cg-booking-overlay.active .cg-booking-panel {
+        transform: translateX(0);
+    }
+
+    .cg-booking__h2 {
+        font-family: var(--font-h);
+        font-size: 2rem;
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 3rem;
+    }
+
+    .cg-input-group {
+        margin-bottom: 2rem;
+    }
+
+    .cg-input-label {
+        display: block;
+        font-family: var(--font-h);
+        font-size: .55rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--clr-copper);
+        margin-bottom: 10px;
+    }
+
+    .cg-input {
+        width: 100%;
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid var(--clr-border);
+        color: #fff;
+        padding: 12px 0;
+        font-size: .9rem;
+        outline: none;
+        transition: 0.3s;
+    }
+
+    .cg-book-btn {
+        margin-top: auto;
+        width: 100%;
+        background: #fff;
+        color: #000;
+        border: none;
+        padding: 1.2rem;
+        font-family: var(--font-h);
+        font-size: .7rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        cursor: pointer;
+    }
+</style>
+
+{% endblock %}

@@ -29,7 +29,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-4tkb-k4$v0*!&i
 DEBUG = os.environ.get('DJANGO_DEBUG', 'False').lower() == 'true'
 
 # Keep development hosts working out of the box while allowing overrides in env.
-default_allowed_hosts = ['127.0.0.1', 'localhost', 'testserver', '.render.com', '.carify.org']
+default_allowed_hosts = ['127.0.0.1', 'localhost', 'testserver', '.onrender.com', '.carify.org']
 env_allowed_hosts = os.environ.get('DJANGO_ALLOWED_HOSTS', '')
 ALLOWED_HOSTS = [
     host.strip() for host in env_allowed_hosts.split(',') if host.strip()

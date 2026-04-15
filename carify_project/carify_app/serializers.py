@@ -49,13 +49,15 @@ class ProductSerializer(serializers.ModelSerializer):
     reviews = ReviewSerializer(many=True, read_only=True)
     first_image = serializers.SerializerMethodField()
     average_rating = serializers.SerializerMethodField()
+    seller_shop = serializers.CharField(source='seller.seller_profile.shop_name', read_only=True)
+    category_name = serializers.CharField(source='category.name', read_only=True)
 
     class Meta:
         model = Product
         fields = [
-            'id', 'name', 'description', 'price', 'quantity', 'category', 
+            'id', 'name', 'description', 'price', 'quantity', 'category', 'category_name',
             'image', 'media', 'variants', 'reviews', 'first_image', 
-            'average_rating', 'created_at', 'updated_at'
+            'average_rating', 'seller_shop', 'created_at', 'updated_at'
         ]
 
     def get_first_image(self, obj):

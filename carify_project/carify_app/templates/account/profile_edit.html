@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Modify Identity | CARIFY{% endblock %}
+
+{% block extra_css %}
+<style>
+    .edit-container {
+        padding: 120px 6vw 80px;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .form-elite {
+        background: var(--surface-ebony);
+        border: 1px solid var(--border-elegant);
+        padding: 60px;
+        margin-top: 40px;
+    }
+
+    .form-group {
+        margin-bottom: 30px;
+    }
+
+    .form-group label {
+        display: block;
+        font-family: var(--font-heading);
+        font-size: 0.7rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        margin-bottom: 12px;
+    }
+
+    .cg-input {
+        width: 100%;
+        background: var(--surface-obsidian);
+        border: 1px solid var(--border-elegant);
+        padding: 15px 20px;
+        color: var(--text-pure);
+        font-family: var(--font-body);
+        font-size: 0.9rem;
+        transition: 0.3s;
+    }
+
+    .cg-input:focus {
+        outline: none;
+        border-color: var(--bronze);
+        background: #000;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="edit-container">
+    <span class="hero-eyebrow">Protocol Adjustment</span>
+    <h1 class="font-heading" style="font-size: 3rem; margin-top: 10px;">Modify Identity</h1>
+
+    <div class="form-elite">
+        <form method="POST">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label>First Designation</label>
+                {{ form.first_name }}
+            </div>
+
+            <div class="form-group">
+                <label>Last Designation</label>
+                {{ form.last_name }}
+            </div>
+
+            <div class="form-group">
+                <label>Digital Communication Node (Email)</label>
+                {{ form.email }}
+            </div>
+
+            <div style="margin-top: 50px; display: flex; gap: 20px;">
+                <button type="submit" class="btn btn-primary" style="flex: 1;">Commit Changes</button>
+                <a href="{% url 'carify_app:user_profile' %}" class="btn btn-primary" style="flex: 1; background: transparent; border: 1px solid var(--border-elegant); display: flex; align-items: center; justify-content: center; text-decoration: none;">Abort</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

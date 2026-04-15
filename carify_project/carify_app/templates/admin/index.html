@@ -13,7 +13,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
         <div class="admin-stat-card">
             <span class="admin-stat-label">TOTAL GMV</span>
-            <div class="admin-stat-value text-copper">${{ platform_stats.gmv|floatformat:2 }}</div>
+            <div class="admin-stat-value text-orange-500">${{ platform_stats.gmv|floatformat:2 }}</div>
         </div>
         <div class="admin-stat-card">
             <span class="admin-stat-label">ACTIVE ORDERS</span>
@@ -21,7 +21,7 @@
         </div>
         <div class="admin-stat-card">
             <span class="admin-stat-label">AVG ORDER VALUE</span>
-            <div class="admin-stat-value text-copper">${{ platform_stats.aov|floatformat:2 }}</div>
+            <div class="admin-stat-value text-orange-500">${{ platform_stats.aov|floatformat:2 }}</div>
         </div>
         <div class="admin-stat-card">
             <span class="admin-stat-label">LOW STOCK ITEMS</span>
@@ -61,7 +61,7 @@
                          <span class="text-xs font-bold text-white uppercase tracking-wider">{{ item.product__name|truncatechars:20 }}</span>
                          <span class="text-[10px] text-gray-500 uppercase">{{ item.qty_sold }} UNITS</span>
                      </div>
-                     <span class="text-xs font-bold text-copper">${{ item.rev|floatformat:2 }}</span>
+                     <span class="text-xs font-bold text-orange-500">${{ item.rev|floatformat:2 }}</span>
                  </div>
                  {% empty %}
                  <p class="text-xs text-gray-500 italic">No metrics recorded.</p>
@@ -82,8 +82,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const ctx = document.getElementById('adminRevenueChart').getContext('2d');
     
     let gradient = ctx.createLinearGradient(0, 0, 0, 400);
-    gradient.addColorStop(0, 'rgba(215, 126, 44, 0.4)');
-    gradient.addColorStop(1, 'rgba(215, 126, 44, 0.0)');
+    gradient.addColorStop(0, 'rgba(249, 115, 22, 0.4)');
+    gradient.addColorStop(1, 'rgba(249, 115, 22, 0.0)');
     
     const labels = JSON.parse('{{ chart_labels|safe }}');
     const data = JSON.parse('{{ chart_data|safe }}');
@@ -95,11 +95,11 @@ document.addEventListener('DOMContentLoaded', function() {
             datasets: [{
                 label: 'Gross Platform Revenue ($)',
                 data: data,
-                borderColor: '#d77e2c',
+                borderColor: '#f97316',
                 backgroundColor: gradient,
                 borderWidth: 2,
                 pointBackgroundColor: '#0a0a0a',
-                pointBorderColor: '#d77e2c',
+                pointBorderColor: '#f97316',
                 fill: true,
                 tension: 0.4
             }]

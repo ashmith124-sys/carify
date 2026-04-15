@@ -1,9 +1,9 @@
-/* Carify Premium Admin Design System - Obsidian/Copper Theme */
+/* Carify Premium Admin Design System - Obsidian/Orange Theme */
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
 
 :root {
-    --copper: #d77e2c;
-    --copper-dark: #b56620;
+    --orange: #f97316;
+    --orange-dark: #ea580c;
     --obsidian: #0a0a0a;
     --surface: rgba(26, 26, 26, 0.4);
     --border-elegant: rgba(255, 255, 255, 0.05);
@@ -31,14 +31,14 @@ body {
 }
 
 .unfold-sidebar-link:hover {
-    background: rgba(215, 126, 44, 0.05) !important;
-    color: var(--copper) !important;
+    background: rgba(249, 115, 22, 0.05) !important;
+    color: var(--orange) !important;
 }
 
 .unfold-sidebar-link.active {
-    background: rgba(215, 126, 44, 0.1) !important;
-    color: var(--copper) !important;
-    border-right: 3px solid var(--copper);
+    background: rgba(249, 115, 22, 0.1) !important;
+    color: var(--orange) !important;
+    border-right: 3px solid var(--orange);
 }
 
 /* Cards & Content Panels */
@@ -54,12 +54,12 @@ body {
 }
 
 .unfold-card:hover {
-    border-color: rgba(215, 126, 44, 0.3) !important;
+    border-color: rgba(249, 115, 22, 0.3) !important;
 }
 
 /* Buttons */
 .unfold-button-primary {
-    background: var(--copper) !important;
+    background: var(--orange) !important;
     border-radius: 6px !important;
     font-weight: 600 !important;
     letter-spacing: 0.05em !important;
@@ -69,8 +69,8 @@ body {
 }
 
 .unfold-button-primary:hover {
-    background: var(--copper-dark) !important;
-    box-shadow: 0 0 20px rgba(215, 126, 44, 0.3) !important;
+    background: var(--orange-dark) !important;
+    box-shadow: 0 0 20px rgba(249, 115, 22, 0.3) !important;
     transform: translateY(-1px);
 }
 
@@ -82,7 +82,7 @@ body {
 .unfold-table-header {
     background: rgba(255, 255, 255, 0.02) !important;
     border-bottom: 1px solid var(--border-elegant) !important;
-    color: var(--copper) !important;
+    color: var(--orange) !important;
     font-weight: 700 !important;
     text-transform: uppercase !important;
     letter-spacing: 0.1em !important;
@@ -98,7 +98,7 @@ body {
 }
 
 .admin-stat-label {
-    color: var(--copper);
+    color: var(--orange);
     font-size: 0.65rem;
     font-weight: 800;
     letter-spacing: 0.2em;
@@ -124,6 +124,6 @@ textarea {
 }
 
 input:focus {
-    border-color: var(--copper) !important;
-    background: rgba(215, 126, 44, 0.02) !important;
+    border-color: var(--orange) !important;
+    background: rgba(249, 115, 22, 0.02) !important;
 }

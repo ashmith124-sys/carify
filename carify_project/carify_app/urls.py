@@ -32,6 +32,8 @@ urlpatterns = [
     path('seller/dashboard/', views.seller_dashboard, name='seller_dashboard'),
     path('seller/products/', views.seller_products, name='seller_products'),
     path('seller/product/add/', views.seller_add_product, name='seller_add_product'),
+    path('seller/product/edit/<int:product_id>/', views.seller_edit_product, name='seller_edit_product'),
+    path('seller/product/delete/<int:product_id>/', views.seller_delete_product, name='seller_delete_product'),
     
     # NEW Auth Flow
     path('accounts/signup/buyer/', views.buyer_register, name='buyer_register'),
@@ -59,9 +61,23 @@ urlpatterns = [
     path('seller/orders/', views.seller_orders, name='seller_orders'),
     path('seller/analytics/', views.seller_analytics, name='seller_analytics'),
     path('seller/settings/', views.seller_settings, name='seller_settings'),
+    
+    # Admin Catalog Management
+    path('admin/categories/', views.manage_categories, name='manage_categories'),
+    path('admin/categories/add/', views.add_category, name='add_category'),
+    path('admin/categories/edit/<int:category_id>/', views.edit_category, name='edit_category'),
+    path('admin/categories/delete/<int:category_id>/', views.delete_category, name='delete_category'),
+    
+    # User Profile
+    path('profile/', views.user_profile, name='user_profile'),
+    path('profile/edit/', views.update_user_profile, name='update_user_profile'),
+    path('seller/<int:seller_id>/', views.public_seller_profile, name='public_seller_profile'),
+
     path('cart/', views.cart_view, name='cart_view'),
 
     
+    path('payment/demo/', views.demo_payment, name='demo_payment'),
+    path('payment/demo/complete/', views.complete_demo_payment, name='complete_demo_payment'),
     path('payment/success/', views.payment_success, name='payment_success'),
     path('payment/cancel/', views.payment_cancel, name='payment_cancel'),
     path('stripe/webhook/', views.stripe_webhook, name='stripe_webhook'),

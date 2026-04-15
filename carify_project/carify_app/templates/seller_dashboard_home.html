@@ -1,97 +1,97 @@
 {% extends 'seller_base.html' %}
 
-{% block title %}Dashboard Overview | Carify Seller{% endblock %}
+{% block title %}System Overview | Carify Seller{% endblock %}
 
 {% block content %}
-<div class="section-header">
-    <h1 class="section-title">Overview</h1>
-    <a href="{% url 'carify_app:seller_add_product' %}" class="btn btn-primary">
-        <i class="fas fa-plus"></i> Add Product
+<div class="section-header" style="margin-bottom: 60px;">
+    <div>
+        <h1 class="section-title" style="font-size: 3rem; letter-spacing: -3px; font-weight: 800;">COMMAND <span class="copper-text">CENTER</span></h1>
+        <p style="color: var(--text-muted); font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase; margin-top: 5px;">Real-time asset performance metrics</p>
+    </div>
+    <a href="{% url 'carify_app:seller_add_product' %}" class="btn btn-primary" style="padding: 15px 40px; border-radius: 0; letter-spacing: 2px;">
+        <i class="fas fa-plus" style="margin-right: 10px;"></i> INITIALIZE ASSET
     </a>
 </div>
 
 <!-- Key Metrics Cards -->
-<div class="dashboard-grid">
-    <div class="stat-card">
-        <div class="stat-title">Total Revenue</div>
-        <div class="stat-value">${{ total_revenue|floatformat:2 }}</div>
-        <div class="stat-change positive">
-            <i class="fas fa-arrow-up"></i> Generated from verified orders
+<div class="dashboard-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 40px;">
+    <div class="glass-panel" style="padding: 30px; background: rgba(18, 15, 14, 0.4); border: 1px solid var(--border-elegant); border-radius: 0; transition: transform 0.3s var(--transition-premium); overflow: hidden; position: relative;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+        <div style="position: absolute; top: -10px; right: -10px; font-size: 4rem; color: var(--copper); opacity: 0.05; transform: rotate(-15deg); pointer-events: none;"><i class="fas fa-dollar-sign"></i></div>
+        <div style="font-family: var(--font-heading); font-size: 0.6rem; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 15px;">TOTAL_REVENUE</div>
+        <div style="font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800; color: var(--text-pure); line-height: 1;">${{ total_revenue|floatformat:2 }}</div>
+        <div style="font-size: 0.6rem; color: #4ade80; margin-top: 15px; letter-spacing: 1px; display: flex; align-items: center; gap: 6px;">
+            <i class="fas fa-chevron-up"></i> VERIFIED_ASSETS_GENERATED
         </div>
     </div>
 
-    <div class="stat-card">
-        <div class="stat-title">Total Orders</div>
-        <div class="stat-value">{{ total_orders }}</div>
-        <div class="stat-change positive">
-            <i class="fas fa-check"></i> Across all components
+    <div class="glass-panel" style="padding: 30px; background: rgba(18, 15, 14, 0.4); border: 1px solid var(--border-subtle); border-radius: 0; transition: transform 0.3s var(--transition-premium); overflow: hidden; position: relative;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+        <div style="position: absolute; top: -10px; right: -10px; font-size: 4rem; color: var(--copper); opacity: 0.05; transform: rotate(-15deg); pointer-events: none;"><i class="fas fa-box"></i></div>
+        <div style="font-family: var(--font-heading); font-size: 0.6rem; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 15px;">TOTAL_ORDERS</div>
+        <div style="font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800; color: var(--text-pure); line-height: 1;">{{ total_orders }}</div>
+        <div style="font-size: 0.6rem; color: var(--bronze); margin-top: 15px; letter-spacing: 1px; display: flex; align-items: center; gap: 6px;">
+            <i class="fas fa-microchip"></i> ACROSS_ALL_CHANNELS
         </div>
     </div>
 
-    <div class="stat-card">
-        <div class="stat-title">Active Products</div>
-        <div class="stat-value">{{ products.count|default:"0" }}</div>
-        <div class="stat-change">
-            Live on store
+    <div class="glass-panel" style="padding: 30px; background: rgba(18, 15, 14, 0.4); border: 1px solid var(--border-subtle); border-radius: 0; transition: transform 0.3s var(--transition-premium); overflow: hidden; position: relative;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+        <div style="position: absolute; top: -10px; right: -10px; font-size: 4rem; color: var(--copper); opacity: 0.05; transform: rotate(-15deg); pointer-events: none;"><i class="fas fa-layer-group"></i></div>
+        <div style="font-family: var(--font-heading); font-size: 0.6rem; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 15px;">ACTIVE_INVENTORY</div>
+        <div style="font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800; color: var(--text-pure); line-height: 1;">{{ products.count|default:"0" }}</div>
+        <div style="font-size: 0.6rem; color: var(--text-muted); margin-top: 15px; letter-spacing: 1px; display: flex; align-items: center; gap: 6px;">
+            <span style="width: 4px; height: 4px; background: #4ade80; border-radius: 50%;"></span> ARCHIVED_LIVE_SYNC
         </div>
     </div>
 
-    <div class="stat-card">
-        <div class="stat-title">Low Stock Items</div>
-        <div class="stat-value"
-            style="color: {% if low_stock_count > 0 %}var(--warning){% else %}var(--success){% endif %};">{{
-            low_stock_count }}</div>
-        <div class="stat-change {% if low_stock_count > 0 %}negative{% endif %}">
-            <i class="fas fa-exclamation-triangle"></i> Action required
+    <div class="glass-panel" style="padding: 30px; background: rgba(18, 15, 14, 0.4); border: 1px solid var(--border-subtle); border-radius: 0; transition: transform 0.3s var(--transition-premium); overflow: hidden; position: relative;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+        <div style="position: absolute; top: -10px; right: -10px; font-size: 4rem; color: #ff4d4d; opacity: 0.05; transform: rotate(-15deg); pointer-events: none;"><i class="fas fa-exclamation-triangle"></i></div>
+        <div style="font-family: var(--font-heading); font-size: 0.6rem; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 15px;">CRITICAL_ALERTS</div>
+        <div style="font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800; color: {% if low_stock_count > 0 %}#ff4d4d{% else %}var(--text-pure){% endif %}; line-height: 1;">{{ low_stock_count }}</div>
+        <div style="font-size: 0.6rem; color: {% if low_stock_count > 0 %}#ff4d4d{% else %}var(--text-muted){% endif %}; margin-top: 15px; letter-spacing: 1px; display: flex; align-items: center; gap: 6px;">
+            <i class="fas fa-shield-alt"></i> {% if low_stock_count > 0 %}ACTION_REQUIRED_IMMEDIATELY{% else %}ALL_SYSTEMS_NOMINAL{% endif %}
         </div>
     </div>
 </div>
 
 <!-- Revenue Chart and Recent Orders -->
-<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 40px;">
     <!-- Chart -->
-    <div class="content-section">
-        <div class="section-header" style="margin-bottom: 20px;">
-            <h2 class="section-title">Sales Overview</h2>
-            <select
-                style="background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); padding: 5px 10px; border-radius: 5px;">
-                <option>Last 7 Days</option>
-                <option>Last 30 Days</option>
+    <div class="glass-panel" style="padding: 40px; background: rgba(18, 15, 14, 0.4); border: 1px solid var(--border-subtle); border-radius: 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px solid var(--border-subtle);">
+            <h2 style="font-family: var(--font-heading); font-size: 1rem; font-weight: 800; letter-spacing: 2px; color: var(--text-pure);">VALUATION_TRAJECTORY</h2>
+            <select style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-subtle); color: var(--text-muted); padding: 5px 15px; font-family: var(--font-heading); font-size: 0.6rem; letter-spacing: 1px; outline: none;">
+                <option>LAST_07_DAYS</option>
+                <option>LAST_30_DAYS</option>
             </select>
         </div>
-        <canvas id="revenueChart" height="150"></canvas>
+        <div style="height: 350px; position: relative;">
+            <canvas id="revenueChart"></canvas>
+        </div>
     </div>
 
-    <!-- Recent Orders (Dummy or real data) -->
-    <div class="content-section">
-        <div class="section-header">
-            <h2 class="section-title">Recent Orders</h2>
+    <!-- Recent Orders -->
+    <div class="glass-panel" style="padding: 40px; background: rgba(18, 15, 14, 0.4); border: 1px solid var(--border-subtle); border-radius: 0;">
+        <div style="margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px solid var(--border-subtle);">
+            <h2 style="font-family: var(--font-heading); font-size: 1rem; font-weight: 800; letter-spacing: 2px; color: var(--text-pure);">LATEST_TRANSMISSIONS</h2>
         </div>
-        <div style="display: flex; flex-direction: column; gap: 15px;">
+        <div style="display: flex; flex-direction: column; gap: 20px;">
             {% for item in recent_orders %}
-            <div
-                style="display: flex; justify-content: space-between; padding-bottom: 15px; border-bottom: 1px solid var(--border-color);">
+            <div style="display: flex; justify-content: space-between; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.02);">
                 <div>
-                    <div style="font-weight: 500; font-size: 0.85rem;">{{ item.product.name|truncatechars:20 }}</div>
-                    <div style="font-size: 0.7rem; color: var(--text-muted);">#ORD-{{ item.order.id }} • {{
-                        item.order.created_at|timesince }} ago</div>
+                    <div style="font-family: var(--font-heading); font-weight: 700; font-size: 0.75rem; color: var(--text-pure); letter-spacing: 0.5px;">{{ item.product.name|upper|truncatechars:20 }}</div>
+                    <div style="font-family: monospace; font-size: 0.6rem; color: var(--text-muted); margin-top: 5px;">ID: ORD_{{ item.order.id|stringformat:"05d" }} • {{ item.order.created_at|timesince }} AGO</div>
                 </div>
                 <div style="text-align: right;">
-                    <div style="font-weight: 600; color: var(--success); font-size: 0.9rem;">${{ item.price }}</div>
-                    <div class="status-badge"
-                        style="display: inline-block; padding: 2px 8px; font-size: 0.6rem; margin-top: 5px; background: rgba(255,255,255,0.05);">
-                        {{ item.order.status|upper }}</div>
+                    <div style="font-family: var(--font-heading); font-weight: 800; color: var(--bronze); font-size: 0.85rem;">+${{ item.price }}</div>
+                    <div style="display: inline-block; padding: 4px 8px; font-family: var(--font-heading); font-size: 0.55rem; color: var(--text-muted); letter-spacing: 1px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); margin-top: 6px;">{{ item.order.status|upper }}</div>
                 </div>
             </div>
             {% empty %}
-            <div style="text-align: center; color: var(--text-muted); padding: 40px 0;">
-                <i class="fas fa-box-open" style="font-size: 1.5rem; margin-bottom: 10px; opacity: 0.3;"></i>
-                <p style="font-size: 0.7rem;">No recent orders detected</p>
+            <div style="text-align: center; color: var(--text-muted); padding: 60px 0; border: 1px dashed var(--border-subtle); background: rgba(255,255,255,0.01);">
+                <i class="fas fa-terminal" style="font-size: 1.5rem; margin-bottom: 15px; opacity: 0.2;"></i>
+                <p style="font-family: var(--font-heading); font-size: 0.6rem; letter-spacing: 1px;">WAITING_FOR_DATA_STREAM...</p>
             </div>
             {% endfor %}
-            <a href="{% url 'carify_app:seller_products' %}"
-                style="color: var(--accent-primary); text-decoration: none; font-size: 0.8rem; text-align: center; margin-top: 20px; text-transform: uppercase; letter-spacing: 0.1em;">Manage
-                All Assets</a>
+            <a href="{% url 'carify_app:seller_products' %}" style="display: block; width: 100%; padding: 15px; background: rgba(155, 90, 43, 0.05); color: var(--bronze); text-decoration: none; font-size: 0.65rem; text-align: center; margin-top: 10px; font-family: var(--font-heading); font-weight: 800; letter-spacing: 2px; border: 1px solid rgba(155, 90, 43, 0.1); transition: 0.3s;" onmouseover="this.style.backgroundColor='rgba(155, 90, 43, 0.1)'" onmouseout="this.style.backgroundColor='rgba(155, 90, 43, 0.05)'">VIEW_MASTER_REGISTRY</a>
         </div>
     </div>
 </div>
@@ -99,15 +99,13 @@
 
 {% block extra_js %}
 <script>
-    // Initialize Chart.js with real financial data
     const ctx = document.getElementById('revenueChart').getContext('2d');
 
-    // Gradient fill
+    // Premium Gradient
     let gradient = ctx.createLinearGradient(0, 0, 0, 400);
-    gradient.addColorStop(0, 'rgba(184, 115, 51, 0.4)'); // Bronze gradient top
-    gradient.addColorStop(1, 'rgba(184, 115, 51, 0.0)'); // fade out
+    gradient.addColorStop(0, 'rgba(155, 90, 43, 0.3)'); 
+    gradient.addColorStop(1, 'rgba(155, 90, 43, 0.0)'); 
 
-    // Receive JSON context from backend
     const chartLabels = {{ chart_labels| safe }};
     const chartData = {{ chart_data| safe }};
 
@@ -116,15 +114,16 @@
         data: {
             labels: chartLabels,
             datasets: [{
-                label: 'Revenue ($)',
+                label: 'USD',
                 data: chartData,
-                borderColor: '#b87333', // Copper accent
+                borderColor: '#9b5a2b', 
                 backgroundColor: gradient,
-                borderWidth: 2,
-                pointBackgroundColor: '#b87333',
-                pointBorderColor: '#fff',
-                pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: '#b87333',
+                borderWidth: 3,
+                pointBackgroundColor: '#000',
+                pointBorderColor: '#9b5a2b',
+                pointBorderWidth: 2,
+                pointRadius: 4,
+                pointHoverRadius: 6,
                 fill: true,
                 tension: 0.4
             }]
@@ -135,24 +134,24 @@
             plugins: {
                 legend: { display: false },
                 tooltip: {
-                    backgroundColor: 'rgba(26, 31, 46, 0.9)',
-                    titleColor: '#F3F4F6',
-                    bodyColor: '#F3F4F6',
-                    borderColor: 'rgba(255,255,255,0.1)',
+                    backgroundColor: 'rgba(18, 15, 14, 0.9)',
+                    titleFont: { family: 'Outfit', size: 12 },
+                    bodyFont: { family: 'Inter', size: 12 },
+                    borderColor: 'rgba(217, 145, 90, 0.3)',
                     borderWidth: 1,
-                    padding: 10,
+                    padding: 15,
                     displayColors: false,
                 }
             },
             scales: {
                 y: {
                     beginAtZero: true,
-                    grid: { color: 'rgba(255, 255, 255, 0.05)', borderDash: [5, 5] },
-                    ticks: { color: '#9CA3AF' }
+                    grid: { color: 'rgba(255, 255, 255, 0.03)', drawBorder: false },
+                    ticks: { color: 'rgba(255, 255, 255, 0.4)', font: { size: 10, family: 'Inter' } }
                 },
                 x: {
                     grid: { display: false },
-                    ticks: { color: '#9CA3AF' }
+                    ticks: { color: 'rgba(255, 255, 255, 0.4)', font: { size: 10, family: 'Inter' } }
                 }
             }
         }

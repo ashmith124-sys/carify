@@ -1,11 +1,13 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import login
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 import stripe
+import uuid
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.db.models import Sum, Count, F, Q
@@ -18,10 +20,46 @@ from .models import (
 )
 from .forms import (
     ProductForm, ProductMediaFormset, SellerRegistrationForm, 
-    BuyerRegistrationForm, OTPVerifyForm, ServiceForm
+    BuyerRegistrationForm, OTPVerifyForm, ServiceForm,
+    UserProfileForm, SellerProfileForm, CategoryForm
 )
 
-stripe.api_key = settings.STRIPE_SECRET_KEY
+STRIPE_PLACEHOLDER_SECRET_KEY = 'sk_test_your_stripe_secret_key_here'
+
+
+def get_stripe_secret_key():
+    return (getattr(settings, 'STRIPE_SECRET_KEY', '') or '').strip()
+
+
+def is_stripe_demo_mode():
+    """Allow local checkout flows to run without a live Stripe secret."""
+    stripe_secret_key = get_stripe_secret_key()
+    return stripe_secret_key == STRIPE_PLACEHOLDER_SECRET_KEY or (
+        settings.DEBUG and not stripe_secret_key
+    )
+
+
+def complete_order_payment(order, payment_method='stripe', transaction_id=None, clear_cart=False):
+    order.status = 'paid'
+    order.save(update_fields=['status'])
+
+    Payment.objects.get_or_create(
+        order=order,
+        defaults={
+            'payment_method': payment_method,
+            'transaction_id': transaction_id or f"{payment_method}-{uuid.uuid4().hex}",
+            'amount': order.total_amount,
+            'status': 'completed',
+        }
+    )
+
+    if clear_cart:
+        try:
+            cart = order.buyer.cart
+            if cart:
+                cart.items.filter(is_saved_for_later=False).delete()
+        except Exception:
+            pass
 
 def get_current_cart(request):
     """Helper to get current user/session cart."""
@@ -65,6 +103,54 @@ def product_list(request):
         'categories': categories,
         'search_query': query,
         'selected_category': int(category_id) if category_id else None
+    })
+
+@login_required
+def add_category(request):
+    """Initialize a new catalog option (category)."""
+    if not request.user.is_superuser:
+        messages.error(request, "Clearance_Error: SuperAdmin required.")
+        return redirect('carify_app:seller_dashboard')
+
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            category = form.save()
+            messages.success(request, f"Catalog option '{category.name}' initialized.")
+            return redirect('carify_app:manage_categories')
+    else:
+        form = CategoryForm()
+
+    existing_categories = Category.objects.all().order_by('name')
+    return render(request, 'category_form.html', {
+        'form': form, 
+        'title': 'INITIALIZE CATALOG OPTION',
+        'existing_categories': existing_categories
+    })
+
+@login_required
+def edit_category(request, category_id):
+    """Reconfigure an existing catalog option."""
+    if not request.user.is_superuser:
+        messages.error(request, "Clearance_Error: SuperAdmin required.")
+        return redirect('carify_app:seller_dashboard')
+
+    category = get_object_or_404(Category, id=category_id)
+    if request.method == 'POST':
+        form = CategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Catalog option '{category.name}' reconfigured.")
+            return redirect('carify_app:manage_categories')
+    else:
+        form = CategoryForm(instance=category)
+
+    existing_categories = Category.objects.all().order_by('name')
+    return render(request, 'category_form.html', {
+        'form': form, 
+        'title': 'RECONFIGURE OPTION', 
+        'is_edit': True,
+        'existing_categories': existing_categories
     })
 
 def product_detail(request, product_id):
@@ -217,12 +303,19 @@ def create_checkout_session(request):
                 },
                 'quantity': item.quantity,
             })
-        # DEV BYPASS: If using the default dummy keys, simulate a successful redirect
-        if settings.STRIPE_SECRET_KEY == 'sk_test_your_stripe_secret_key_here':
-            active_items.delete()
-            order.status = 'paid'
-            order.save()
-            return redirect('/payment/success/')
+        stripe_secret_key = get_stripe_secret_key()
+
+        # DEV BYPASS: Show a local payment-options screen without a configured Stripe key.
+        if is_stripe_demo_mode():
+            request.session['demo_checkout_order_id'] = order.id
+            return redirect('carify_app:demo_payment')
+
+        if not stripe_secret_key:
+            order.delete()
+            messages.error(request, "Stripe is not configured yet. Add STRIPE_SECRET_KEY to continue with live checkout.")
+            return redirect('carify_app:cart_view')
+
+        stripe.api_key = stripe_secret_key
 
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=['card', 'klarna', 'affirm'],
@@ -241,11 +334,48 @@ def create_checkout_session(request):
 
 @login_required
 def payment_success(request):
+    request.session.pop('demo_checkout_order_id', None)
     return render(request, 'payment_success.html')
 
 @login_required
 def payment_cancel(request):
     return render(request, 'payment_cancel.html')
+
+
+@login_required
+def demo_payment(request):
+    order_id = request.session.get('demo_checkout_order_id')
+    if not order_id:
+        messages.error(request, "No demo checkout session was found.")
+        return redirect('carify_app:cart_view')
+
+    order = get_object_or_404(Order, id=order_id, buyer=request.user, status='pending')
+    return render(request, 'payment_demo.html', {'order': order})
+
+
+@login_required
+@require_POST
+def complete_demo_payment(request):
+    order_id = request.session.get('demo_checkout_order_id')
+    if not order_id:
+        messages.error(request, "The demo payment session has expired.")
+        return redirect('carify_app:cart_view')
+
+    order = get_object_or_404(Order, id=order_id, buyer=request.user, status='pending')
+    selected_method = request.POST.get('payment_method', 'card').lower()
+    allowed_methods = {'card', 'klarna', 'affirm'}
+    if selected_method not in allowed_methods:
+        selected_method = 'card'
+
+    complete_order_payment(
+        order,
+        payment_method='stripe',
+        transaction_id=f"demo-{selected_method}-{uuid.uuid4().hex}",
+        clear_cart=True,
+    )
+    request.session.pop('demo_checkout_order_id', None)
+    messages.success(request, f"Demo payment confirmed with {selected_method.upper()}.")
+    return redirect('carify_app:payment_success')
 
 @csrf_exempt
 @require_POST
@@ -266,15 +396,11 @@ def stripe_webhook(request):
         if order_id:
             try:
                 order = Order.objects.get(id=order_id)
-                order.status = 'paid'
-                order.save()
-                
-                Payment.objects.create(
-                    order=order,
+                complete_order_payment(
+                    order,
                     payment_method='stripe',
                     transaction_id=session.payment_intent,
-                    amount=order.total_amount,
-                    status='completed'
+                    clear_cart=False,
                 )
 
                 # Deduct inventory quantities for products
@@ -288,7 +414,7 @@ def stripe_webhook(request):
                     cart = order.buyer.cart
                     if cart:
                         cart.items.filter(is_saved_for_later=False).delete()
-                except Exception as ce:
+                except Exception:
                     pass
 
             except Order.DoesNotExist:
@@ -351,21 +477,83 @@ def seller_products(request):
 def seller_add_product(request):
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
-        formset = ProductMediaFormset(request.POST, request.FILES, queryset=ProductMedia.objects.none())
+        # Use inlineformset_factory for better handling
+        from django.forms import inlineformset_factory
+        EditMediaFormset = inlineformset_factory(Product, ProductMedia, fields=('media_type', 'image', 'video', 'caption', 'sort_order'), extra=3, can_delete=True)
+        formset = EditMediaFormset(request.POST, request.FILES)
+        
         if form.is_valid() and formset.is_valid():
             product = form.save(commit=False)
             product.seller = request.user
             product.save()
-            for media_form in formset:
-                if media_form.cleaned_data and not media_form.cleaned_data.get('DELETE', False):
-                    media = media_form.save(commit=False)
-                    media.product = product
-                    media.save()
+            
+            # Save formset items
+            formset.instance = product
+            formset.save()
+            
+            # Handle Bulk Image Uploads (NEW)
+            multi_images = request.FILES.getlist('multi_images')
+            for f in multi_images:
+                ProductMedia.objects.create(
+                    product=product,
+                    media_type='image',
+                    image=f,
+                    caption=f"Specimen View"
+                )
+            
+            messages.success(request, f"New specimen '{product.name}' has been indexed.")
             return redirect('carify_app:product_detail', product_id=product.id)
     else:
         form = ProductForm()
-        formset = ProductMediaFormset(queryset=ProductMedia.objects.none())
+        from django.forms import inlineformset_factory
+        InitialMediaFormset = inlineformset_factory(Product, ProductMedia, fields=('media_type', 'image', 'video', 'caption', 'sort_order'), extra=3, can_delete=True)
+        formset = InitialMediaFormset()
     return render(request, 'product_create.html', {'form': form, 'formset': formset})
+
+@login_required
+def seller_edit_product(request, product_id):
+    product = get_object_or_404(Product, id=product_id, seller=request.user)
+    from django.forms import inlineformset_factory
+    EditMediaFormset = inlineformset_factory(Product, ProductMedia, fields=('media_type', 'image', 'video', 'caption', 'sort_order'), extra=3, can_delete=True)
+    
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES, instance=product)
+        formset = EditMediaFormset(request.POST, request.FILES, instance=product)
+        
+        if form.is_valid() and formset.is_valid():
+            form.save()
+            formset.save()
+            
+            # Handle Bulk Image Uploads (NEW)
+            multi_images = request.FILES.getlist('multi_images')
+            for f in multi_images:
+                ProductMedia.objects.create(
+                    product=product,
+                    media_type='image',
+                    image=f,
+                    caption=f"Specimen View"
+                )
+            
+            messages.success(request, f"Specimen '{product.name}' details updated.")
+            return redirect('carify_app:product_detail', product_id=product.id)
+    else:
+        form = ProductForm(instance=product)
+        formset = EditMediaFormset(instance=product)
+        
+    return render(request, 'product_create.html', {
+        'form': form, 
+        'formset': formset, 
+        'is_edit': True, 
+        'product': product
+    })
+
+@login_required
+def seller_delete_product(request, product_id):
+    product = get_object_or_404(Product, id=product_id, seller=request.user)
+    name = product.name
+    product.delete()
+    messages.warning(request, f"Specimen '{name}' has been purged from inventory.")
+    return redirect('carify_app:seller_products')
 
 def services_catalog(request):
     """Render the dynamic Elite Solutions catalog."""
@@ -441,6 +629,32 @@ def book_service(request):
     if redirect_to_cart:
         return redirect('carify_app:cart_view')
     return redirect('carify_app:services')
+
+
+@login_required
+def manage_categories(request):
+    """List all catalog options for administrative management."""
+    if not request.user.is_superuser:
+        messages.error(request, "Clearance_Error: SuperAdmin protocol required.")
+        return redirect('carify_app:seller_dashboard')
+    
+    # Annotate with product count for the registry view
+    categories = Category.objects.annotate(product_count=Count('product')).order_by('name')
+    return render(request, 'category_list.html', {'categories': categories})
+
+
+@login_required
+def delete_category(request, category_id):
+    """Purge a catalog option from the registry."""
+    if not request.user.is_superuser:
+        messages.error(request, "Clearance_Error: SuperAdmin required.")
+        return redirect('carify_app:seller_dashboard')
+
+    category = get_object_or_404(Category, id=category_id)
+    name = category.name
+    category.delete()
+    messages.warning(request, f"Catalog option '{name}' purged.")
+    return redirect('carify_app:manage_categories')
 
 
 def static_page(request, page_type):
@@ -524,7 +738,58 @@ def seller_analytics(request):
 
 @login_required
 def seller_settings(request):
-    return render(request, 'seller_dashboard_settings.html')
+    seller_profile = getattr(request.user, 'seller_profile', None)
+    if not seller_profile:
+        return redirect('carify_app:home')
+    
+    if request.method == 'POST':
+        form = SellerProfileForm(request.POST, request.FILES, instance=seller_profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Global Partner Protocol updated successfully.")
+            return redirect('carify_app:seller_settings')
+    else:
+        form = SellerProfileForm(instance=seller_profile)
+        
+    return render(request, 'seller_dashboard_settings.html', {'form': form, 'profile': seller_profile})
+
+@login_required
+def user_profile(request):
+    """Render the elite member profile with orders and rituals."""
+    orders = Order.objects.filter(buyer=request.user).order_by('-created_at')
+    bookings = Booking.objects.filter(user=request.user).order_by('-preferred_date')
+    
+    return render(request, 'account/profile.html', {
+        'orders': orders,
+        'bookings': bookings
+    })
+
+@login_required
+def update_user_profile(request):
+    """Modify member identity and communication protocols."""
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Member Identity updated successfully.")
+            return redirect('carify_app:user_profile')
+    else:
+        form = UserProfileForm(instance=request.user)
+    
+    return render(request, 'account/profile_edit.html', {'form': form})
+
+def public_seller_profile(request, seller_id):
+    """Display a seller's showcase to the public."""
+    seller_user = get_object_or_404(User, id=seller_id)
+    profile = get_object_or_404(SellerProfile, user=seller_user)
+    products = Product.objects.filter(seller=seller_user).prefetch_related('media', 'reviews')
+    services = Service.objects.filter(seller=seller_user)
+    
+    return render(request, 'seller_public_profile.html', {
+        'seller_profile': profile,
+        'products': products,
+        'services': services
+    })
 
 @login_required
 def cart_view(request):

@@ -187,6 +187,44 @@
         background: var(--clr-copper);
         color: #fff;
     }
+
+    .cg-payment-panel {
+        margin-top: 1.75rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--clr-border);
+    }
+
+    .cg-payment-label {
+        display: block;
+        margin-bottom: 0.9rem;
+        font-size: 0.58rem;
+        color: var(--clr-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+    }
+
+    .cg-payment-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .cg-payment-badge {
+        padding: 0.55rem 0.8rem;
+        border: 1px solid var(--clr-border);
+        background: rgba(255, 255, 255, 0.03);
+        font-size: 0.6rem;
+        color: #fff;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+    }
+
+    .cg-payment-note {
+        margin-top: 0.9rem;
+        font-size: 0.58rem;
+        color: var(--clr-muted);
+        line-height: 1.6;
+    }
 </style>
 {% endblock %}
 
@@ -232,6 +270,15 @@
             </div>
 
             <button id="pCheckoutBtn" class="cg-checkout-btn">SECURE FINAL ACQUISITION</button>
+            <div class="cg-payment-panel">
+                <span class="cg-payment-label">Payment Options</span>
+                <div class="cg-payment-badges">
+                    <span class="cg-payment-badge">Card</span>
+                    <span class="cg-payment-badge">Klarna</span>
+                    <span class="cg-payment-badge">Affirm</span>
+                </div>
+                <p class="cg-payment-note">Available methods are shown again on secure checkout and may vary by Stripe account, region, and cart contents.</p>
+            </div>
             <p
                 style="margin-top: 1.5rem; font-size: 0.55rem; color: var(--clr-muted); text-align: center; text-transform: uppercase; letter-spacing: 0.1em;">
                 SECURED BY CARIFY ENCRYPTION PROTOCOL

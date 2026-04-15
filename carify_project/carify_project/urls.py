@@ -20,10 +20,10 @@ from django.urls import path, include
 from carify_app import views
 from carify_app.admin import admin_site
 urlpatterns = [
+    path('', include('carify_app.urls')),
     path('admin/', admin_site.urls),
     path('accounts/', include('allauth.urls')),
     path('i18n/', include('django.conf.urls.i18n')),
-    path('', include('carify_app.urls')),
 ]
 
 if settings.DEBUG:

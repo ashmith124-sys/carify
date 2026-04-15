@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Member Identity | CARIFY{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-container {
+        padding: 120px 6vw 80px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .profile-header {
+        margin-bottom: 60px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        border-bottom: 1px solid var(--border-elegant);
+        padding-bottom: 30px;
+    }
+
+    .profile-grid {
+        display: grid;
+        grid-template-columns: 350px 1fr;
+        gap: 60px;
+    }
+
+    @media (max-width: 900px) {
+        .profile-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .member-card {
+        background: var(--surface-ebony);
+        border: 1px solid var(--border-elegant);
+        padding: 40px;
+        height: fit-content;
+        position: sticky;
+        top: 120px;
+    }
+
+    .member-avatar {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, var(--bronze), var(--gold));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        font-family: var(--font-heading);
+        color: #000;
+        margin-bottom: 25px;
+    }
+
+    .section-title-premium {
+        font-family: var(--font-heading);
+        font-size: 0.8rem;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: var(--bronze);
+        margin-bottom: 30px;
+        display: block;
+    }
+
+    .order-card {
+        background: var(--surface-ebony);
+        border: 1px solid var(--border-elegant);
+        padding: 25px;
+        margin-bottom: 20px;
+        transition: 0.4s var(--transition-premium);
+    }
+
+    .order-card:hover {
+        border-color: var(--bronze);
+        transform: translateX(10px);
+    }
+
+    .status-pill {
+        font-size: 0.6rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 4px 12px;
+        border-radius: 20px;
+        background: var(--surface-obsidian);
+        border: 1px solid var(--border-elegant);
+    }
+
+    .ritual-card {
+        background: var(--surface-ebony);
+        border: 1px solid var(--border-elegant);
+        padding: 25px;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-header">
+        <div>
+            <span class="hero-eyebrow">Authentication Protocol</span>
+            <h1 class="font-heading" style="font-size: 3rem; margin-top: 10px;">Member Identity</h1>
+        </div>
+        <a href="{% url 'carify_app:update_user_profile' %}" class="nav-link" style="border-bottom: 1px solid var(--bronze);">Modify Protocol</a>
+    </div>
+
+    <div class="profile-grid">
+        <!-- Sidebar -->
+        <aside>
+            <div class="member-card">
+                <div class="member-avatar">
+                    {{ user.username|first|upper }}
+                </div>
+                <h2 class="font-heading" style="font-size: 1.5rem; margin-bottom: 5px;">{{ user.get_full_name|default:user.username }}</h2>
+                <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 25px;">{{ user.email }}</p>
+                
+                <div style="border-top: 1px solid var(--border-elegant); padding-top: 25px;">
+                    <span class="section-title-premium" style="margin-bottom: 15px;">Security Clearance</span>
+                    <p style="font-size: 0.7rem; color: var(--text-muted); line-height: 1.6;">Level 1 Elite Access. Your identity is protected by our proprietary encryption protocols.</p>
+                </div>
+
+                <div style="margin-top: 40px;">
+                    <form action="/accounts/logout/" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary" style="width: 100%; background: transparent; border: 1px solid var(--border-elegant);">Terminate Session</button>
+                    </form>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <section>
+            <!-- Orders -->
+            <div style="margin-bottom: 60px;">
+                <span class="section-title-premium">Acquisition History</span>
+                {% if orders %}
+                    {% for order in orders %}
+                    <div class="order-card">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                            <div>
+                                <h3 style="font-size: 0.9rem; font-weight: 600;">{{ order.tracking_id }}</h3>
+                                <p style="font-size: 0.7rem; color: var(--text-muted);">{{ order.created_at|date:"F d, Y" }}</p>
+                            </div>
+                            <span class="status-pill">{{ order.status }}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">{{ order.items.count }} Specimen(s)</span>
+                            <span style="font-family: var(--font-heading); color: var(--gold);">${{ order.total_amount }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="glass-panel" style="padding: 40px; text-align: center;">
+                        <p style="color: var(--text-muted); font-size: 0.8rem;">No acquisitions detected in current timeline.</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Bookings -->
+            <div>
+                <span class="section-title-premium">Ritual Ceremonies</span>
+                {% if bookings %}
+                    {% for booking in bookings %}
+                    <div class="ritual-card">
+                        <div style="display: flex; gap: 20px;">
+                            <div style="width: 100px; height: 100px; border: 1px solid var(--border-elegant);">
+                                {% if booking.service.image %}
+                                    <img src="{{ booking.service.image.url }}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+                                {% else %}
+                                    <div style="width: 100%; height: 100%; background: #111;"></div>
+                                {% endif %}
+                            </div>
+                            <div style="flex: 1;">
+                                <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 5px;">{{ booking.service.name }}</h3>
+                                <p style="font-size: 0.75rem; color: var(--bronze); margin-bottom: 10px;">{{ booking.preferred_date }} at {{ booking.preferred_time }}</p>
+                                <span class="status-pill">{{ booking.status }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="glass-panel" style="padding: 40px; text-align: center;">
+                        <p style="color: var(--text-muted); font-size: 0.8rem;">No ritual protocols initiated.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}

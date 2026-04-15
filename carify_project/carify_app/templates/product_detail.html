@@ -1,641 +1,374 @@
 {% extends 'base.html' %}
-{% load static %}
+{% block title %}{{ product.name|upper }} | ELITE_SPECIMEN{% endblock %}
 
-{% block title %}{{ product.name }} | CARIFY{% endblock %}
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,900;1,900&family=Outfit:wght@100;400;900&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --gold: #d9915a;
+        --gold-glow: rgba(217, 145, 90, 0.3);
+        --bg: #050505;
+    }
+
+    body { background: var(--bg); overflow-x: hidden; }
+
+    .premium-dossier {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        min-height: 100vh;
+        background: var(--bg);
+    }
+
+    @media (max-width: 1100px) {
+        .premium-dossier { grid-template-columns: 1fr; }
+    }
+
+    /* --- CINEMATIC LEFT: MEDIA IMMERSION --- */
+    .immersion-zone {
+        height: 100vh;
+        position: sticky;
+        top: 0;
+        background: #000;
+        overflow: hidden;
+        border-right: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .main-canvas {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0;
+        transform: scale(1.1);
+        transition: all 1.8s cubic-bezier(0.19, 1, 0.22, 1);
+        filter: brightness(0.7);
+    }
+
+    .immersion-zone.loaded .main-canvas {
+        opacity: 1;
+        transform: scale(1);
+        filter: brightness(0.9);
+    }
+
+    .media-overlay {
+        position: absolute;
+        bottom: 50px;
+        left: 50px;
+        display: flex;
+        gap: 15px;
+        z-index: 10;
+    }
+
+    .media-node {
+        width: 60px;
+        height: 60px;
+        border: 1px solid rgba(255,255,255,0.2);
+        cursor: pointer;
+        backdrop-filter: blur(10px);
+        transition: 0.4s;
+        overflow: hidden;
+        background: rgba(0,0,0,0.4);
+    }
+
+    .media-node:hover, .media-node.active {
+        border-color: var(--gold);
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    }
+
+    .media-node img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
+    .media-node.active img { opacity: 1; }
+
+    /* --- LUXURY RIGHT: CURATED DATA --- */
+    .data-zone {
+        padding: 120px 10% 80px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .id-seal {
+        font-family: 'Outfit', sans-serif;
+        font-size: 0.65rem;
+        letter-spacing: 8px;
+        color: var(--gold);
+        text-transform: uppercase;
+        font-weight: 900;
+        margin-bottom: 30px;
+        display: block;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: reveal 1s forwards 0.3s;
+    }
+
+    .specimen-title {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(3.5rem, 8vw, 6.5rem);
+        font-weight: 900;
+        font-style: italic;
+        line-height: 0.9;
+        letter-spacing: -2px;
+        text-transform: uppercase;
+        margin-bottom: 40px;
+        color: #fff;
+        opacity: 0;
+        transform: translateY(30px);
+        animation: reveal 1.2s forwards 0.5s;
+    }
+
+    .pricing-tier {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        margin-bottom: 60px;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: reveal 1s forwards 0.7s;
+    }
+
+    .price-value {
+        font-family: 'Outfit', sans-serif;
+        font-size: 2.8rem;
+        font-weight: 100;
+        color: #fff;
+    }
+
+    .price-label {
+        font-size: 0.6rem;
+        letter-spacing: 3px;
+        color: rgba(255,255,255,0.4);
+        text-transform: uppercase;
+        border-left: 1px solid rgba(255,255,255,0.1);
+        padding-left: 20px;
+    }
+
+    .narrative-block {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: rgba(255,255,255,0.5);
+        max-width: 500px;
+        margin-bottom: 80px;
+        font-weight: 400;
+        opacity: 0;
+        animation: reveal 1s forwards 0.9s;
+    }
+
+    /* --- ACTION CONSOLE --- */
+    .acq-console {
+        opacity: 0;
+        animation: reveal 1s forwards 1.1s;
+    }
+
+    .qty-stepper {
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding-bottom: 20px;
+        margin-bottom: 40px;
+        width: fit-content;
+        gap: 40px;
+    }
+
+    .stepper-btn {
+        background: transparent;
+        border: none;
+        color: #666;
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .stepper-btn:hover { color: var(--gold); }
+
+    .qty-num {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.4rem;
+        color: #fff;
+        font-weight: 900;
+        width: 40px;
+        text-align: center;
+        border: none;
+        background: transparent;
+    }
+
+    .acq-btn-gold {
+        background: var(--gold);
+        color: #000;
+        border: none;
+        padding: 28px 60px;
+        font-family: 'Outfit', sans-serif;
+        font-weight: 900;
+        font-size: 0.8rem;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .acq-btn-gold:hover {
+        background: #fff;
+        transform: translateX(10px);
+        box-shadow: 0 0 50px var(--gold-glow);
+    }
+
+    @keyframes reveal {
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* --- TECHNICAL MATRIX --- */
+    .tech-matrix {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        margin-top: 100px;
+        padding-top: 60px;
+        border-top: 1px solid rgba(255,255,255,0.05);
+        opacity: 0;
+        animation: reveal 1s forwards 1.3s;
+    }
+
+    .tech-item h4 {
+        font-size: 0.5rem;
+        letter-spacing: 4px;
+        color: var(--gold);
+        margin-bottom: 10px;
+        text-transform: uppercase;
+    }
+
+    .tech-item p {
+        font-size: 0.85rem;
+        color: #fff;
+        font-weight: 400;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container" style="padding-top: 140px; padding-bottom: 100px; max-width: var(--container-max);">
-    <!-- BREADCRUMB -->
-    <a href="{% url 'carify_app:product_list' %}" class="font-heading"
-        style="display: inline-flex; align-items: center; gap: 12px; font-size: 0.65rem; color: var(--text-muted); text-decoration: none; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 40px;">
-        <i class="fas fa-arrow-left-long"></i> BACK TO COLLECTION
-    </a>
+<div class="premium-dossier">
+    <!-- LEFT: THE IMMERSION -->
+    <div class="immersion-zone" id="immersion">
+        {% with first=product.media.first %}
+            {% if first.media_type == 'video' %}
+                <video src="{{ first.video.url }}" class="main-canvas" id="stage" autoplay muted loop></video>
+            {% else %}
+                <img src="{{ product.first_media_image_url|default:'https://images.unsplash.com/photo-1486491830187-271f38346330?auto=format&fit=crop&q=95&w=1200' }}" id="stage" class="main-canvas" alt="Specimen">
+            {% endif %}
+        {% endwith %}
 
-    <div class="shopify-product-grid">
-        <!-- GALLERY MODULE (Shopify Style) -->
-        <div class="gallery-wrapper" data-appear>
-            <div id="mainImageContainer"
-                style="position: relative; overflow: hidden; background: var(--obsidian); aspect-ratio: 1/1; max-height: 450px; border: 1px solid var(--border-subtle); border-radius: 4px;">
-                <img id="mainImage"
-                    src="{{ product.first_media_image_url|default:'https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&q=80&w=800' }}"
-                    alt="{{ product.name }}"
-                    style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s var(--transition-premium); cursor: zoom-in;">
-            </div>
-
-            <div class="thumbnail-strip"
-                style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 15px;">
-                {% for media in product.media.all %}
-                {% if media.media_type == 'image' %}
-                <div class="thumb {% if forloop.first %}active{% endif %}" data-full="{{ media.image.url }}"
-                    style="cursor: pointer; aspect-ratio: 1/1; overflow: hidden; background: var(--obsidian);">
-                    <img src="{{ media.image.url }}" alt="Specimen {{ forloop.counter }}"
-                        style="width: 100%; height: 100%; object-fit: cover; transition: 0.4s; opacity: 0.6;">
+        <div class="media-overlay">
+            {% for media in product.media.all %}
+                <div class="media-node {% if forloop.first %}active{% endif %}" onclick="ascendNode(this, '{{ media.media_type }}', '{% if media.image %}{{ media.image.url }}{% else %}{{ media.video.url }}{% endif %}')">
+                    {% if media.media_type == 'image' %}<img src="{{ media.image.url }}">{% else %}<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-play" style="color:white;font-size:0.5rem;"></i></div>{% endif %}
                 </div>
-                {% endif %}
-                {% endfor %}
-            </div>
-        </div>
-
-        <!-- STICKY PURCHASE MODULE -->
-        <div class="purchase-wrapper" data-appear>
-            <div style="position: sticky; top: 120px;">
-                <div data-stagger="true">
-                    <span class="font-heading stagger-item"
-                        style="font-size: 0.7rem; letter-spacing: 0.2em; color: var(--bronze); display: block; margin-bottom: 10px;">{{
-                        product.category.name|default:"CARIFY EXCLUSIVE" }}</span>
-                    <h1 class="font-heading stagger-item"
-                        style="font-size: clamp(2rem, 4vw, 3.5rem); margin-bottom: 20px;">{{ product.name }}</h1>
-
-                    <div class="stagger-item"
-                        style="margin-bottom: 30px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 30px;">
-                        <div style="display: flex; align-items: baseline; gap: 15px;">
-                            <span id="targetPrice" class="copper-text"
-                                style="font-size: 2.2rem; font-family: var(--font-heading);">${{ product.price }}</span>
-                            <div style="display: flex; flex-direction: column;">
-                                <span
-                                    style="font-size: 0.6rem; letter-spacing: 0.15em; color: var(--text-muted); text-transform: uppercase;">Or
-                                    EMI from</span>
-                                <span style="font-size: 0.9rem; font-weight: 700; color: white;">$1,249.00/mo</span>
-                            </div>
-                        </div>
-
-                        <div style="display: flex; align-items: center; gap: 15px; margin-top: 15px;">
-                            <span
-                                style="font-size: 0.55rem; letter-spacing: 0.2em; color: var(--text-muted);">METHOD:</span>
-                            <div style="display: flex; gap: 10px;">
-                                <span
-                                    style="font-size: 0.5rem; border: 1px solid rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 2px; color: #ffb3c7; font-weight: 700;">KLARNA</span>
-                                <span
-                                    style="font-size: 0.5rem; border: 1px solid rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 2px; color: #007aff; font-weight: 700;">AFFIRM</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <p class="font-serif stagger-item"
-                        style="font-size: 1.1rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 40px; font-style: italic;">
-                        {{ product.description|truncatewords:40|default:"A paradigm of automotive preservation." }}
-                    </p>
-
-                    <!-- SPECIFICATION SELECTION -->
-                    {% if product.variants.exists %}
-                    <div class="stagger-item" style="margin-bottom: 40px;">
-                        <h4 class="font-heading"
-                            style="font-size: 0.65rem; letter-spacing: 0.2em; color: var(--text-pure); margin-bottom: 20px;">
-                            OPTIONS</h4>
-                        <div style="display: flex; flex-wrap: wrap; gap: 12px;">
-                            {% for variant in product.variants.all %}
-                            <label class="elite-variant-option" style="cursor: pointer;">
-                                <input type="radio" name="variant" value="{{ variant.id }}"
-                                    data-extra="{{ variant.price_extra }}" {% if forloop.first %}checked{% endif %}
-                                    style="display: none;">
-                                <div class="elite-variant-box"
-                                    style="padding: 12px 25px; border: 1px solid var(--border-subtle); border-radius: 4px; transition: 0.3s; background: rgba(255,255,255,0.02);">
-                                    <span
-                                        style="display: block; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;">{{
-                                        variant.name }}</span>
-                                    {% if variant.price_extra > 0 %}
-                                    <span style="font-size: 0.6rem; color: var(--bronze); font-weight: 700;">+${{
-                                        variant.price_extra }}</span>
-                                    {% endif %}
-                                </div>
-                            </label>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    {% endif %}
-
-                    <!-- ACTION MODULE -->
-                    <div class="stagger-item">
-                        <input type="hidden" id="qtyInput" value="1">
-                        <button id="addToCartBtn" class="btn btn-primary w-100"
-                            style="height: 65px; font-size: 0.9rem; letter-spacing: 0.3em;" {% if product.quantity <=0
-                            %}disabled{% endif %}>
-                            {% if product.quantity > 0 %}INITIATE ACQUISITION{% else %}SOLD OUT{% endif %}
-                        </button>
-                    </div>
-
-                    <!-- TECH SHEET -->
-                    <div class="stagger-item"
-                        style="margin-top: 50px; background: rgba(255,255,255,0.02); padding: 30px;">
-                        <div class="tech-row"><span>Logistics</span><span>Global Express</span></div>
-                        <div class="tech-row"><span>Authenticity</span><span>Guaranteed Original</span></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- RELATED SPECIMENS -->
-    {% if related_products %}
-    <div class="related-section section-padding" style="padding-top: 0;" data-appear>
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px;">
-            <div>
-                <span class="hero-eyebrow" style="color: var(--bronze);">Collection</span>
-                <h2 class="font-heading" style="font-size: 2rem;">Discover Similar Specimens</h2>
-            </div>
-            <a href="{% url 'carify_app:product_list' %}" class="btn-ghost"
-                style="font-size: 0.6rem; letter-spacing: 0.2em; text-decoration: none; color: var(--text-muted); border-bottom: 1px solid var(--border-subtle); padding-bottom: 5px;">VIEW
-                FULL COLLECTION</a>
-        </div>
-
-        <div class="horizontal-scroll-row">
-            {% for rel_prod in related_products %}
-            <div class="shop-card">
-                <a href="{% url 'carify_app:product_detail' rel_prod.id %}"
-                    style="text-decoration: none; color: inherit;">
-                    <div class="shop-image-wrapper">
-                        <img src="{{ rel_prod.first_media_image_url|default:'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=600' }}"
-                            class="shop-img" alt="{{ rel_prod.name }}">
-                        <div class="quick-add-overlay">
-                            <span class="btn btn-primary" style="padding: 10px 20px; font-size: 0.6rem;">VIEW
-                                DETAILS</span>
-                        </div>
-                    </div>
-                    <div class="shop-info">
-                        <span class="shop-vendor">{{ rel_prod.category.name|default:"CARIFY EXCLUSIVE" }}</span>
-                        <h3 class="shop-title">{{ rel_prod.name }}</h3>
-                        <span class="shop-price">${{ rel_prod.price }}</span>
-                    </div>
-                </a>
-            </div>
             {% endfor %}
+            {% if not product.media.exists %}
+                <div class="media-node active" onclick="ascendNode(this, 'image', '{{ product.image.url }}')">
+                    <img src="{{ product.image.url }}">
+                </div>
+            {% endif %}
         </div>
     </div>
-    {% endif %}
 
-    <!-- COMMUNITY HUB (Amazon Parity) -->
-    <div class="community-hub section-padding" style="border-top: 1px solid var(--border-subtle); margin-top: 80px;"
-        data-appear>
-        <div class="grid-main" style="grid-template-columns: 1fr; gap: 60px;">
-            <style>
-                @media (min-width: 992px) {
-                    .community-grid-split {
-                        display: grid;
-                        grid-template-columns: 1fr 1fr;
-                        gap: 80px;
-                    }
-                }
-            </style>
-            <div class="community-grid-split">
-                <!-- Q&A MODULE -->
-                <div class="qa-section">
-                    <h2 class="font-heading"
-                        style="font-size: clamp(1.8rem, 4vw, 2.5rem); font-style: italic; font-weight: 800; text-align: center; color: var(--text-pure); margin-bottom: 60px; letter-spacing: -0.03em;">
-                        Frequently Asked Questions</h2>
+    <!-- RIGHT: THE CURATION -->
+    <div class="data-zone">
+        <span class="id-seal">Registry Specimen #CX-{{ product.id|stringformat:"04d" }}</span>
+        <h1 class="specimen-title">{{ product.name }}</h1>
 
-                    {% if user.is_authenticated %}
-                    <div class="faq-ask-wrapper" style="max-width: 800px; margin: 0 auto 60px;">
-                        <div style="position: relative; background: #111; border: 1px solid var(--border-subtle); border-radius: 50px; padding: 10px 10px 10px 30px; display: flex; align-items: center; gap: 15px; transition: 0.3s;"
-                            onfocusin="this.style.borderColor='var(--bronze)'"
-                            onfocusout="this.style.borderColor='var(--border-subtle)'">
-                            <input type="text" id="qaInput" placeholder="Ask specific specimens..."
-                                style="flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 0.9rem;">
-                            <button onclick="submitQA()" class="btn btn-primary"
-                                style="padding: 12px 25px; font-size: 0.6rem; border-radius: 40px; height: auto;">ASK
-                                NOW</button>
-                        </div>
-                    </div>
-                    {% else %}
-                    <div style="text-align: center; margin-bottom: 60px;">
-                        <p style="font-size: 0.8rem; color: var(--text-muted);"><a href="/accounts/login/"
-                                class="copper-text" style="font-weight: 600;">Sign in</a> to ask the community.</p>
-                    </div>
-                    {% endif %}
+        <div class="pricing-tier">
+            <span class="price-value" id="priceTag">${{ product.price }}</span>
+            <div class="price-label">
+                AUTHORIZED VALUE<br>TAX & LOGISTICS INCL.
+            </div>
+        </div>
 
-                    <div id="faqList"
-                        style="max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 15px;">
-                        {% for q in product.questions.all %}
-                        <div class="faq-pill" onclick="toggleFaq(this)">
-                            <div class="faq-head">
-                                <span class="faq-q-text">{{ q.question }}</span>
-                                <i class="fas fa-plus faq-icon"></i>
-                            </div>
-                            <div class="faq-body">
-                                <div class="faq-content-inner">
-                                    {% for a in q.answers.all %}
-                                    <div class="faq-answer-item">
-                                        <div
-                                            style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 5px;">
-                                            <span
-                                                style="color: var(--bronze); font-weight: 800; font-size: 0.7rem; margin-top: 2px;">A:</span>
-                                            <p style="font-size: 0.9rem; color: var(--text-elegant); line-height: 1.6;">
-                                                {{ a.answer }}</p>
-                                        </div>
-                                        <span style="font-size: 0.6rem; color: var(--text-muted); padding-left: 20px;">—
-                                            {{ a.user.username }} {% if a.is_seller_response %}(Verified Seller){% endif
-                                            %}</span>
-                                    </div>
-                                    {% empty %}
-                                    <p style="font-size: 0.85rem; color: var(--text-muted); font-style: italic;">
-                                        Awaiting expertise...</p>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        </div>
-                        {% empty %}
-                        <div style="text-align: center; padding: 40px; opacity: 0.5;">
-                            <p style="font-size: 0.9rem; letter-spacing: 0.1em;">NO SPECIMEN INQUIRIES YET</p>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
+        <div class="narrative-block">
+            {{ product.description|linebreaks }}
+        </div>
 
-                <!-- REVIEWS MODULE -->
-                <div class="reviews-section">
-                    <h3 class="font-heading" style="font-size: 1.5rem; margin-bottom: 30px;">TOP REVIEWS</h3>
+        <div class="acq-console">
+            <div class="qty-stepper">
+                <button class="stepper-btn" onclick="tuneQty(-1)">−</button>
+                <input type="number" id="qtyInput" value="1" min="1" max="{{ product.quantity }}" class="qty-num" readonly>
+                <button class="stepper-btn" onclick="tuneQty(1)">+</button>
+            </div>
 
-                    <!-- WRITE A REVIEW (NEW) -->
-                    {% if user.is_authenticated and not user_has_reviewed %}
-                    <div id="reviewEntry" class="glass-panel"
-                        style="padding: 30px; margin-bottom: 50px; border-color: var(--border-subtle);">
-                        <h4 class="font-heading"
-                            style="font-size: 0.8rem; letter-spacing: 0.2em; color: var(--bronze); margin-bottom: 25px;">
-                            AUTHENTICATE YOUR EXPERIENCE</h4>
-                        <div style="margin-bottom: 20px;">
-                            <label
-                                style="display: block; font-size: 0.6rem; letter-spacing: 0.15em; color: var(--text-muted); margin-bottom: 10px;">SPECIMEN
-                                RATING</label>
-                            <div class="star-input"
-                                style="display: flex; gap: 10px; font-size: 1.2rem; color: var(--text-muted);">
-                                <i class="far fa-star rating-star" data-val="1"></i>
-                                <i class="far fa-star rating-star" data-val="2"></i>
-                                <i class="far fa-star rating-star" data-val="3"></i>
-                                <i class="far fa-star rating-star" data-val="4"></i>
-                                <i class="far fa-star rating-star" data-val="5"></i>
-                            </div>
-                            <input type="hidden" id="ratingValue" value="5">
-                        </div>
-                        <div style="margin-bottom: 25px;">
-                            <label
-                                style="display: block; font-size: 0.6rem; letter-spacing: 0.15em; color: var(--text-muted); margin-bottom: 10px;">PROTOCOL
-                                FEEDBACK</label>
-                            <textarea id="reviewText" rows="3" placeholder="Describe the specimen's integrity..."
-                                style="width: 100%; background: #000; border: 1px solid var(--border-subtle); color: white; padding: 15px; border-radius: 4px; outline: none; transition: 0.3s;"></textarea>
-                        </div>
-                        <button onclick="submitReview()" class="btn btn-primary"
-                            style="font-size: 0.65rem; padding: 0.85rem 1.75rem;">SUBMIT VERIFICATION</button>
-                    </div>
-                    {% endif %}
-                    <div id="reviewsList" style="display: flex; flex-direction: column; gap: 30px;">
-                        {% for r in product.reviews.all|dictsortreversed:"helpful_votes.count" %}
-                        <div class="review-card"
-                            style="border-bottom: 1px solid var(--border-subtle); padding-bottom: 25px;">
-                            <div
-                                style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
-                                <div>
-                                    <div style="color: var(--bronze); font-size: 0.8rem; margin-bottom: 5px;">
-                                        {% for i in "12345"|make_list %}
-                                        <i
-                                            class="fa{% if forloop.counter <= r.rating %}s{% else %}r{% endif %} fa-star"></i>
-                                        {% endfor %}
-                                    </div>
-                                    <span style="font-weight: 600; font-size: 0.9rem;">{{ r.user.username }}</span>
-                                </div>
-                                <span style="font-size: 0.65rem; color: var(--text-muted);">{{ r.created_at|date:"M d,
-                                    Y" }}</span>
-                            </div>
-                            <p
-                                style="font-size: 0.85rem; color: var(--text-elegant); line-height: 1.6; margin-bottom: 15px;">
-                                {{ r.comment }}</p>
+            <button class="acq-btn-gold" id="acqBtn" onclick="executeAcquisition()">INITIALIZE ACQUISITION</button>
+        </div>
 
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <span style="font-size: 0.65rem; color: var(--text-muted);">{{ r.helpful_votes.count }}
-                                    people found this helpful</span>
-                                {% if user.is_authenticated %}
-                                <button onclick="toggleHelpful('{{ r.id }}', this)" class="btn btn-outline"
-                                    style="padding: 0.3rem 0.6rem; font-size: 0.6rem; text-transform: uppercase; border-color: rgba(255,255,255,0.2);">
-                                    Helpful
-                                </button>
-                                {% endif %}
-                            </div>
-                        </div>
-                        {% empty %}
-                        <p style="font-size: 0.85rem; color: var(--text-muted);">This specimen currently has no reviews.
-                        </p>
-                        {% endfor %}
-                    </div>
-                </div>
+        <div class="tech-matrix">
+            <div class="tech-item">
+                <h4>Certification</h4>
+                <p>Carify Original Heritage</p>
+            </div>
+            <div class="tech-item">
+                <h4>Status</h4>
+                <p>{% if product.quantity > 0 %}Immediate Stewardship{% else %}Archive Only{% endif %}</p>
+            </div>
+            <div class="tech-item">
+                <h4>Preservation</h4>
+                <p>Climate Controlled Facility</p>
+            </div>
+            <div class="tech-item">
+                <h4>Origin</h4>
+                <p>{{ product.seller.seller_profile.shop_name|default:"Global Hub A-1" }}</p>
             </div>
         </div>
     </div>
 </div>
 
-<style>
-    .shopify-product-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 80px;
-        align-items: start;
-    }
-
-    @media (min-width: 1024px) {
-        .shopify-product-grid {
-            grid-template-columns: 1.5fr 1fr;
-        }
-    }
-
-    .thumb.active img {
-        opacity: 1;
-    }
-
-    .thumb:hover img {
-        opacity: 1;
-    }
-
-    .elite-variant-option input {
-        display: none;
-    }
-
-    .elite-variant-box {
-        padding: 20px 25px;
-        cursor: pointer;
-        transition: 0.4s;
-        display: flex;
-        justify-content: space-between;
-        border: 1px solid var(--border-subtle);
-        background: transparent;
-    }
-
-    .elite-variant-option input:checked+.elite-variant-box {
-        border-color: var(--text-pure);
-        background: rgba(255, 255, 255, 0.05);
-    }
-
-    .elite-qty {
-        display: flex;
-        height: 60px;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 15px;
-    }
-
-    .elite-qty button {
-        background: none;
-        border: none;
-        color: var(--text-pure);
-        cursor: pointer;
-        font-size: 1.2rem;
-    }
-
-    .elite-qty input {
-        background: none;
-        border: none;
-        color: white;
-        width: 40px;
-        text-align: center;
-        font-family: 'Outfit', sans-serif;
-        font-weight: 600;
-    }
-
-    .tech-row {
-        display: flex;
-        justify-content: space-between;
-        padding: 12px 0;
-        border-bottom: 1px solid var(--border-subtle);
-        font-size: 0.65rem;
-        text-transform: uppercase;
-        letter-spacing: 0.2em;
-    }
-
-    .tech-row:last-child {
-        border-bottom: none;
-        padding-bottom: 0;
-    }
-
-    .tech-row span:first-child {
-        color: var(--text-muted);
-    }
-
-    /* FAQ Premium Styling */
-    .faq-pill {
-        background: #111;
-        border: 1px solid var(--border-subtle);
-        border-radius: 100px;
-        padding: 0 40px;
-        cursor: pointer;
-        transition: all 0.5s var(--transition-premium);
-        overflow: hidden;
-    }
-
-    .faq-pill:hover {
-        background: #181818;
-        border-color: rgba(217, 145, 90, 0.4);
-    }
-
-    .faq-pill.active {
-        background: #1a1a1a;
-        border-radius: 25px;
-        border-color: var(--bronze);
-    }
-
-    .faq-head {
-        height: 80px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .faq-q-text {
-        font-size: 0.95rem;
-        font-weight: 500;
-        color: var(--text-pure);
-    }
-
-    .faq-icon {
-        font-size: 0.8rem;
-        color: var(--text-muted);
-        transition: transform 0.4s var(--transition-premium);
-    }
-
-    .faq-pill.active .faq-icon {
-        transform: rotate(45deg);
-        color: var(--bronze);
-    }
-
-    .faq-body {
-        max-height: 0;
-        opacity: 0;
-        transition: all 0.5s var(--transition-premium);
-    }
-
-    .faq-pill.active .faq-body {
-        max-height: 800px;
-        opacity: 1;
-        padding-bottom: 35px;
-    }
-
-    .faq-answer-item {
-        padding: 20px;
-        background: rgba(255, 255, 255, 0.02);
-        border-radius: 15px;
-        margin-top: 10px;
-    }
-
-    /* Star Rating */
-    .rating-star {
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-    .rating-star.active,
-    .rating-star:hover {
-        color: var(--bronze);
-        transform: scale(1.1);
-    }
-
-    .rating-star.fas {
-        color: var(--bronze);
-    }
-
-    /* Variant selection UI */
-    .elite-variant-option input:checked+.elite-variant-box {
-        border-color: var(--bronze) !important;
-        background: rgba(217, 145, 90, 0.1) !important;
-        box-shadow: 0 0 20px rgba(217, 145, 90, 0.1);
-    }
-
-    .elite-variant-box:hover {
-        border-color: rgba(255, 255, 255, 0.3);
-    }
-
-    /* Zoom Effect Refined */
-    #mainImageContainer:hover #mainImage {
-        transform: scale(1.05);
-    }
-</style>
-
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const mainImg = document.getElementById('mainImage');
-        const basePrice = parseFloat("{{ product.price }}");
-        const priceDisplay = document.getElementById('targetPrice');
-
-        // Thumbnail Logic
-        document.querySelectorAll('.thumb').forEach(thumb => {
-            thumb.addEventListener('click', () => {
-                document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
-                thumb.classList.add('active');
-                mainImg.src = thumb.dataset.full;
-            });
-        });
-
-        // Price Update Logic
-        const variantInputs = document.querySelectorAll('input[name="variant"]');
-        function updateTotalPrice() {
-            let extra = 0;
-            const selected = document.querySelector('input[name="variant"]:checked');
-            if (selected) extra = parseFloat(selected.dataset.extra);
-            priceDisplay.innerText = '$' + (basePrice + extra).toFixed(2);
-        }
-        variantInputs.forEach(input => input.addEventListener('change', updateTotalPrice));
-
-        // Cart Integration via Bridge Style
-        const addBtn = document.getElementById('addToCartBtn');
-        if (addBtn) {
-            addBtn.addEventListener('click', () => {
-                const variantId = document.querySelector('input[name="variant"]:checked')?.value;
-                const qty = document.getElementById('qtyInput').value;
-
-                addBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> ADDING...';
-                addBtn.disabled = true;
-
-                if (window.CarifyBridge) {
-                    window.CarifyBridge.addItemToCart("{{ product.id }}", 'product', qty, variantId)
-                        .then(() => {
-                            addBtn.innerHTML = '<i class="fas fa-check"></i> ACQUISITION SUCCESSFUL';
-                            setTimeout(() => {
-                                addBtn.innerHTML = 'INITIATE ACQUISITION';
-                                addBtn.disabled = false;
-                            }, 3000);
-                        })
-                        .catch(() => {
-                            addBtn.innerHTML = 'PROTOCOL_ERROR';
-                            addBtn.disabled = false;
-                        });
-                }
-            });
-        }
+    window.addEventListener('load', () => {
+        document.getElementById('immersion').classList.add('loaded');
     });
 
-    function updateQty(delta) {
+    function tuneQty(val) {
         const input = document.getElementById('qtyInput');
-        let val = parseInt(input.value) + delta;
-        if (val < 1) val = 1;
-        if (val > parseInt(input.max)) val = parseInt(input.max);
-        input.value = val;
+        let next = parseInt(input.value) + val;
+        if(next >= 1 && next <= parseInt(input.max)) {
+            input.value = next;
+        }
     }
 
-    function submitQA() {
-        const input = document.getElementById('qaInput');
-        const val = input.value.trim();
-        if (!val) return;
-
-        fetch('/api/product-questions/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value },
-            body: JSON.stringify({ product: "{{ product.id }}", question: val })
-        }).then(res => {
-            if (res.ok) window.location.reload();
-        });
+    function ascendNode(el, type, src) {
+        const stage = document.getElementById('stage');
+        document.querySelectorAll('.media-node').forEach(n => n.classList.remove('active'));
+        el.classList.add('active');
+        
+        stage.style.opacity = 0;
+        stage.style.transform = 'scale(1.05)';
+        
+        setTimeout(() => {
+            if(type === 'video') {
+                stage.outerHTML = `<video src="${src}" class="main-canvas" id="stage" autoplay muted loop></video>`;
+            } else {
+                stage.outerHTML = `<img src="${src}" class="main-canvas" id="stage" alt="Specimen">`;
+            }
+            setTimeout(() => {
+                document.getElementById('stage').style.opacity = 1;
+                document.getElementById('stage').style.transform = 'scale(1)';
+            }, 50);
+        }, 800);
     }
 
-    // Star Selection Logic
-    document.querySelectorAll('.rating-star').forEach(star => {
-        star.addEventListener('mouseover', function () {
-            const val = this.dataset.val;
-            document.querySelectorAll('.rating-star').forEach(s => {
-                if (s.dataset.val <= val) s.classList.replace('far', 'fas');
-                else s.classList.replace('fas', 'far');
-            });
-        });
-        star.addEventListener('click', function () {
-            document.getElementById('ratingValue').value = this.dataset.val;
-        });
-    });
-    document.querySelector('.star-input')?.addEventListener('mouseleave', function () {
-        const activeVal = document.getElementById('ratingValue').value;
-        document.querySelectorAll('.rating-star').forEach(s => {
-            if (s.dataset.val <= activeVal) s.classList.replace('far', 'fas');
-            else s.classList.replace('fas', 'far');
-        });
-    });
+    async function executeAcquisition() {
+        const btn = document.getElementById('acqBtn');
+        const qty = document.getElementById('qtyInput').value;
+        const original = btn.innerText;
 
-    function submitReview() {
-        const text = document.getElementById('reviewText').value.trim();
-        const rating = document.getElementById('ratingValue').value;
-        if (!text) return;
-
-        fetch('/api/reviews/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value },
-            body: JSON.stringify({ product: "{{ product.id }}", rating: rating, comment: text })
-        }).then(res => {
-            if (res.ok) window.location.reload();
-        });
-    }
-
-    function toggleFaq(el) {
-        const wasActive = el.classList.contains('active');
-        document.querySelectorAll('.faq-pill').forEach(p => p.classList.remove('active'));
-        if (!wasActive) el.classList.add('active');
-    }
-
-    function toggleHelpful(reviewId, btnElement) {
-        fetch(`/api/reviews/${reviewId}/toggle_helpful/`, {
-            method: 'POST',
-            headers: { 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value }
-        })
-            .then(r => r.json())
-            .then(data => {
-                if (data.added) {
-                    btnElement.style.background = 'var(--bronze)';
-                    btnElement.style.color = 'white';
-                } else {
-                    btnElement.style.background = 'transparent';
-                    btnElement.style.color = 'var(--text-pure)';
-                }
-                btnElement.previousElementSibling.innerText = `${data.helpful_votes_count} people found this helpful`;
-            });
+        try {
+            btn.innerText = 'SYNCHRONIZING PORTFOLIO...';
+            btn.style.background = '#fff';
+            await window.CarifyBridge.addItemToCart("{{ product.id }}", 'product', qty);
+            btn.innerText = 'SPECIMEN INITIALIZED';
+            setTimeout(() => {
+                window.location.href = "{% url 'carify_app:product_list' %}";
+            }, 1000);
+        } catch(e) {
+            btn.innerText = 'TERMINAL_ERROR';
+            setTimeout(() => btn.innerText = original, 2000);
+        }
     }
 </script>
 {% endblock %}

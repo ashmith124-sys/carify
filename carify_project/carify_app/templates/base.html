@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <!-- Bridge Engine -->
-    <script src="{% static 'js/bridge.js' %}" defer></script>
+    <script src="{% static 'js/bridge.js' %}?v={% now 'U' %}" defer></script>
     <!-- 3D Animation Engine (Cred-style) -->
     <script src="{% static 'js/animations.js' %}" defer></script>
     
@@ -77,13 +77,17 @@
                     </div>
 
 
-                    <a href="javascript:void(0)" id="cartTrigger" class="pos-relative">
+                    <button id="cartTrigger" class="pos-relative" style="background: none; border: none; padding: 0; color: inherit; cursor: pointer;">
                         <i class="fas fa-shopping-bag icon-trigger"></i>
                         <span id="cartCountBadge" class="badge-dot"></span>
-                    </a>
+                    </button>
                     
                     {% if user.is_authenticated %}
-                        <a href="{% url 'carify_app:seller_dashboard' %}" class="icon-trigger d-none d-md-flex"><i class="far fa-user"></i></a>
+                        {% if user.seller_profile %}
+                            <a href="{% url 'carify_app:seller_dashboard' %}" class="icon-trigger d-none d-md-flex"><i class="far fa-user"></i></a>
+                        {% else %}
+                            <a href="{% url 'carify_app:user_profile' %}" class="icon-trigger d-none d-md-flex"><i class="far fa-user"></i></a>
+                        {% endif %}
                     {% else %}
                         <a href="/accounts/login/" class="icon-trigger d-none d-md-flex"><i class="far fa-user"></i></a>
                     {% endif %}
@@ -105,7 +109,11 @@
             
             <div style="margin-top: 40px; border-top: 1px solid var(--border-subtle); padding-top: 40px;">
                 {% if user.is_authenticated %}
-                    <a href="{% url 'carify_app:seller_dashboard' %}" class="btn btn-primary w-100">Go to Dashboard</a>
+                    {% if user.seller_profile %}
+                        <a href="{% url 'carify_app:seller_dashboard' %}" class="btn btn-primary w-100">Go to Dashboard</a>
+                    {% else %}
+                        <a href="{% url 'carify_app:user_profile' %}" class="btn btn-primary w-100">My Profile</a>
+                    {% endif %}
                 {% else %}
                     <a href="/accounts/login/" class="btn btn-primary w-100">Sign In</a>
                 {% endif %}
@@ -228,8 +236,6 @@
 
     <div id="globalOverlay" style="position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 1500; opacity: 0; pointer-events: none; transition: 0.5s;"></div>
 
-    <!-- State Engine -->
-    <script src="{% static 'js/bridge.js' %}?v={% now 'U' %}"></script>
 
     {% block extra_js %}{% endblock %}
 
@@ -252,7 +258,8 @@
             // Cart Trigger Integration
             const cartTrigger = document.getElementById('cartTrigger');
             const closeCart = document.getElementById('closeCart');
-            if(cartTrigger) cartTrigger.addEventListener('click', () => {
+            if(cartTrigger) cartTrigger.addEventListener('click', (e) => {
+                e.preventDefault();
                 const drawer = document.getElementById('cartDrawer');
                 const overlay = document.getElementById('globalOverlay');
                 if(drawer) drawer.classList.add('active');

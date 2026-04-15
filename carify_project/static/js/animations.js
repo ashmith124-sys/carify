@@ -64,7 +64,7 @@
     // 2. 3D CARD TILT ENGINE
     // ─────────────────────────────────────────────
     function initCardTilt() {
-        const cards = document.querySelectorAll('.shop-card, .glass-panel, .card');
+        const cards = document.querySelectorAll('.shop-card, .glass-panel, .card, .cg-pcard');
 
         cards.forEach(card => {
             // Enable 3D context
@@ -277,7 +277,7 @@
     // 7. SMOOTH HORIZONTAL SCROLL (touch-drag for arrivals row)
     // ─────────────────────────────────────────────
     function initSmoothDragScroll() {
-        const sliders = document.querySelectorAll('.horizontal-scroll-row');
+        const sliders = document.querySelectorAll('.horizontal-scroll-row, .cg-prow');
 
         sliders.forEach(slider => {
             let isDown = false;
@@ -362,6 +362,15 @@
             }, 100);
         });
     }
+
+    // EXPOSE TO GLOBAL BRIDGE
+    window.CarifyAnimations = {
+        reinit: () => {
+             initCardTilt();
+             initMagneticButtons();
+             initSmoothDragScroll();
+        }
+    };
 
 
     if (document.readyState === 'loading') {

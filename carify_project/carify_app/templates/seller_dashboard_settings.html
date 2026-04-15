@@ -7,31 +7,33 @@
 </div>
 
 <div class="content-section" style="max-width: 800px;">
-    <h2 class="section-title">Identity & Security</h2>
-    <div style="display: flex; flex-direction: column; gap: 30px; margin-top: 40px;">
-        <div class="setting-row" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); padding-bottom: 20px;">
-            <div>
-                <div style="font-weight: 600; font-size: 0.85rem;">Shop Name</div>
-                <div style="font-size: 0.7rem; color: var(--text-muted);">The primary identifier for your automotive collection.</div>
-            </div>
-            <button class="btn-primary" style="padding: 10px 15px; font-size: 0.6rem;">Modify</button>
+    <h2 class="section-title">Global Partner Protocol</h2>
+    <form method="POST" enctype="multipart/form-data" style="margin-top: 30px; display: flex; flex-direction: column; gap: 20px;">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 8px;">Shop Name</label>
+            {{ form.shop_name }}
         </div>
 
-        <div class="setting-row" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); padding-bottom: 20px;">
-            <div>
-                <div style="font-weight: 600; font-size: 0.85rem;">Security Protocol</div>
-                <div style="font-size: 0.7rem; color: var(--text-muted);">Manage your access keys and encryption methods.</div>
-            </div>
-            <button class="btn-primary" style="padding: 10px 15px; font-size: 0.6rem;">Update</button>
+        <div class="form-group">
+            <label style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 8px;">Collection Description</label>
+            {{ form.description }}
         </div>
 
-        <div class="setting-row" style="display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <div style="font-weight: 600; font-size: 0.85rem;">Global Logistics</div>
-                <div style="font-size: 0.7rem; color: var(--text-muted);">Configure your preferred protection and shipping zones.</div>
-            </div>
-            <button class="btn-primary" style="padding: 10px 15px; font-size: 0.6rem;">Configure</button>
+        <div class="form-group">
+            <label style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 8px;">Official Seal (Logo)</label>
+            {% if profile.logo %}
+                <div style="margin-bottom: 15px;">
+                    <img src="{{ profile.logo.url }}" alt="Logo" style="height: 60px; border: 1px solid var(--border-subtle); border-radius: 4px;">
+                </div>
+            {% endif %}
+            {{ form.logo }}
         </div>
-    </div>
+
+        <div style="margin-top: 20px;">
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Finalize Protocol Updates</button>
+        </div>
+    </form>
 </div>
 {% endblock %}

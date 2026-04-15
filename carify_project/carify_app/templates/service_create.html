@@ -140,6 +140,13 @@
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             
+            {% if user.is_superuser %}
+            <div style="padding: 15px; background: rgba(155, 90, 43, 0.05); border: 1px solid rgba(155, 90, 43, 0.2); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.65rem; color: var(--clr-copper); font-weight: 800; letter-spacing: 1px;">MASTER_PROTOCOL: CATEGORY_MANAGEMENT</span>
+                <a href="{% url 'carify_app:add_category' %}" style="font-size: 0.6rem; background: var(--clr-copper); color: white; padding: 5px 12px; text-decoration: none; font-weight: 700;">+ NEW CATEGORY</a>
+            </div>
+            {% endif %}
+
             <div class="cg-form-grid">
                 <div class="cg-input-wrapper">
                     <label class="cg-label">Ritual Name</label>

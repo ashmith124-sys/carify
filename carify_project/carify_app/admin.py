@@ -91,6 +91,17 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'description', 'product_count', 'delete_action')
     search_fields = ('name', 'description')
 
+    # Unfold actions for the list view header
+    actions_list = ["add_catalog_option"]
+
+    def add_catalog_option(self, request):
+        return format_html(
+            '<a href="{}" class="bg-primary-600 font-bold px-4 py-2 rounded text-white text-xs uppercase tracking-widest no-underline hover:bg-primary-700 transition-colors">INITIALIZE NEW CATALOG</a>',
+            reverse('admin:carify_app_category_add')
+        )
+    add_catalog_option.short_description = 'Initialize Catalog'
+    add_catalog_option.allow_from_facets = True 
+
     def delete_action(self, obj):
         url = reverse('admin:carify_app_category_delete', args=[obj.pk])
         return format_html(

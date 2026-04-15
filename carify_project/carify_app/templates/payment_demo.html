@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Select Payment Method | CARIFY{% endblock %}
+
+{% block content %}
+<div class="auth-page" style="padding: 180px 24px 100px; min-height: 80vh; display: flex; align-items: center; justify-content: center;">
+    <div class="container" style="max-width: 760px;" data-appear>
+        <div class="glass-panel" style="padding: 60px 40px; border-radius: 4px; box-shadow: 0 40px 100px rgba(0,0,0,0.5);">
+            <span class="hero-eyebrow" style="margin-bottom: 15px; display: block;">Demo Checkout</span>
+            <h1 style="font-size: clamp(2.2rem, 5vw, 3.4rem); letter-spacing: -1px; margin-bottom: 18px;">SELECT PAYMENT METHOD</h1>
+            <p style="color: var(--text-muted); font-size: 0.82rem; line-height: 1.8; margin-bottom: 30px;">
+                This local checkout preview lets you verify the payment step before adding a live Stripe secret key.
+            </p>
+
+            <div style="display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 35px; padding: 20px 0; border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
+                <div>
+                    <div style="font-size: 0.62rem; color: var(--text-muted); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 8px;">Order</div>
+                    <div style="font-size: 1rem; color: var(--text-pure); font-weight: 700;">#{{ order.id }}</div>
+                </div>
+                <div>
+                    <div style="font-size: 0.62rem; color: var(--text-muted); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 8px;">Total</div>
+                    <div style="font-size: 1rem; color: var(--bronze); font-weight: 700;">${{ order.total_amount }}</div>
+                </div>
+            </div>
+
+            <form method="post" action="{% url 'carify_app:complete_demo_payment' %}">
+                {% csrf_token %}
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 18px;">
+                    <button type="submit" name="payment_method" value="card" class="demo-pay-btn">
+                        <span class="demo-pay-title">Card</span>
+                        <span class="demo-pay-sub">Visa, Mastercard, Amex</span>
+                    </button>
+                    <button type="submit" name="payment_method" value="klarna" class="demo-pay-btn">
+                        <span class="demo-pay-title">Klarna</span>
+                        <span class="demo-pay-sub">Pay later preview</span>
+                    </button>
+                    <button type="submit" name="payment_method" value="affirm" class="demo-pay-btn">
+                        <span class="demo-pay-title">Affirm</span>
+                        <span class="demo-pay-sub">Installment preview</span>
+                    </button>
+                </div>
+            </form>
+
+            <div style="margin-top: 24px; display: flex; justify-content: space-between; gap: 15px; flex-wrap: wrap;">
+                <a href="{% url 'carify_app:payment_cancel' %}" style="color: var(--text-muted); text-decoration: none; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;">Cancel</a>
+                <span style="color: var(--text-muted); font-size: 0.68rem; text-align: right;">Switch to live Stripe by setting `STRIPE_SECRET_KEY` in your environment.</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .demo-pay-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 22px 20px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border-subtle);
+        color: var(--text-pure);
+        cursor: pointer;
+        transition: 0.25s ease;
+        text-align: left;
+    }
+
+    .demo-pay-btn:hover {
+        border-color: var(--bronze);
+        transform: translateY(-2px);
+        background: rgba(217, 145, 90, 0.08);
+    }
+
+    .demo-pay-title {
+        font-size: 1rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    .demo-pay-sub {
+        font-size: 0.72rem;
+        color: var(--text-muted);
+        line-height: 1.5;
+    }
+</style>
+{% endblock %}

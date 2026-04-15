@@ -1,0 +1,91 @@
+{% extends 'seller_base.html' %}
+
+{% block title %}{{ title }} | Carify Admin{% endblock %}
+
+{% block content %}
+<div class="section terminal-mode" style="background: var(--surface); min-height: 80vh; padding: 60px 5%; position: relative; border: 1px solid var(--border-elegant);">
+    <!-- Subtle Grid Background -->
+    <div style="position: absolute; inset: 0; background-image: radial-gradient(var(--border-subtle) 1px, transparent 1px); background-size: 40px 40px; opacity: 0.1; pointer-events: none;"></div>
+
+    <div class="container" style="max-width: 800px; position: relative; z-index: 5;">
+        <div style="margin-bottom: 60px;">
+            <a class="nav-link hover-lift" href="{% url 'carify_app:manage_categories' %}" style="display: inline-flex; align-items: center; gap: 12px; font-weight: 800; color: var(--bronze); text-decoration: none; font-size: 0.75rem; letter-spacing: 2px;">
+                <i class="fas fa-arrow-left"></i> RETURN TO REGISTRY
+            </a>
+            <h1 style="font-size: 3rem; letter-spacing: -3px; margin-top: 30px; text-transform: uppercase; font-weight: 800;">
+                {{ title|safe }}
+            </h1>
+            <p style="color: var(--text-muted); text-transform: uppercase; font-size: 0.75rem; font-weight: 600; letter-spacing: 4px; margin-top: 10px; display: flex; align-items: center; gap: 15px;">
+                <span style="display: inline-block; width: 40px; height: 1px; background: var(--copper);"></span>
+                Taxonomy Configuration Terminal v1.0
+            </p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 300px; gap: 40px; align-items: start;">
+            <form method="post" style="display: flex; flex-direction: column; gap: 40px;">
+                {% csrf_token %}
+
+                <div class="glass-panel" style="padding: 60px; border-radius: 0; border: 1px solid var(--border-elegant); background: rgba(18, 15, 14, 0.6);">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 20px;">
+                        <h3 style="letter-spacing: 2px; font-weight: 800; font-size: 1rem;">SEGMENT SPECIFICATIONS</h3>
+                        <span style="font-size: 0.6rem; color: var(--text-muted); letter-spacing: 2px;">SEC_AUTH_LEVEL: ADMIN</span>
+                    </div>
+                    
+                    <div class="form-grid" style="display: grid; gap: 30px;">
+                        {% for field in form %}
+                        <div class="form-group">
+                            <label style="display: block; font-family: var(--font-heading); font-weight: 800; font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                            <div style="color: #ff4d4d; font-size: 0.7rem; margin-top: 5px; font-family: monospace;">ERR: {{ field.errors|first }}</div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div style="display: flex; justify-content: flex-end; align-items: center; margin-top: 40px;">
+                        <button type="submit" class="btn btn-primary" style="padding: 15px 40px; font-size: 0.8rem; letter-spacing: 2px; border-radius: 0;">
+                            {% if is_edit %}COMMIT CONFIGURATION{% else %}INITIALIZE OPTION{% endif %}
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- EXISTING CATALOG REFERENCE -->
+            <aside class="glass-panel" style="padding: 30px; border: 1px solid var(--border-subtle); background: rgba(0,0,0,0.2);">
+                <h4 style="font-size: 0.6rem; letter-spacing: 2px; color: var(--bronze); text-transform: uppercase; font-weight: 800; margin-bottom: 20px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 10px;">
+                    ADMIN_CATALOGS_SYNC
+                </h4>
+                <div style="max-height: 400px; overflow-y: auto; padding-right: 10px;" class="custom-scroll">
+                    {% for cat in existing_categories %}
+                    <div style="padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.03);">
+                        <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-pure);">{{ cat.name|upper }}</div>
+                        <div style="font-size: 0.55rem; color: var(--text-muted); margin-top: 4px;">{{ cat.parent.name|default:"ROOT_SEGMENT" }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </aside>
+        </div>
+    </div>
+</div>
+
+<style>
+    input, select, textarea {
+        width: 100%;
+        padding: 16px 20px !important;
+        background: rgba(0, 0, 0, 0.4) !important;
+        border: 1px solid var(--border-subtle) !important;
+        color: var(--text-pure) !important;
+        font-family: var(--font-body) !important;
+        font-size: 0.9rem !important;
+        border-radius: 0 !important;
+        outline: none !important;
+        transition: all 0.4s var(--transition-premium) !important;
+    }
+    input:focus, select:focus, textarea:focus {
+        border-color: var(--bronze) !important;
+        background: rgba(155, 90, 43, 0.05) !important;
+        box-shadow: 0 0 20px rgba(155, 90, 43, 0.1) !important;
+    }
+</style>
+{% endblock %}

@@ -124,28 +124,24 @@ document.addEventListener('DOMContentLoaded', function() {
                     const itemImg = product.first_image || product.image || fallbackImg;
                     
                     return `
-                    <div class="shop-card stagger-item" id="p-${product.id}">
-                        <div class="shop-image-wrapper">
-                            <a href="/product/${product.id}/" style="display: block; height: 100%;">
-                                <img src="${itemImg}" 
-                                     alt="${product.name}" 
-                                     class="shop-img" 
-                                     onerror="this.src='${fallbackImg}'; this.style.filter='grayscale(1) brightness(0.5)';"
-                                >
-                            </a>
-                            <div class="quick-add-overlay">
-                                <span class="btn btn-primary" onclick="window.CarifyBridge.addItemToCart(${product.id})" style="width: 80%; font-size: 0.65rem; padding: 0.8rem 1rem;">SECURE SPECIMEN</span>
+                    <a href="/product/${product.id}/" class="cg-pcard stagger-item" id="p-${product.id}">
+                        <div class="cg-pcard__img-w">
+                            <span class="cg-pcard__badge">Handpicked</span>
+                            <img src="${itemImg}" alt="${product.name}" class="cg-pcard__img" onerror="this.src='${fallbackImg}'; this.style.filter='grayscale(1) brightness(0.5)';" loading="lazy">
+                            <div class="cg-pcard__overlay">
+                                <span class="cg-pcard__cat">${product.category_name || 'Elite Collection'}</span>
+                                <h3 class="cg-pcard__name">${product.name.toUpperCase()}</h3>
+                                <div class="cg-pcard__footer">
+                                    <span class="cg-pcard__price">$${parseFloat(product.price).toLocaleString()}</span>
+                                    <div class="cg-pcard__action" onclick="event.preventDefault(); window.CarifyBridge.addItemToCart(${product.id}); alert('SYNCED TO PORTFOLIO');">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <a href="/product/${product.id}/" style="text-decoration: none; display: block;">
-                            <div class="shop-info">
-                                <span class="shop-vendor font-heading">${product.category_name || 'CARIFY EXCLUSIVE'}</span>
-                                <h4 class="shop-title font-heading">${product.name}</h4>
-                                <span class="shop-price font-heading copper-text">$${parseFloat(product.price).toLocaleString()}</span>
-                            </div>
-                        </a>
-                    </div>
-                `}).join('');
+                    </a>
+                    `
+}).join('');
 
                 // Staggered appearance
                 setTimeout(() => {
@@ -154,17 +150,12 @@ document.addEventListener('DOMContentLoaded', function() {
                              setTimeout(() => el.classList.add('visible'), i * 60);
                         }
                     });
+                    
+                    // Re-init 3D effects for new cards
+                    if(window.CarifyAnimations) window.CarifyAnimations.reinit();
                 }, 50);
 
             });
-    }
-
-    function generateStars(rating) {
-        let stars = '';
-        for (let i = 1; i <= 5; i++) {
-            stars += `<i class="fas fa-star" style="color: ${i <= rating ? 'var(--bronze)' : 'var(--border-subtle)'};"></i>`;
-        }
-        return stars;
     }
 
     // INTERFACE LOGIC
@@ -214,7 +205,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const max = document.getElementById('maxPrice').value;
             currentFilters.min_price = min ? min : null;
             currentFilters.max_price = max ? max : null;
-            if(!filterDrawer.classList.contains('active')) fetchProducts();
+            fetchProducts();
         });
     }
 
@@ -228,7 +219,7 @@ document.addEventListener('DOMContentLoaded', function() {
             mobileSortSelect.value = '-created_at';
             document.querySelectorAll('.filter-link').forEach(l => l.classList.remove('active'));
             document.querySelector('[data-category="all"]').classList.add('active');
-            if(!filterDrawer.classList.contains('active')) fetchProducts();
+            fetchProducts();
         });
     }
 
@@ -237,17 +228,22 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <style>
-    .d-none { display: none; }
-    .d-lg-none { display: block; }
-    .d-lg-block { display: none; }
-    .d-lg-flex { display: none; }
+    html { scroll-behavior: smooth; }
+
     .collection-hero {
         border: none;
         border-radius: 0;
         background: var(--surface);
         padding-top: 140px;
         padding-bottom: 60px;
+        animation: heroGlide 1.2s var(--ease) forwards;
     }
+
+    @keyframes heroGlide {
+        from { opacity: 0; transform: translateY(30px); filter: blur(10px); }
+        to { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+
     .collection-hero-inner {
         text-align: center;
     }
@@ -313,6 +309,7 @@ document.addEventListener('DOMContentLoaded', function() {
         transition: transform 0.8s var(--transition-premium);
         display: flex;
         flex-direction: column;
+        background: var(--obsidian);
     }
     .collection-filter-drawer-head {
         padding: 24px;
@@ -324,6 +321,7 @@ document.addEventListener('DOMContentLoaded', function() {
     .collection-filter-drawer-body {
         flex: 1;
         padding: 40px 24px;
+        overflow-y: auto;
     }
     .collection-filter-drawer-foot {
         padding: 24px;
@@ -334,10 +332,6 @@ document.addEventListener('DOMContentLoaded', function() {
         gap: 48px 24px;
     }
     @media (min-width: 1024px) {
-        .d-none { display: block; }
-        .d-lg-none { display: none; }
-        .d-lg-block { display: block; }
-        .d-lg-flex { display: flex; }
         .collection-layout {
             grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
             gap: 56px;
@@ -352,8 +346,26 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    .stagger-item { opacity: 0; transform: translateY(15px); transition: all 1s var(--transition-premium); }
-    .stagger-item.visible { opacity: 1; transform: translateY(0); }
+    .stagger-item { 
+        opacity: 0; 
+        transform: translateY(40px); 
+        transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1); 
+        filter: blur(5px);
+    }
+    .stagger-item.visible { 
+        opacity: 1; 
+        transform: translateY(0); 
+        filter: blur(0);
+    }
+    
+    .collection-content, .collection-sidebar {
+        animation: sectionReveal 1.5s var(--ease) forwards;
+    }
+
+    @keyframes sectionReveal {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
     
     .filter-link {
         font-size: 0.65rem;
@@ -363,7 +375,138 @@ document.addEventListener('DOMContentLoaded', function() {
         display: block;
         padding: 12px 0;
         transition: 0.3s;
+        text-decoration: none;
     }
     .filter-link.active { color: var(--bronze); font-weight: 700; border-left: 2px solid var(--bronze); padding-left: 15px; }
+
+    /* Premium cg-pcard styles */
+    .cg-pcard {
+        background: #0a0a0a;
+        position: relative;
+        overflow: hidden;
+        text-decoration: none;
+        border: 1px solid var(--border-subtle);
+        transition: all 0.6s var(--ease);
+        aspect-ratio: 4/5;
+        display: block;
+    }
+
+    .cg-pcard:hover {
+        transform: translateY(-10px);
+        border-color: rgba(217, 145, 90, 0.4);
+        box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+    }
+
+    .cg-pcard__img-w {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .cg-pcard__img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.7) saturate(0.8);
+        transition: transform 1.2s var(--ease), filter 0.8s;
+    }
+
+    .cg-pcard:hover .cg-pcard__img {
+        transform: scale(1.08);
+        filter: brightness(0.9) saturate(1);
+    }
+
+    .cg-pcard__overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 40%, transparent 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 30px;
+        transition: all 0.4s var(--ease);
+    }
+
+    .cg-pcard__badge {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background: rgba(0,0,0,0.6);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.1);
+        color: var(--copper);
+        font-family: var(--font-heading);
+        font-size: 0.45rem;
+        font-weight: 800;
+        letter-spacing: 0.3em;
+        padding: 6px 12px;
+        text-transform: uppercase;
+        z-index: 10;
+        border-radius: 2px;
+    }
+
+    .cg-pcard__cat {
+        font-family: var(--font-heading);
+        font-size: .48rem;
+        font-weight: 700;
+        letter-spacing: .4em;
+        text-transform: uppercase;
+        color: var(--copper);
+        margin-bottom: 10px;
+        display: block;
+        opacity: 0.8;
+    }
+
+    .cg-pcard__name {
+        font-family: var(--font-heading);
+        font-size: 1.1rem;
+        font-weight: 800;
+        letter-spacing: -.02em;
+        color: #fff;
+        line-height: 1.1;
+        margin-bottom: 15px;
+        transition: color 0.3s;
+    }
+
+    .cg-pcard:hover .cg-pcard__name {
+        color: var(--copper);
+    }
+
+    .cg-pcard__footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        padding-top: 15px;
+        margin-top: 5px;
+    }
+
+    .cg-pcard__price {
+        font-family: var(--font-heading);
+        font-size: 0.9rem;
+        font-weight: 800;
+        color: #fff;
+        letter-spacing: -0.5px;
+    }
+
+    .cg-pcard__action {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: 1px solid rgba(255,255,255,0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        transition: all 0.4s var(--ease);
+    }
+
+    .cg-pcard:hover .cg-pcard__action {
+        background: #fff;
+        color: #000;
+        border-color: #fff;
+        transform: rotate(-45deg);
+    }
 </style>
 {% endblock %}

@@ -3,9 +3,9 @@
     <div class="filter-group" style="margin-bottom: 40px;">
         <h4 style="font-size: 0.65rem; color: var(--bronze); letter-spacing: 0.2em; margin-bottom: 25px; font-weight: 800; text-transform: uppercase;">Categories</h4>
         <div style="display: flex; flex-direction: column; gap: 5px;">
-            <a href="javascript:void(0)" class="filter-link active" data-category="all">The Selection</a>
+            <a href="#" class="filter-link active" data-category="all">The Selection</a>
             {% for category in categories %}
-            <a href="javascript:void(0)" class="filter-link" data-category="{{ category.id }}">{{ category.name }}</a>
+            <a href="#" class="filter-link" data-category="{{ category.id }}">{{ category.name }}</a>
             {% endfor %}
         </div>
     </div>

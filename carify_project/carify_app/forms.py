@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import modelformset_factory
-from .models import Product, ProductMedia, Service
+from .models import Product, ProductMedia, Service, Category
 
 class BuyerRegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True, help_text='Enter a working email address for OTP verification.')
@@ -36,6 +36,16 @@ class SellerRegistrationForm(UserCreationForm):
 class OTPVerifyForm(forms.Form):
     otp_code = forms.CharField(max_length=6, min_length=6, widget=forms.TextInput(attrs={'placeholder': '000000', 'class': 'otp-input'}))
 
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name', 'description', 'parent']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 3, 'class': 'cg-input', 'placeholder': 'Category description...'}),
+            'name': forms.TextInput(attrs={'class': 'cg-input', 'placeholder': 'Category Name'}),
+            'parent': forms.Select(attrs={'class': 'cg-input'}),
+        }
+
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
@@ -65,3 +75,26 @@ ProductMediaFormset = modelformset_factory(
         'caption': forms.TextInput(attrs={'placeholder': 'Optional caption'}),
     }
 )
+
+from django.contrib.auth.models import User
+from .models import SellerProfile
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'cg-input', 'placeholder': 'First Name'}),
+            'last_name': forms.TextInput(attrs={'class': 'cg-input', 'placeholder': 'Last Name'}),
+            'email': forms.EmailInput(attrs={'class': 'cg-input', 'placeholder': 'Email Address'}),
+        }
+
+class SellerProfileForm(forms.ModelForm):
+    class Meta:
+        model = SellerProfile
+        fields = ['shop_name', 'description', 'logo']
+        widgets = {
+            'shop_name': forms.TextInput(attrs={'class': 'cg-input', 'placeholder': 'Shop Name'}),
+            'description': forms.Textarea(attrs={'class': 'cg-input', 'placeholder': 'Shop Description', 'rows': 4}),
+            'logo': forms.ClearableFileInput(attrs={'class': 'cg-input'}),
+        }

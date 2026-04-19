@@ -978,19 +978,20 @@
     }
 
     .cg-pcard {
-        background: #0a0a0a;
+        background: var(--surface);
+        border: 1px solid var(--border-elegant);
         position: relative;
         overflow: hidden;
+        transition: all 0.6s var(--transition-premium);
+        aspect-ratio: 4/5;
+        display: block;
         text-decoration: none;
-        border: 1px solid var(--clr-border);
-        transition: all 0.6s var(--ease);
-        aspect-ratio: 4/5; /* Force same aspect ratio for all */
     }
 
     .cg-pcard:hover {
         transform: translateY(-10px);
-        border-color: rgba(217, 145, 90, 0.4);
-        box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+        border-color: var(--bronze);
+        box-shadow: 0 40px 80px rgba(0,0,0,0.6);
     }
 
     .cg-pcard__img-w {
@@ -998,25 +999,26 @@
         width: 100%;
         height: 100%;
         overflow: hidden;
+        background: #000;
     }
 
     .cg-pcard__img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        filter: brightness(0.7) saturate(0.8);
-        transition: transform 1.2s var(--ease), filter 0.8s;
+        filter: brightness(0.6) saturate(0.8);
+        transition: transform 1.2s var(--transition-premium), filter 0.8s;
     }
 
     .cg-pcard:hover .cg-pcard__img {
         transform: scale(1.08);
-        filter: brightness(0.9) saturate(1);
+        filter: brightness(0.8) saturate(1);
     }
 
     .cg-pcard__overlay {
         position: absolute;
         inset: 0;
-        background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 40%, transparent 100%);
+        background: linear-gradient(to top, var(--obsidian) 0%, transparent 60%);
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
@@ -1028,10 +1030,10 @@
         position: absolute;
         top: 25px;
         left: 25px;
-        background: rgba(0,0,0,0.6);
+        background: var(--glass-heavy);
         backdrop-filter: blur(10px);
-        border: 1px solid rgba(255,255,255,0.1);
-        color: var(--clr-copper);
+        border: 1px solid var(--border-subtle);
+        color: var(--bronze);
         font-family: var(--font-h);
         font-size: 0.5rem;
         font-weight: 800;
@@ -1048,10 +1050,9 @@
         font-weight: 700;
         letter-spacing: .4em;
         text-transform: uppercase;
-        color: var(--clr-copper);
+        color: var(--copper);
         margin-bottom: 12px;
         display: block;
-        opacity: 0.8;
     }
 
     .cg-pcard__name {
@@ -1066,14 +1067,14 @@
     }
 
     .cg-pcard:hover .cg-pcard__name {
-        color: var(--clr-copper);
+        color: var(--bronze);
     }
 
     .cg-pcard__footer {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border-top: 1px solid rgba(255,255,255,0.1);
+        border-top: 1px solid var(--border-subtle);
         padding-top: 20px;
         margin-top: 10px;
     }
@@ -1089,8 +1090,8 @@
     .cg-pcard__action {
         width: 38px;
         height: 38px;
-        border-radius: 50%;
-        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 2px;
+        border: 1px solid var(--border-elegant);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -1102,7 +1103,6 @@
         background: #fff;
         color: #000;
         border-color: #fff;
-        transform: rotate(-45deg);
     }
 
     /* ── SCROLL REVEAL ─────────────────────────────── */
@@ -1399,29 +1399,29 @@
 
     <div class="cg-prow">
         {% for product in products|slice:":5" %}
-        <a href="{% url 'carify_app:product_detail' product.id %}" class="cg-pcard">
-            <div class="cg-pcard__img-w">
+        <div class="cg-pcard glass-panel">
+            <a href="{% url 'carify_app:product_detail' product.id %}" class="cg-pcard__img-w">
                 <span class="cg-pcard__badge">Handpicked</span>
                 
                 {% if product.first_media_image_url %}
                 <img src="{{ product.first_media_image_url }}" alt="{{ product.name }}" class="cg-pcard__img" loading="lazy">
                 {% else %}
-                <img src="https://images.unsplash.com/photo-1607603750909-408e1938f8c7?auto=format&fit=crop&q=80&w=600" class="cg-pcard__img" loading="lazy">
+                <img src="{% static 'img/placeholder.png' %}" class="cg-pcard__img" loading="lazy">
                 {% endif %}
 
                 <div class="cg-pcard__overlay">
                     <span class="cg-pcard__cat">{{ product.category.name|default:"Elite Collection" }}</span>
-                    <h3 class="cg-pcard__name">{{ product.name|upper }}</h3>
+                    <h3 class="cg-pcard__name font-heading">{{ product.name|upper }}</h3>
                     
                     <div class="cg-pcard__footer">
                         <span class="cg-pcard__price">${{ product.price }}</span>
-                        <div class="cg-pcard__action">
-                            <i class="fas fa-arrow-right"></i>
+                        <div class="cg-pcard__action" onclick="event.preventDefault(); window.CarifyBridge.addItemToCart({{ product.id }}, 'product')">
+                            <i class="fas fa-plus" style="font-size: 0.8rem;"></i>
                         </div>
                     </div>
                 </div>
-            </div>
-        </a>
+            </a>
+        </div>
         {% empty %}
         <div class="cg-products__empty">No specimens detected in the latest arrivals pool.</div>
         {% endfor %}

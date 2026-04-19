@@ -1,372 +1,259 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Collection | CARIFY{% endblock %}
+{% block title %}Acquisition Archive | CARIFY Collection{% endblock %}
 
 {% block extra_css %}
 <style>
     html { scroll-behavior: smooth; }
 
     .collection-hero {
-        border: none;
-        border-radius: 0;
-        background: var(--surface);
-        padding-top: 140px;
-        padding-bottom: 60px;
-        animation: heroGlide 1.2s var(--ease) forwards;
-    }
-
-    @keyframes heroGlide {
-        from { opacity: 0; transform: translateY(30px); filter: blur(10px); }
-        to { opacity: 1; transform: translateY(0); filter: blur(0); }
-    }
-
-    .collection-hero-inner {
-        text-align: center;
-    }
-    .collection-mobile-bar {
-        position: sticky;
-        top: 65px;
-        z-index: 900;
-        background: var(--glass-heavy);
-        backdrop-filter: var(--glass-blur);
+        position: relative;
+        padding: 160px 0 100px;
+        background: var(--obsidian);
         border-bottom: 1px solid var(--border-subtle);
     }
-    .collection-mobile-bar-inner {
-        display: flex;
-        justify-content: space-between;
-        gap: 16px;
-        padding: 15px 0;
+
+    .collection-hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at top right, rgba(217, 145, 90, 0.05), transparent 60%);
     }
+
+    /* GRID ARCHITECTURE */
     .collection-layout {
         display: grid;
-        grid-template-columns: 1fr;
-        gap: 48px;
-        padding: 56px 0 80px;
-        align-items: start;
+        grid-template_columns: 1fr;
+        gap: 60px;
+        padding: 80px 0;
     }
-    .collection-sidebar {
-        width: 100%;
-        min-width: 0;
-        border-right: 1px solid var(--border-subtle);
-        padding-right: 40px;
-    }
-    .collection-sidebar-inner {
-        position: sticky;
-        top: 120px;
-    }
-    .collection-content {
-        min-width: 0;
-    }
-    .collection-toolbar {
-        justify-content: space-between;
-        align-items: center;
-        gap: 24px;
-        margin-bottom: 48px;
-        padding-bottom: 20px;
-        border-bottom: 1px solid var(--border-subtle);
-    }
-    .collection-results-copy {
-        font-size: 0.7rem;
-        font-weight: 500;
-        color: var(--text-muted);
-        text-transform: uppercase;
-        letter-spacing: 0.2em;
-    }
-    .collection-product-grid {
-        padding-bottom: 60px;
-        align-items: start;
-    }
-    .collection-filter-drawer {
-        position: fixed;
-        inset: 0;
-        left: 100%;
-        width: 100%;
-        z-index: 2200;
-        transition: transform 0.8s var(--transition-premium);
-        display: flex;
-        flex-direction: column;
-        background: var(--obsidian);
-    }
-    .collection-filter-drawer-head {
-        padding: 24px;
-        border-bottom: 1px solid var(--border-subtle);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .collection-filter-drawer-body {
-        flex: 1;
-        padding: 40px 24px;
-        overflow-y: auto;
-    }
-    .collection-filter-drawer-foot {
-        padding: 24px;
-        border-top: 1px solid var(--border-subtle);
-    }
-    .collection-grid {
-        grid-template-columns: 1fr;
-        gap: 48px 24px;
-    }
+
     @media (min-width: 1024px) {
         .collection-layout {
-            grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
-            gap: 56px;
+            grid-template-columns: 300px 1fr;
         }
-        .collection-grid {
-            grid-template-columns: repeat(5, minmax(0, 1fr));
-        }
-    }
-    @media (min-width: 640px) and (max-width: 1023px) {
-        .collection-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-    }
-    
-    .stagger-item { 
-        opacity: 0; 
-        transform: translateY(40px); 
-        transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1); 
-        filter: blur(5px);
-    }
-    .stagger-item.visible { 
-        opacity: 1; 
-        transform: translateY(0); 
-        filter: blur(0);
-    }
-    
-    .collection-content, .collection-sidebar {
-        animation: sectionReveal 1.5s var(--ease) forwards;
     }
 
-    @keyframes sectionReveal {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+    .specimen-grid {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 30px;
     }
-    
-    .filter-link {
-        font-size: 0.65rem;
-        color: var(--text-muted);
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        display: block;
-        padding: 12px 0;
-        transition: 0.3s;
-        text-decoration: none;
-    }
-    .filter-link.active { color: var(--bronze); font-weight: 700; border-left: 2px solid var(--bronze); padding-left: 15px; }
 
-    /* Premium cg-pcard styles */
-    .cg-pcard {
-        background: #0a0a0a;
+    @media (min-width: 768px) {
+        .specimen-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (min-width: 1400px) {
+        .specimen-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    /* ELITE CARD ARCHITECTURE */
+    .specimen-card {
+        background: var(--surface);
+        border: 1px solid var(--border-elegant);
         position: relative;
         overflow: hidden;
-        text-decoration: none;
-        border: 1px solid var(--border-subtle);
-        transition: all 0.6s var(--ease);
-        aspect-ratio: 3/4;
-        display: block;
+        transition: all 0.6s var(--transition-premium);
+        display: flex;
+        flex-direction: column;
     }
 
-    .cg-pcard:hover {
+    .specimen-card:hover {
         transform: translateY(-10px);
-        border-color: rgba(217, 145, 90, 0.4);
-        box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+        border-color: var(--bronze);
+        box-shadow: 0 40px 80px rgba(0,0,0,0.6);
     }
 
-    .cg-pcard__img-w {
+    .specimen-media {
         position: relative;
-        width: 100%;
-        height: 100%;
+        aspect-ratio: 4/5;
         overflow: hidden;
+        background: #000;
     }
 
-    .cg-pcard__img {
+    .specimen-img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         filter: brightness(0.7) saturate(0.8);
-        transition: transform 1.2s var(--ease), filter 0.8s;
+        transition: transform 1.2s var(--transition-premium), filter 0.8s;
     }
 
-    .cg-pcard:hover .cg-pcard__img {
+    .specimen-card:hover .specimen-img {
         transform: scale(1.08);
         filter: brightness(0.9) saturate(1);
     }
 
-    .cg-pcard__overlay {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 40%, transparent 100%);
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        padding: 30px;
-        transition: all 0.4s var(--ease);
-    }
-
-    .cg-pcard__badge {
+    .specimen-badge {
         position: absolute;
         top: 20px;
         left: 20px;
-        background: rgba(0,0,0,0.6);
+        background: var(--glass-heavy);
         backdrop-filter: blur(10px);
-        border: 1px solid rgba(255,255,255,0.1);
-        color: var(--copper);
-        font-family: var(--font-heading);
-        font-size: 0.45rem;
-        font-weight: 800;
-        letter-spacing: 0.3em;
         padding: 6px 12px;
+        font-size: 0.5rem;
+        letter-spacing: 0.25em;
         text-transform: uppercase;
+        color: var(--bronze);
+        border: 1px solid var(--border-subtle);
         z-index: 10;
-        border-radius: 2px;
     }
 
-    .cg-pcard__cat {
-        font-family: var(--font-heading);
-        font-size: .48rem;
-        font-weight: 700;
-        letter-spacing: .4em;
+    .specimen-body {
+        padding: 30px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        background: linear-gradient(to top, var(--obsidian) 0%, transparent 100%);
+    }
+
+    .specimen-cat {
+        font-size: 0.55rem;
+        letter-spacing: 0.3em;
+        color: var(--copper);
         text-transform: uppercase;
-        color: var(--copper);
         margin-bottom: 10px;
-        display: block;
-        opacity: 0.8;
     }
 
-    .cg-pcard__name {
-        font-family: var(--font-heading);
-        font-size: 0.75rem;
-        font-weight: 800;
-        letter-spacing: -.02em;
+    .specimen-name {
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+        letter-spacing: -0.02em;
         color: #fff;
-        line-height: 1.1;
-        margin-bottom: 15px;
-        transition: color 0.3s;
     }
 
-    .cg-pcard:hover .cg-pcard__name {
-        color: var(--copper);
-    }
-
-    .cg-pcard__footer {
+    .specimen-footer {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border-top: 1px solid rgba(255,255,255,0.1);
-        padding-top: 15px;
-        margin-top: 5px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border-subtle);
     }
 
-    .cg-pcard__price {
-        font-family: var(--font-heading);
-        font-size: 0.9rem;
-        font-weight: 800;
+    .specimen-price {
+        font-family: 'Outfit', sans-serif;
+        font-weight: 700;
         color: #fff;
-        letter-spacing: -0.5px;
     }
 
-    .cg-pcard__action-btn {
-        padding: 6px 14px;
-        border: 1px solid rgba(255,255,255,0.2);
+    .specimen-cta {
+        padding: 8px 16px;
+        border: 1px solid var(--border-elegant);
         color: #fff;
-        font-family: var(--font-heading);
-        font-size: 0.5rem;
-        font-weight: 800;
+        font-size: 0.6rem;
         letter-spacing: 0.15em;
         text-transform: uppercase;
-        transition: all 0.4s var(--ease);
         cursor: pointer;
-        border-radius: 2px;
+        transition: all 0.4s;
     }
 
-    .cg-pcard:hover .cg-pcard__action-btn {
+    .specimen-card:hover .specimen-cta {
         background: #fff;
         color: #000;
         border-color: #fff;
     }
+
+    /* CUSTOM FILTER STYLING */
+    .filter-panel {
+        position: sticky;
+        top: 120px;
+        padding: 40px;
+        border-right: 1px solid var(--border-subtle);
+    }
+
+    .filter-heading {
+        font-size: 0.7rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        margin-bottom: 25px;
+        display: block;
+    }
+
+    .filter-link {
+        display: block;
+        padding: 12px 0;
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 0.8rem;
+        transition: 0.3s;
+        border-bottom: 1px solid transparent;
+    }
+
+    .filter-link:hover, .filter-link.active {
+        color: var(--bronze);
+        padding-left: 10px;
+    }
+
+    .filter-link.active {
+        border-bottom-color: var(--bronze);
+    }
 </style>
 {% endblock %}
 
-
 {% block content %}
-<!-- COLLECTION HEADER -->
-<div class="glass-panel collection-hero">
-    <div class="container collection-hero-inner" data-appear>
-        <span class="hero-eyebrow" style="margin-bottom: 15px;">Curated Series</span>
-        <h1 style="font-size: clamp(2.5rem, 8vw, 4.5rem); letter-spacing: -3px;">THE COLLECTION</h1>
-        <p style="font-family: var(--font-serif); font-style: italic; color: var(--text-muted); margin-top: 10px;">Select your specimen for preservation.</p>
+<section class="collection-hero" data-appear>
+    <div class="container" style="text-align: center;">
+        <span class="hero-eyebrow">Inventory Registry</span>
+        <h1 style="font-size: clamp(3rem, 8vw, 6rem); margin-top: 20px;">ARCHIVE COLLECTION</h1>
+        <p style="color: var(--text-muted); max-width: 600px; margin: 20px auto 0;">
+            A curated archive of high-performance specimens, vetted for the most discerning automotive enthusiasts.
+        </p>
     </div>
-</div>
-
-<!-- STICKY CONTROL MODULE (MOBILE) -->
-<div class="collection-mobile-bar d-lg-none">
-    <div class="container collection-mobile-bar-inner">
-        <button id="mobileFilterTrigger" class="btn btn-outline" style="padding: 10px 20px; font-size: 0.6rem;">FILTER</button>
-        <select id="mobileSortSelect" style="background: transparent; border: 1px solid var(--border-elegant); color: white; font-size: 0.6rem; padding: 0 15px; font-family: var(--font-heading); text-transform: uppercase;">
-            <option value="-created_at">LATEST</option>
-            <option value="price">PRICE ASC</option>
-            <option value="-price">PRICE DESC</option>
-            <option value="-reviews__rating">POPULARITY</option>
-        </select>
-    </div>
-</div>
+</section>
 
 <div class="container collection-layout">
-    <!-- SIDEBAR PERSPECTIVE (DESKTOP) -->
-    <aside class="collection-sidebar d-none d-lg-block">
-        <div class="collection-sidebar-inner">
-            {% include 'includes/filter_sidebar.html' %}
+    <aside class="filter-sidebar d-none d-lg-block">
+        <div class="filter-panel glass-panel">
+            <span class="filter-heading">CATEGORIES</span>
+            <a href="#" class="filter-link active" data-category="all">All Specimens</a>
+            {% for category in categories %}
+            <a href="#" class="filter-link" data-category="{{ category.id }}">{{ category.name }}</a>
+            {% endfor %}
+
+            <div style="margin-top: 50px;">
+                <span class="filter-heading">VALUATION (PRICE)</span>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <input type="number" id="minPrice" placeholder="Min" class="ritual-input" style="font-size: 0.7rem; padding: 10px;">
+                    <input type="number" id="maxPrice" placeholder="Max" class="ritual-input" style="font-size: 0.7rem; padding: 10px;">
+                </div>
+                <button id="applyPrice" class="btn btn-outline w-100" style="margin-top: 20px; font-size: 0.6rem;">RESTRICT ARCHIVE</button>
+                <button id="resetFilters" class="btn btn-ghost w-100" style="margin-top: 10px; font-size: 0.5rem; opacity: 0.5;">PURGE FILTERS</button>
+            </div>
         </div>
     </aside>
 
-    <!-- CONTENT MODULE -->
     <main class="collection-content">
-        <!-- DESKTOP CONTROLS -->
-        <div class="collection-toolbar d-none d-lg-flex">
-            <div id="resultsCount" class="collection-results-copy">
-                Discover our selection
-            </div>
-            <select id="sortSelect" style="background: transparent; border: none; color: white; font-size: 0.75rem; font-family: var(--font-heading); text-transform: uppercase; cursor: pointer;">
-                <option value="-created_at">SORT: LATEST DROP</option>
-                <option value="price">SORT: PRICE ASC</option>
-                <option value="-price">SORT: PRICE DESC</option>
-                <option value="-reviews__rating">SORT: POPULARITY</option>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid var(--border-subtle);">
+            <div id="resultsCount" class="category-tag">ARCHIVING SEARCH...</div>
+            <select id="sortSelect" class="ritual-input" style="width: auto; border: none; font-size: 0.7rem; letter-spacing: 0.1em;">
+                <option value="-created_at">LATEST ACQUISITIONS</option>
+                <option value="price">VALUATION: LOW TO HIGH</option>
+                <option value="-price">VALUATION: HIGH TO LOW</option>
+                <option value="-reviews__rating">ELITE RATING</option>
             </select>
         </div>
 
-        <div id="productGrid" class="grid-main collection-grid collection-product-grid">
-            <!-- Products will be injected via AJAX -->
-            <div style="grid-column: 1 / -1; text-align: center; padding: 120px 0;">
-                <i class="fas fa-circle-notch fa-spin" style="font-size: 1.5rem; color: var(--copper);"></i>
-            </div>
+        <div id="productGrid" class="specimen-grid">
+            <!-- ARCHIVE ENTRIES INJECTED VIA AJAX -->
+             <div style="grid-column: 1/-1; text-align: center; padding: 100px 0;">
+                <i class="fas fa-circle-notch fa-spin" style="color: var(--bronze); font-size: 2rem;"></i>
+             </div>
         </div>
     </main>
 </div>
 
-<!-- FILTER OVERLAY (MOBILE) -->
-<div id="filterDrawer" class="glass-panel collection-filter-drawer">
-    <div class="collection-filter-drawer-head">
-        <h3 class="font-heading" style="font-size: 1rem; letter-spacing: 0.1em;">FILTER_SELECTION</h3>
-        <button id="closeFilter" style="background: none; border: none; color: var(--text-pure); cursor: pointer;"><i class="fas fa-xmark" style="font-size: 1.25rem;"></i></button>
-    </div>
-    <div class="collection-filter-drawer-body">
-        {% include 'includes/filter_sidebar.html' %}
-    </div>
-    <div class="collection-filter-drawer-foot">
-        <button id="applyFiltersMobile" class="btn btn-primary" style="width: 100%;">APPLY CHANGES</button>
-    </div>
-</div>
+{% endblock %}
 
+{% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const productGrid = document.getElementById('productGrid');
     const resultsCount = document.getElementById('resultsCount');
     const sortSelect = document.getElementById('sortSelect');
-    const mobileSortSelect = document.getElementById('mobileSortSelect');
-    const filterDrawer = document.getElementById('filterDrawer');
-    const globalOverlay = document.getElementById('globalOverlay');
     
     // Parse URL for search
     const urlParams = new URLSearchParams(window.location.search);
@@ -381,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     function fetchProducts() {
-        productGrid.style.opacity = '0.5';
+        productGrid.style.opacity = '0.4';
 
         let url = new URL('/api/products/', window.location.origin);
         if (currentFilters.category) url.searchParams.append('category', currentFilters.category);
@@ -394,73 +281,47 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 const products = data.results || data;
-                resultsCount.innerText = `${products.length} Items discovered`;
+                resultsCount.innerText = `${products.length} SPECIMENS DISCOVERED`;
                 productGrid.style.opacity = '1';
                 
                 if (products.length === 0) {
                     productGrid.innerHTML = `
-                        <div style="grid-column: 1 / -1; text-align: center; padding: 120px 0; border: 1px dashed var(--border-subtle);">
-                            <p style="color: var(--text-muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.2em;">No matches in the current selection</p>
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 100px 0; border: 1px dashed var(--border-subtle); opacity: 0.5;">
+                            <p class="font-heading" style="letter-spacing: 0.2em;">NO MATCHING SPECIMENS DETECTED</p>
                         </div>
                     `;
                     return;
                 }
 
                 productGrid.innerHTML = products.map((product, idx) => {
-                    const fallbackImg = 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&q=80&w=800';
+                    const fallbackImg = 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=800';
                     const itemImg = product.first_image || product.image || fallbackImg;
                     
                     return `
-                    <a href="/product/${product.id}/" class="cg-pcard stagger-item" id="p-${product.id}">
-                        <div class="cg-pcard__img-w">
-                            <span class="cg-pcard__badge">Handpicked</span>
-                            <img src="${itemImg}" alt="${product.name}" class="cg-pcard__img" onerror="this.src='${fallbackImg}'; this.style.filter='grayscale(1) brightness(0.5)';" loading="lazy">
-                            <div class="cg-pcard__overlay">
-                                <span class="cg-pcard__cat">${product.category_name || 'Elite Collection'}</span>
-                                <h3 class="cg-pcard__name">${product.name.toUpperCase()}</h3>
-                                <div class="cg-pcard__footer">
-                                    <span class="cg-pcard__price">$${parseFloat(product.price).toLocaleString()}</span>
-                                    <div class="cg-pcard__action-btn" onclick="event.preventDefault(); window.CarifyBridge.addItemToCart(${product.id}); alert('SYNCED TO PORTFOLIO');">
-                                        ACQUIRE
-                                    </div>
+                    <div class="specimen-card" data-appear style="transition-delay: ${idx * 50}ms;">
+                        <a href="/product/${product.id}/" class="specimen-media">
+                            <span class="specimen-badge">Handpicked</span>
+                            <img src="${itemImg}" alt="${product.name}" class="specimen-img" onerror="this.src='${fallbackImg}';">
+                        </a>
+                        <div class="specimen-body">
+                            <span class="specimen-cat">${product.category_name || 'Elite Archive'}</span>
+                            <h3 class="font-heading specimen-name">${product.name.toUpperCase()}</h3>
+                            
+                            <div class="specimen-footer">
+                                <span class="specimen-price">$${parseFloat(product.price).toLocaleString()}</span>
+                                <div class="specimen-cta" onclick="window.CarifyBridge.addItemToCart(${product.id}, 'product')">
+                                    ACQUIRE
                                 </div>
                             </div>
                         </div>
-                    </a>
+                    </div>
                     `
-}).join('');
+                }).join('');
 
-                // Staggered appearance
-                setTimeout(() => {
-                    document.querySelectorAll('.stagger-item').forEach((el, i) => {
-                        if(!el.classList.contains('visible')) {
-                             setTimeout(() => el.classList.add('visible'), i * 60);
-                        }
-                    });
-                    
-                    // Re-init 3D effects for new cards
-                    if(window.CarifyAnimations) window.CarifyAnimations.reinit();
-                }, 50);
-
+                // Trigger animations
+                if (window.CarifyAnimations) window.CarifyAnimations.reinit();
             });
     }
-
-    // INTERFACE LOGIC
-    document.getElementById('mobileFilterTrigger').addEventListener('click', () => {
-        filterDrawer.style.transform = 'translateX(-100%)';
-        globalOverlay.classList.add('active');
-    });
-
-    document.getElementById('closeFilter').addEventListener('click', () => {
-        filterDrawer.style.transform = 'translateX(0)';
-        globalOverlay.classList.remove('active');
-    });
-
-    document.getElementById('applyFiltersMobile').addEventListener('click', () => {
-        filterDrawer.style.transform = 'translateX(0)';
-        globalOverlay.classList.remove('active');
-        fetchProducts();
-    });
 
     // Filtering System
     document.addEventListener('click', (e) => {
@@ -470,28 +331,22 @@ document.addEventListener('DOMContentLoaded', function() {
             currentFilters.category = category === 'all' ? null : category;
             
             document.querySelectorAll('.filter-link').forEach(l => l.classList.remove('active'));
-            document.querySelectorAll(`[data-category="${category}"]`).forEach(l => l.classList.add('active'));
+            e.target.classList.add('active');
             
-            if(!filterDrawer.contains(e.target)) fetchProducts();
+            fetchProducts();
         }
     });
 
-    [sortSelect, mobileSortSelect].forEach(select => {
-        select.addEventListener('change', (e) => {
-            currentFilters.ordering = e.target.value;
-            sortSelect.value = e.target.value;
-            mobileSortSelect.value = e.target.value;
-            fetchProducts();
-        });
+    sortSelect.addEventListener('change', (e) => {
+        currentFilters.ordering = e.target.value;
+        fetchProducts();
     });
 
     const applyPriceBtn = document.getElementById('applyPrice');
     if(applyPriceBtn) {
         applyPriceBtn.addEventListener('click', () => {
-            const min = document.getElementById('minPrice').value;
-            const max = document.getElementById('maxPrice').value;
-            currentFilters.min_price = min ? min : null;
-            currentFilters.max_price = max ? max : null;
+            currentFilters.min_price = document.getElementById('minPrice').value || null;
+            currentFilters.max_price = document.getElementById('maxPrice').value || null;
             fetchProducts();
         });
     }
@@ -503,7 +358,6 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('minPrice').value = '';
             document.getElementById('maxPrice').value = '';
             sortSelect.value = '-created_at';
-            mobileSortSelect.value = '-created_at';
             document.querySelectorAll('.filter-link').forEach(l => l.classList.remove('active'));
             document.querySelector('[data-category="all"]').classList.add('active');
             fetchProducts();
@@ -513,5 +367,4 @@ document.addEventListener('DOMContentLoaded', function() {
     fetchProducts();
 });
 </script>
-
 {% endblock %}

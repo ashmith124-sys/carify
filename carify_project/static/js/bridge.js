@@ -209,6 +209,10 @@ const CarifyBridge = {
 
             await this.syncState();
             
+            // Success Feedback
+            const itemName = type === 'product' ? 'Specimen' : 'Protocol';
+            this.showToast(`${itemName} added to acquisition portfolio`);
+
             // Auto-open drawer
             const drawer = document.getElementById('cartDrawer');
             const overlay = document.getElementById('globalOverlay');
@@ -243,6 +247,64 @@ const CarifyBridge = {
         } catch (err) {
             console.error('--- SAVE_TOGGLE_FAILED ---', err);
         }
+    },
+
+    // --- UI Notifications ---
+    showToast(message, type = 'success') {
+        let toastContainer = document.getElementById('bridgeToastContainer');
+        if (!toastContainer) {
+            toastContainer = document.createElement('div');
+            toastContainer.id = 'bridgeToastContainer';
+            toastContainer.style.cssText = `
+                position: fixed;
+                bottom: 40px;
+                right: 40px;
+                z-index: 9999;
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+                pointer-events: none;
+            `;
+            document.body.appendChild(toastContainer);
+        }
+
+        const toast = document.createElement('div');
+        toast.className = 'glass-panel';
+        toast.style.cssText = `
+            padding: 20px 30px;
+            min-width: 300px;
+            border-left: 4px solid ${type === 'success' ? 'var(--bronze)' : '#ff4444'};
+            transform: translateX(120%);
+            transition: all 0.6s var(--transition-premium);
+            opacity: 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            pointer-events: auto;
+        `;
+
+        const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle';
+        toast.innerHTML = `
+            <i class="fas ${icon}" style="color: ${type === 'success' ? 'var(--bronze)' : '#ff4444'}; font-size: 1.2rem;"></i>
+            <div style="flex: 1;">
+                <p class="font-heading" style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; margin: 0;">${message}</p>
+            </div>
+        `;
+
+        toastContainer.appendChild(toast);
+
+        // Animate in
+        requestAnimationFrame(() => {
+            toast.style.transform = 'translateX(0)';
+            toast.style.opacity = '1';
+        });
+
+        // Remove after delay
+        setTimeout(() => {
+            toast.style.transform = 'translateX(120%)';
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 600);
+        }, 4000);
     },
 
     // --- Helpers ---

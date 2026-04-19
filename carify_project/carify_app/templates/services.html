@@ -5,330 +5,323 @@
 
 {% block extra_css %}
 <style>
-    .cg-solutions-hero {
-        height: 60vh;
-        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), var(--clr-bg)),
-            url('https://images.unsplash.com/photo-1599256621730-535171e28e50?auto=format&fit=crop&w=1600&q=80');
-        background-size: cover;
-        background-position: center;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        padding: 0 5vw;
-    }
-
-    .cg-service-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: 20px;
-        padding: 4rem 5vw;
-        background: var(--clr-bg);
-    }
-
-    .cg-scard {
+    .solutions-hero {
         position: relative;
-        height: 500px;
+        height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         overflow: hidden;
-        border: 1px solid var(--clr-border);
-        transition: transform 0.6s var(--ease);
+        background: var(--obsidian);
     }
 
-    .cg-scard:hover {
+    .solutions-hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom, rgba(8, 7, 7, 0.4) 0%, var(--obsidian) 100%),
+                    url('https://images.unsplash.com/photo-1599256621730-535171e28e50?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+        opacity: 0.6;
+    }
+
+    .solutions-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        max-width: 800px;
+        padding: 0 24px;
+    }
+
+    /* GRID ARCHITECTURE */
+    .services-catalog {
+        padding: 100px 0;
+        background: var(--obsidian);
+    }
+
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 40px;
+    }
+
+    @media (min-width: 768px) {
+        .services-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (min-width: 1100px) {
+        .services-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    /* PREMIUM CARD DESIGN */
+    .service-specimen {
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.6s var(--transition-premium);
+        background: var(--surface);
+        border: 1px solid var(--border-subtle);
+    }
+
+    .service-specimen:hover {
         transform: translateY(-8px);
+        border-color: var(--bronze);
     }
 
-    .cg-scard__img {
+    .service-media {
+        position: relative;
+        aspect-ratio: 16/10;
+        overflow: hidden;
+        background: #000;
+    }
+
+    .service-img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        filter: brightness(.4);
-        transition: transform 0.8s var(--ease);
+        filter: brightness(0.6);
+        transition: transform 1.2s var(--transition-premium);
     }
 
-    .cg-scard:hover .cg-scard__img {
-        transform: scale(1.05);
+    .service-specimen:hover .service-img {
+        transform: scale(1.08);
+        filter: brightness(0.9);
     }
 
-    .cg-scard__body {
-        position: absolute;
-        inset: 0;
-        padding: 3rem;
+    .service-body {
+        padding: 35px;
         display: flex;
         flex-direction: column;
-        justify-content: flex-end;
-        z-index: 2;
+        gap: 15px;
+        background: var(--obsidian);
     }
 
-    .cg-scard__cat {
-        font-family: var(--font-h);
-        font-size: .5rem;
-        font-weight: 700;
-        letter-spacing: .4em;
+    .service-category {
+        font-size: 0.6rem;
+        letter-spacing: 0.25em;
+        color: var(--bronze);
         text-transform: uppercase;
-        color: var(--clr-copper);
-        margin-bottom: 1rem;
-    }
-
-    .cg-scard__h3 {
-        font-family: var(--font-h);
-        font-size: 1.8rem;
         font-weight: 800;
-        line-height: 1.1;
-        color: #fff;
-        margin-bottom: 1.5rem;
     }
 
-    .cg-scard__desc {
-        font-size: .85rem;
-        color: var(--clr-muted);
-        line-height: 1.6;
-        margin-bottom: 2rem;
+    .service-h3 {
+        font-size: 1.6rem;
+        margin-bottom: 5px;
+        letter-spacing: -0.01em;
+        color: var(--text-pure);
+    }
+
+    .service-desc {
+        color: var(--text-elegant);
+        font-size: 0.85rem;
+        line-height: 1.8;
+        margin-bottom: 15px;
         display: -webkit-box;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
 
-    .cg-scard__footer {
+    .service-meta {
+        margin-top: auto;
+        padding-top: 25px;
+        border-top: 1px solid var(--border-subtle);
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        padding-top: 1.5rem;
     }
 
-    .cg-scard__price {
-        font-family: var(--font-h);
-        font-size: .9rem;
+    .service-price {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1rem;
         font-weight: 700;
-        color: #fff;
+        color: var(--text-pure);
     }
 
-    /* ── BOOKING MODAL ── */
-    .cg-booking-overlay {
+    /* BOOKING DRAWER */
+    .booking-overlay {
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.8);
-        backdrop-filter: blur(15px);
-        z-index: 3000;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(20px);
+        z-index: 5000;
         display: flex;
-        align-items: center;
         justify-content: flex-end;
         opacity: 0;
         pointer-events: none;
-        transition: opacity 0.5s;
+        transition: opacity 0.5s var(--transition-premium);
     }
 
-    .cg-booking-overlay.active {
+    .booking-overlay.active {
         opacity: 1;
         pointer-events: auto;
     }
 
-    .cg-booking-panel {
+    .booking-panel {
         width: 100%;
-        max-width: 500px;
+        max-width: 550px;
         height: 100%;
-        background: #0a0a0a;
-        border-left: 1px solid var(--clr-border);
-        padding: 5rem 3rem;
+        background: var(--obsidian);
+        border-left: 1px solid var(--border-elegant);
+        padding: 80px 50px;
         transform: translateX(100%);
-        transition: transform 0.6s cubic-bezier(0.2, 1, 0.3, 1);
+        transition: transform 0.7s var(--transition-premium);
         display: flex;
         flex-direction: column;
     }
 
-    .cg-booking-overlay.active .cg-booking-panel {
+    .booking-overlay.active .booking-panel {
         transform: translateX(0);
     }
 
-    .cg-booking__h2 {
-        font-family: var(--font-h);
-        font-size: 2rem;
-        font-weight: 800;
-        letter-spacing: -.03em;
-        line-height: 1.1;
-        margin-bottom: 3rem;
+    .booking-h2 {
+        font-size: 2.5rem;
+        margin-bottom: 40px;
+        line-height: 1;
     }
 
-    .cg-input-group {
-        margin-bottom: 2rem;
+    .ritual-input-group {
+        margin-bottom: 30px;
     }
 
-    .cg-input-label {
+    .ritual-label {
         display: block;
-        font-family: var(--font-h);
-        font-size: .55rem;
-        font-weight: 700;
-        letter-spacing: .2em;
+        font-size: 0.6rem;
+        letter-spacing: 0.2em;
         text-transform: uppercase;
-        color: var(--clr-copper);
-        margin-bottom: 10px;
+        color: var(--copper);
+        margin-bottom: 12px;
+        font-weight: 800;
     }
 
-    .cg-input {
+    .ritual-input {
         width: 100%;
         background: transparent;
         border: none;
-        border-bottom: 1px solid var(--clr-border);
+        border-bottom: 1px solid var(--border-subtle);
         color: #fff;
         padding: 12px 0;
-        font-size: .9rem;
+        font-size: 1rem;
         outline: none;
-        transition: border-color 0.3s;
+        transition: border-color 0.4s;
     }
 
-    .cg-input:focus {
-        border-bottom-color: var(--clr-copper);
+    .ritual-input:focus {
+        border-bottom-color: var(--bronze);
     }
 
-    select.cg-input option {
-        background: #111;
-        color: #fff;
-    }
-
-    .cg-book-btn {
+    .form-actions {
         margin-top: auto;
-        width: 100%;
-        background: #fff;
-        color: #000;
-        border: none;
-        padding: 1.2rem;
-        font-family: var(--font-h);
-        font-size: .7rem;
-        font-weight: 800;
-        letter-spacing: .2em;
-        text-transform: uppercase;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-    .cg-book-btn:hover {
-        background: var(--clr-copper);
-        color: #fff;
+        display: flex;
+        gap: 20px;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<section class="cg-solutions-hero" data-cg-appear>
-    <span class="cg-statement__sub">PROFESSIONAL CURATION</span>
-    <h1 class="cg-hero__h1" style="font-size: clamp(3rem, 8vw, 6rem);">ELITE SOLUTIONS</h1>
-    <p class="cg-about__p" style="max-width: 600px; margin: 2rem 0 0;">
-        From molecular ceramic encapsulation to precision interior rituals,
-        our solutions ensure your vehicle remains a timeless specimen.
-    </p>
-    {% if user.is_superuser %}
-    <a href="{% url 'carify_app:add_service' %}" class="cg-btn-ghost"
-        style="margin-top: 2rem; border-color: var(--clr-copper); color: var(--clr-copper);">PROPOSE NEW RITUAL</a>
-    {% endif %}
+<section class="solutions-hero" data-appear>
+    <div class="solutions-content">
+        <span class="hero-eyebrow" style="color: var(--bronze);">PRESERVATION PROTOCOLS</span>
+        <h1 style="font-size: clamp(3.5rem, 10vw, 7rem); margin: 20px 0;">ELITE SOLUTIONS</h1>
+        <p style="color: var(--text-muted); line-height: 2; font-size: 1.1rem; max-width: 600px; margin: 0 auto 40px;">
+            Beyond maintenance. Our rituals involve molecular precision and cinematic attention to detail, 
+            ensuring your legacy specimens remain timeless.
+        </p>
+        {% if user.is_superuser %}
+        <a href="{% url 'carify_app:add_service' %}" class="btn btn-outline" style="border-color: var(--bronze); color: var(--bronze);">INITIALIZE NEW PROTOCOL</a>
+        {% endif %}
+    </div>
 </section>
 
-<div class="cg-service-grid" data-cg-appear>
-    {% for service in services %}
-    <div class="cg-scard">
-        {% if service.image %}
-        <img class="cg-scard__img" src="{{ service.image.url }}" alt="{{ service.name }}">
-        {% else %}
-        <img class="cg-scard__img"
-            src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1000&q=80"
-            alt="{{ service.name }}">
-        {% endif %}
-        <div class="cg-scard__body">
-            <span class="cg-scard__cat">{{ service.category.name|default:"PRESERVATION" }}</span>
-            <h3 class="cg-scard__h3">{{ service.name }}</h3>
-            <p class="cg-scard__desc">{{ service.description }}</p>
-
-            {% if service.contact_info %}
-            <p
-                style="font-size: .6rem; color: var(--clr-copper); margin-top: -1rem; margin-bottom: 2rem; letter-spacing: .1em;">
-                <i class="fas fa-phone-alt" style="margin-right: 5px;"></i> {{ service.contact_info }}
-            </p>
-            {% endif %}
-
-            <div class="cg-scard__footer">
-                <span class="cg-scard__price">Starts at ${{ service.price }}</span>
-                <div style="display: flex; gap: 10px;">
-                    {% if service.video %}
-                    <button class="cg-btn-ghost"
-                        style="border-radius: 0; padding: .6rem 1.2rem; font-size: .55rem; background: rgba(255,255,255,0.1);"
-                        onclick="playCinematic('{{ service.video.url }}')"><i class="fas fa-play"
-                            style="margin-right: 5px;"></i> RITUAL FILM</button>
+<section class="services-catalog">
+    <div class="container">
+        <div class="services-grid" data-appear>
+            {% for service in services %}
+            <div class="service-specimen glass-panel">
+                <div class="service-media">
+                    {% if service.image %}
+                        <img class="service-img" src="{{ service.image.url }}" alt="{{ service.name }}">
+                    {% else %}
+                        <img class="service-img" src="{% static 'img/placeholder.png' %}" alt="{{ service.name }}">
                     {% endif %}
-                    <button class="cg-btn-ghost" style="border-radius: 0; padding: .6rem 1.2rem; font-size: .55rem;"
-                        onclick="window.CarifyBridge.addItemToCart('{{ service.id }}', 'service')">ADD TO
-                        PORTFOLIO</button>
-                    <button class="cg-btn-ghost" style="border-radius: 0; padding: .6rem 1.2rem; font-size: .55rem;"
-                        onclick="openBooking('{{ service.id }}', '{{ service.name }}')">BOOK CEREMONY</button>
-
                 </div>
+                <div class="service-body">
+                    <span class="service-category">{{ service.category.name|default:"RITUAL" }}</span>
+                    <h3 class="service-h3 font-heading">{{ service.name }}</h3>
+                    <p class="service-desc">{{ service.description }}</p>
+                    
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <button class="btn btn-outline" style="flex: 1; padding: 0.8rem; font-size: 0.6rem; border-color: var(--border-subtle);" onclick="window.CarifyBridge.addItemToCart('{{ service.id }}', 'service')">ADD TO PORTFOLIO</button>
+                        <button class="btn btn-primary" style="flex: 1; padding: 0.8rem; font-size: 0.6rem;" onclick="openBooking('{{ service.id }}', '{{ service.name }}')">BOOK CEREMONY</button>
+                    </div>
 
-
+                    <div class="service-meta">
+                        <span class="service-price copper-text">Starts at ${{ service.price }}</span>
+                        {% if service.video %}
+                        <button style="background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.65rem; letter-spacing: 0.1em; display: flex; align-items: center; gap: 8px;" onclick="playCinematic('{{ service.video.url }}')">
+                            <i class="fas fa-play" style="font-size: 0.8rem; color: var(--bronze);"></i> VIEW FILM
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
+            {% empty %}
+            <div style="grid-column: 1/-1; text-align: center; padding: 150px 0; opacity: 0.5;">
+                <p class="font-heading" style="letter-spacing: 0.3em;">NO ACTIVE PROTOCOLS</p>
+            </div>
+            {% endfor %}
         </div>
     </div>
-
-    {% empty %}
-    <div style="grid-column: 1/-1; text-align: center; padding: 100px 0; opacity: 0.5;">
-        <p class="font-heading">ACTIVE PROTOCOLS NOT FOUND</p>
-    </div>
-    {% endfor %}
-</div>
+</section>
 
 <!-- BOOKING OVERLAY -->
-<div class="cg-booking-overlay" id="bookingOverlay">
-    <div class="cg-booking-panel">
+<div class="booking-overlay" id="bookingOverlay">
+    <div class="booking-panel">
         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-            <h2 class="cg-booking__h2">REQUEST<br><span id="bookingServiceName"
-                    style="color:var(--clr-copper);">PROTOCOL</span></h2>
-            <button onclick="closeBooking()" style="background:none; border:none; color:#fff; cursor:pointer;"><i
-                    class="fas fa-times"></i></button>
+            <h2 class="booking-h2 font-heading">REQUEST<br><span id="bookingServiceName" style="color:var(--bronze);">PROTOCOL</span></h2>
+            <button onclick="closeBooking()" style="background:none; border:none; color:#fff; cursor:pointer; font-size: 1.5rem;"><i class="fas fa-times"></i></button>
         </div>
 
-        <form action="{% url 'carify_app:book_service' %}" method="POST"
-            style="flex:1; display:flex; flex-direction:column; margin-top:2rem;">
+        <form action="{% url 'carify_app:book_service' %}" method="POST" style="flex:1; display:flex; flex-direction:column; margin-top:30px;">
             {% csrf_token %}
             <input type="hidden" name="service_id" id="bookingServiceId">
 
-            <div class="cg-input-group">
-                <label class="cg-input-label">Select Date</label>
-                <input type="date" name="preferred_date" class="cg-input" required>
+            <div class="ritual-input-group">
+                <label class="ritual-label">Temporal Window (Date)</label>
+                <input type="date" name="preferred_date" class="ritual-input" required>
             </div>
 
-            <div class="cg-input-group">
-                <label class="cg-input-label">Select Time</label>
-                <input type="time" name="preferred_time" class="cg-input" required>
+            <div class="ritual-input-group">
+                <label class="ritual-label">Temporal Window (Time)</label>
+                <input type="time" name="preferred_time" class="ritual-input" required>
             </div>
 
-            <div class="cg-input-group">
-                <label class="cg-input-label">Vehicle Details</label>
-                <input type="text" name="vehicle_details" class="cg-input" placeholder="e.g. 2024 Ferrari SF90"
-                    required>
+            <div class="ritual-input-group">
+                <label class="ritual-label">Specimen Identification (Vehicle)</label>
+                <input type="text" name="vehicle_details" class="ritual-input" placeholder="e.g. 2024 Aston Martin Valhalla" required>
             </div>
 
-            <div class="cg-input-group">
-                <label class="cg-input-label">Ceremony Notes</label>
-                <textarea name="additional_notes" class="cg-input" rows="3"
-                    placeholder="Special requirements..."></textarea>
+            <div class="ritual-input-group">
+                <label class="ritual-label">Ceremony Addendum (Notes)</label>
+                <textarea name="additional_notes" class="ritual-input" rows="3" placeholder="Special requirements..."></textarea>
             </div>
 
-            <button type="submit" class="cg-book-btn">TRANSMIT REQUEST</button>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary w-100" style="height: 70px;">TRANSMIT REQUEST</button>
+            </div>
         </form>
     </div>
 </div>
 
-
-<!-- VIDEO OVERLAY -->
-<div class="cg-booking-overlay" id="videoOverlay" style="justify-content:center;">
-    <div class="cg-booking-panel" style="max-width:90%; height:auto; padding:2rem; background:rgba(0,0,0,0.9);">
-        <div style="display:flex; justify-content:flex-end; margin-bottom:1rem;">
-            <button onclick="closeVideo()" style="background:none; border:none; color:#fff; cursor:pointer;"><i
-                    class="fas fa-times"></i></button>
-        </div>
-        <video id="ritualVideo" controls style="width:100%; border:1px solid var(--clr-border);">
+<!-- CINEMATIC VIDEO OVERLAY -->
+<div class="booking-overlay" id="videoOverlay" style="justify-content:center; align-items: center; padding: 40px;">
+    <div class="glass-panel" style="width:100%; max-width:1200px; padding:20px; background:rgba(0,0,0,0.9); position: relative;">
+        <button onclick="closeVideo()" style="position: absolute; top: -40px; right: 0; background:none; border:none; color:#fff; cursor:pointer; font-size: 1.5rem;"><i class="fas fa-times"></i></button>
+        <video id="ritualVideo" controls style="width:100%; display: block; border-radius: 2px;">
             <source src="" type="video/mp4">
-            Your browser does not support the video tag.
+            Legacy player not supported.
         </video>
     </div>
 </div>
@@ -366,15 +359,11 @@
         document.body.style.overflow = '';
     }
 
-    // Close on escape
     window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             closeBooking();
             closeVideo();
         }
     });
-
-    // addToPortfolio removed in favor of window.CarifyBridge.addItemToCart
 </script>
-
 {% endblock %}

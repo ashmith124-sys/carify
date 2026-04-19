@@ -886,95 +886,209 @@
         color: rgba(255, 255, 255, .22);
     }
 
-    /* ── PRODUCTS ─────────────────────────────────────── */
-    /* Latest Arrivals - Premium Redesign */
-    .cg-products {
-        background: var(--clr-bg);
-        padding: 8rem 0 6rem;
-        border-top: 1px solid var(--clr-border);
+    /* ── LATEST ARRIVALS ──────────────────────────────── */
+    .cg-arrivals {
+        background: #000;
+        padding: 7rem 0;
+        border-top: 1px solid rgba(255,255,255,0.05);
     }
 
-    .cg-products__head {
+    .cg-arrivals__head {
         display: flex;
         justify-content: space-between;
         align-items: flex-end;
-        padding: 0 6vw 4rem;
-        gap: 1.5rem;
+        margin-bottom: 3.5rem;
     }
 
-    .cg-products__pretitle {
+    .cg-arrivals__pretitle {
         font-family: var(--font-h);
-        font-size: .52rem;
+        font-size: 0.5rem;
         font-weight: 700;
-        letter-spacing: .5em;
+        letter-spacing: 0.5em;
         text-transform: uppercase;
         color: var(--clr-copper);
-        margin-bottom: 1.2rem;
+        margin-bottom: 1rem;
         display: flex;
         align-items: center;
-        gap: 15px;
+        gap: 14px;
     }
 
-    .cg-products__pretitle::after {
+    .cg-arrivals__pretitle::before {
         content: '';
-        width: 40px;
+        width: 30px;
         height: 1px;
-        background: var(--clr-dimmed);
+        background: var(--clr-copper);
+        opacity: 0.5;
     }
 
-    .cg-products__title {
+    .cg-arrivals__title {
         font-family: var(--font-h);
-        font-size: clamp(2.2rem, 5vw, 4.5rem);
+        font-size: clamp(2rem, 5vw, 4rem);
         font-weight: 900;
-        letter-spacing: -.05em;
-        line-height: .9;
+        letter-spacing: -0.04em;
+        line-height: 0.9;
         color: #fff;
-        text-transform: uppercase;
     }
 
-    .cg-products__all {
+    .cg-arrivals__link {
         font-family: var(--font-h);
-        font-size: .65rem;
-        font-weight: 800;
-        letter-spacing: .25em;
+        font-size: 0.6rem;
+        font-weight: 700;
+        letter-spacing: 0.2em;
         text-transform: uppercase;
-        color: var(--clr-white);
+        color: var(--clr-copper);
         text-decoration: none;
-        padding: 12px 28px;
-        border: 1px solid var(--clr-border);
-        transition: all 0.4s var(--ease);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: gap 0.3s, color 0.3s;
         white-space: nowrap;
-        background: rgba(255,255,255,0.02);
     }
 
-    .cg-products__all:hover {
+    .cg-arrivals__link:hover {
+        gap: 16px;
+        color: #fff;
+    }
+
+    /* Editorial Layout: 1 big + strip of smalls */
+    .cg-arrivals__grid {
+        display: grid;
+        grid-template-columns: 1.6fr 1fr;
+        gap: 3px;
+    }
+
+    @media(max-width:900px) {
+        .cg-arrivals__grid { grid-template-columns: 1fr; }
+    }
+
+    .cg-arrivals__strip {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    /* ARRIVAL CARD */
+    .la-card {
+        position: relative;
+        overflow: hidden;
+        background: #090808;
+        cursor: pointer;
+        display: block;
+        text-decoration: none;
+    }
+
+    .la-card--hero { aspect-ratio: 4/5; }
+    .la-card--mini { flex: 1; min-height: 200px; }
+
+    .la-card__img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.5) saturate(0.7);
+        transition: transform 1.4s cubic-bezier(0.16,1,0.3,1), filter 0.8s;
+        position: absolute;
+        inset: 0;
+    }
+
+    .la-card:hover .la-card__img {
+        transform: scale(1.07);
+        filter: brightness(0.7) saturate(1);
+    }
+
+    .la-card::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top,
+            rgba(0,0,0,0.92) 0%,
+            rgba(0,0,0,0.2) 55%,
+            transparent 100%);
+    }
+
+    .la-card__body {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 36px;
+        z-index: 2;
+    }
+
+    .la-card--mini .la-card__body { padding: 24px 28px; }
+
+    .la-card__eyebrow {
+        font-size: 0.48rem;
+        letter-spacing: 0.35em;
+        text-transform: uppercase;
+        color: var(--clr-copper);
+        display: block;
+        margin-bottom: 10px;
+        opacity: 0;
+        transform: translateY(8px);
+        transition: all 0.4s 0.1s;
+    }
+
+    .la-card:hover .la-card__eyebrow {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .la-card__name {
+        font-family: var(--font-h);
+        font-size: 1.4rem;
+        font-weight: 900;
+        letter-spacing: -0.02em;
+        color: #fff;
+        line-height: 1.1;
+        margin-bottom: 18px;
+    }
+
+    .la-card--mini .la-card__name { font-size: 1rem; margin-bottom: 12px; }
+
+    .la-card__row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        padding-top: 16px;
+    }
+
+    .la-card__price {
+        font-family: var(--font-h);
+        font-weight: 800;
+        font-size: 1.1rem;
+        color: #fff;
+        letter-spacing: -0.02em;
+    }
+
+    .la-card--mini .la-card__price { font-size: 0.9rem; }
+
+    .la-card__acquire {
+        background: none;
+        border: 1px solid rgba(255,255,255,0.25);
+        color: #fff;
+        padding: 8px 16px;
+        font-size: 0.5rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        font-family: var(--font-h);
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s;
+        opacity: 0;
+        transform: translateY(5px);
+        transition: all 0.4s;
+    }
+
+    .la-card:hover .la-card__acquire {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .la-card__acquire:hover {
         background: #fff;
         color: #000;
         border-color: #fff;
-        transform: translateY(-2px);
-    }
-
-    .cg-prow {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 16px;
-        padding: 0 6vw;
-    }
-
-    @media(max-width:1400px) {
-        .cg-prow { grid-template-columns: repeat(4, 1fr); }
-    }
-
-    @media(max-width:1100px) {
-        .cg-prow { grid-template-columns: repeat(3, 1fr); }
-    }
-
-    @media(max-width:768px) {
-        .cg-prow { grid-template-columns: repeat(2, 1fr); }
-    }
-
-    @media(max-width:480px) {
-        .cg-prow { grid-template-columns: 1fr; }
     }
 
     .cg-pcard {
@@ -1384,47 +1498,70 @@
 </section>
 
 <!-- ══════════════════════════════════════════════
-     PRODUCTS — LATEST ARRIVALS
+     LATEST ARRIVALS — CINEMATIC EDITORIAL
 ══════════════════════════════════════════════ -->
-<section class="cg-products" data-cg-appear>
-    <div class="cg-products__head">
-        <div>
-            <span class="cg-products__pretitle">CURATED</span>
-            <h2 class="cg-products__title">LATEST ARRIVALS</h2>
+<section class="cg-arrivals" data-cg-appear>
+    <div style="padding: 0 6vw;">
+        <div class="cg-arrivals__head">
+            <div>
+                <p class="cg-arrivals__pretitle">CURATED SPECIMENS</p>
+                <h2 class="cg-arrivals__title">LATEST<br>ARRIVALS</h2>
+            </div>
+            <a href="{% url 'carify_app:product_list' %}" class="cg-arrivals__link">
+                View All Archive <i class="fas fa-arrow-right"></i>
+            </a>
         </div>
-        <a href="{% url 'carify_app:product_list' %}" class="cg-products__all">
-            VIEW ALL <i class="fas fa-arrow-right" style="font-size:.45rem;margin-left:4px;"></i>
-        </a>
-    </div>
 
-    <div class="cg-prow">
-        {% for product in products|slice:":5" %}
-        <div class="cg-pcard glass-panel">
-            <a href="{% url 'carify_app:product_detail' product.id %}" class="cg-pcard__img-w">
-                <span class="cg-pcard__badge">Handpicked</span>
-                
+        <div class="cg-arrivals__grid">
+            <!-- HERO CARD: First Product -->
+            {% with products|slice:":1" as hero_list %}
+            {% for product in hero_list %}
+            <div class="la-card la-card--hero">
                 {% if product.first_media_image_url %}
-                <img src="{{ product.first_media_image_url }}" alt="{{ product.name }}" class="cg-pcard__img" loading="lazy">
+                <img src="{{ product.first_media_image_url }}" alt="{{ product.name }}" class="la-card__img">
                 {% else %}
-                <img src="{% static 'img/placeholder.png' %}" class="cg-pcard__img" loading="lazy">
+                <img src="{% static 'img/placeholder.png' %}" alt="{{ product.name }}" class="la-card__img">
                 {% endif %}
-
-                <div class="cg-pcard__overlay">
-                    <span class="cg-pcard__cat">{{ product.category.name|default:"Elite Collection" }}</span>
-                    <h3 class="cg-pcard__name font-heading">{{ product.name|upper }}</h3>
-                    
-                    <div class="cg-pcard__footer">
-                        <span class="cg-pcard__price">${{ product.price }}</span>
-                        <div class="cg-pcard__action" onclick="event.preventDefault(); window.CarifyBridge.addItemToCart({{ product.id }}, 'product')">
-                            <i class="fas fa-plus" style="font-size: 0.8rem;"></i>
+                <div class="la-card__body">
+                    <span class="la-card__eyebrow">{{ product.category.name|default:"Elite Collection" }}</span>
+                    <h3 class="la-card__name">{{ product.name|upper }}</h3>
+                    <div class="la-card__row">
+                        <span class="la-card__price">${{ product.price }}</span>
+                        <div style="display:flex;gap:8px;">
+                            <button class="la-card__acquire" onclick="event.stopPropagation(); window.CarifyBridge.addItemToCart({{ product.id }}, 'product')">ACQUIRE</button>
+                            <a href="{% url 'carify_app:product_detail' product.id %}" class="la-card__acquire" style="opacity:1;transform:none;">VIEW</a>
                         </div>
                     </div>
                 </div>
-            </a>
+            </div>
+            {% endfor %}
+            {% endwith %}
+
+            <!-- STRIP: Remaining Products -->
+            <div class="cg-arrivals__strip">
+                {% for product in products|slice:"1:4" %}
+                <div class="la-card la-card--mini">
+                    {% if product.first_media_image_url %}
+                    <img src="{{ product.first_media_image_url }}" alt="{{ product.name }}" class="la-card__img">
+                    {% else %}
+                    <img src="{% static 'img/placeholder.png' %}" alt="{{ product.name }}" class="la-card__img">
+                    {% endif %}
+                    <div class="la-card__body">
+                        <span class="la-card__eyebrow">{{ product.category.name|default:"Elite" }}</span>
+                        <h4 class="la-card__name">{{ product.name|upper }}</h4>
+                        <div class="la-card__row">
+                            <span class="la-card__price">${{ product.price }}</span>
+                            <button class="la-card__acquire" onclick="event.stopPropagation(); window.CarifyBridge.addItemToCart({{ product.id }}, 'product')">ACQUIRE</button>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div style="display:flex;align-items:center;justify-content:center;flex:1;border:1px dashed rgba(255,255,255,0.05);">
+                    <p style="color:rgba(255,255,255,0.2);font-size:0.65rem;letter-spacing:0.2em;">NO ARRIVALS YET</p>
+                </div>
+                {% endfor %}
+            </div>
         </div>
-        {% empty %}
-        <div class="cg-products__empty">No specimens detected in the latest arrivals pool.</div>
-        {% endfor %}
     </div>
 </section>
 

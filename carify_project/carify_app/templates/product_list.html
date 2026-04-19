@@ -1,249 +1,524 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Acquisition Archive | CARIFY Collection{% endblock %}
+{% block title %}The Collection | CARIFY Acquisition Archive{% endblock %}
 
 {% block extra_css %}
 <style>
+    /* ═══════════════════════════════════════════════
+       CARIFY – ACQUISITION ARCHIVE
+       Obsidian Elite Design System
+    ═══════════════════════════════════════════════ */
+
     html { scroll-behavior: smooth; }
 
-    .collection-hero {
+    /* ── CINEMATIC HERO ────────────────────────── */
+    .archive-hero {
         position: relative;
-        padding: 160px 0 100px;
-        background: var(--obsidian);
-        border-bottom: 1px solid var(--border-subtle);
-    }
-
-    .collection-hero::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(circle at top right, rgba(217, 145, 90, 0.05), transparent 60%);
-    }
-
-    /* GRID ARCHITECTURE */
-    .collection-layout {
-        display: grid;
-        grid-template_columns: 1fr;
-        gap: 60px;
-        padding: 80px 0;
-    }
-
-    @media (min-width: 1024px) {
-        .collection-layout {
-            grid-template-columns: 300px 1fr;
-        }
-    }
-
-    .specimen-grid {
-        display: grid;
-        grid-template-columns: repeat(1, 1fr);
-        gap: 30px;
-    }
-
-    @media (min-width: 768px) {
-        .specimen-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-
-    @media (min-width: 1400px) {
-        .specimen-grid { grid-template-columns: repeat(3, 1fr); }
-    }
-
-    /* ELITE CARD ARCHITECTURE */
-    .specimen-card {
-        background: var(--surface);
-        border: 1px solid var(--border-elegant);
-        position: relative;
-        overflow: hidden;
-        transition: all 0.6s var(--transition-premium);
+        height: 55vh;
+        min-height: 420px;
         display: flex;
-        flex-direction: column;
-    }
-
-    .specimen-card:hover {
-        transform: translateY(-10px);
-        border-color: var(--bronze);
-        box-shadow: 0 40px 80px rgba(0,0,0,0.6);
-    }
-
-    .specimen-media {
-        position: relative;
-        aspect-ratio: 4/5;
+        align-items: flex-end;
         overflow: hidden;
         background: #000;
     }
 
-    .specimen-img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        filter: brightness(0.7) saturate(0.8);
-        transition: transform 1.2s var(--transition-premium), filter 0.8s;
-    }
-
-    .specimen-card:hover .specimen-img {
-        transform: scale(1.08);
-        filter: brightness(0.9) saturate(1);
-    }
-
-    .specimen-badge {
+    .archive-hero::before {
+        content: '';
         position: absolute;
-        top: 20px;
-        left: 20px;
-        background: var(--glass-heavy);
-        backdrop-filter: blur(10px);
-        padding: 6px 12px;
-        font-size: 0.5rem;
-        letter-spacing: 0.25em;
+        inset: 0;
+        background:
+            linear-gradient(to top, rgba(0,0,0,0.98) 0%, rgba(0,0,0,0.3) 60%, transparent 100%),
+            url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1800&q=90') center/cover no-repeat;
+        transition: transform 8s ease;
+    }
+
+    .archive-hero:hover::before { transform: scale(1.03); }
+
+    .archive-hero__body {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        padding: 0 0 70px;
+    }
+
+    .archive-hero__eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 16px;
+        font-size: 0.55rem;
+        letter-spacing: 0.4em;
         text-transform: uppercase;
         color: var(--bronze);
-        border: 1px solid var(--border-subtle);
-        z-index: 10;
+        margin-bottom: 20px;
     }
 
-    .specimen-body {
-        padding: 30px;
-        flex: 1;
+    .archive-hero__eyebrow::before {
+        content: '';
+        width: 40px;
+        height: 1px;
+        background: var(--bronze);
+    }
+
+    .archive-hero__h1 {
+        font-size: clamp(3.5rem, 9vw, 8rem);
+        line-height: 0.9;
+        letter-spacing: -0.04em;
+        color: #fff;
+        margin-bottom: 25px;
+    }
+
+    .archive-hero__h1 .ghost {
+        -webkit-text-stroke: 1px rgba(255,255,255,0.2);
+        color: transparent;
+    }
+
+    /* ── STICKY CONTROLS BAR ───────────────────── */
+    .archive-controls {
+        position: sticky;
+        top: 65px;
+        z-index: 900;
+        background: rgba(8,7,7,0.92);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border-subtle);
+        padding: 16px 0;
+    }
+
+    .archive-controls__inner {
         display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        background: linear-gradient(to top, var(--obsidian) 0%, transparent 100%);
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        flex-wrap: wrap;
     }
 
-    .specimen-cat {
+    .archive-count {
+        font-size: 0.6rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+    }
+
+    .archive-count strong {
+        color: var(--bronze);
+        font-weight: 700;
+    }
+
+    .archive-controls__right {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .archive-sort {
+        background: transparent;
+        border: none;
+        color: rgba(255,255,255,0.7);
+        font-size: 0.65rem;
+        letter-spacing: 0.12em;
+        font-family: var(--font-heading);
+        text-transform: uppercase;
+        cursor: pointer;
+        outline: none;
+    }
+
+    .archive-sort option { background: #0d0d0d; color: #fff; }
+
+    /* ── LAYOUT ───────────────────────────────── */
+    .archive-layout {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0;
+        padding: 60px 0 120px;
+        background: var(--obsidian);
+    }
+
+    @media (min-width: 1100px) {
+        .archive-layout {
+            grid-template-columns: 280px 1fr;
+        }
+    }
+
+    /* ── SIDEBAR ──────────────────────────────── */
+    .archive-sidebar {
+        border-right: 1px solid var(--border-subtle);
+        padding: 40px 40px 40px 0;
+    }
+
+    .sidebar-inner {
+        position: sticky;
+        top: 140px;
+    }
+
+    .sidebar-section { margin-bottom: 50px; }
+
+    .sidebar-label {
+        display: block;
         font-size: 0.55rem;
         letter-spacing: 0.3em;
-        color: var(--copper);
         text-transform: uppercase;
-        margin-bottom: 10px;
-    }
-
-    .specimen-name {
-        font-size: 1.2rem;
+        color: var(--copper);
+        font-weight: 800;
         margin-bottom: 20px;
-        letter-spacing: -0.02em;
-        color: #fff;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border-subtle);
     }
 
-    .specimen-footer {
+    .sidebar-cat {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding-top: 20px;
-        border-top: 1px solid var(--border-subtle);
-    }
-
-    .specimen-price {
-        font-family: 'Outfit', sans-serif;
-        font-weight: 700;
-        color: #fff;
-    }
-
-    .specimen-cta {
-        padding: 8px 16px;
-        border: 1px solid var(--border-elegant);
-        color: #fff;
-        font-size: 0.6rem;
-        letter-spacing: 0.15em;
-        text-transform: uppercase;
+        padding: 13px 0;
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 0.8rem;
+        border-bottom: 1px solid rgba(255,255,255,0.03);
+        transition: all 0.3s;
         cursor: pointer;
-        transition: all 0.4s;
     }
 
-    .specimen-card:hover .specimen-cta {
+    .sidebar-cat:hover, .sidebar-cat.active {
+        color: #fff;
+        padding-left: 8px;
+    }
+
+    .sidebar-cat.active {
+        color: var(--bronze);
+    }
+
+    .sidebar-cat__count {
+        font-size: 0.55rem;
+        opacity: 0.4;
+        letter-spacing: 0.1em;
+    }
+
+    .price-inputs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .price-input {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--border-subtle);
+        color: #fff;
+        padding: 12px;
+        font-size: 0.75rem;
+        outline: none;
+        transition: border-color 0.3s;
+        width: 100%;
+    }
+
+    .price-input:focus { border-color: var(--bronze); }
+    .price-input::placeholder { color: rgba(255,255,255,0.2); font-size: 0.65rem; }
+
+    /* ── PRODUCT GRID ─────────────────────────── */
+    .archive-content {
+        padding: 0 0 0 60px;
+    }
+
+    @media (max-width: 1100px) {
+        .archive-content { padding: 40px 0 0; }
+    }
+
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2px;
+        transition: opacity 0.4s;
+    }
+
+    @media (min-width: 1024px) {
+        .product-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 600px) {
+        .product-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── SPECIMEN CARD ────────────────────────── */
+    .specimen {
+        position: relative;
+        background: #0a0908;
+        overflow: hidden;
+        cursor: pointer;
+        aspect-ratio: 3/4;
+        display: block;
+    }
+
+    .specimen::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top,
+            rgba(0,0,0,0.95) 0%,
+            rgba(0,0,0,0.3) 45%,
+            transparent 100%);
+        z-index: 1;
+        transition: opacity 0.5s;
+    }
+
+    .specimen:hover::after {
+        background: linear-gradient(to top,
+            rgba(0,0,0,0.98) 0%,
+            rgba(0,0,0,0.5) 50%,
+            rgba(0,0,0,0.1) 100%);
+    }
+
+    .specimen__img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.8s;
+        filter: brightness(0.65) saturate(0.7);
+    }
+
+    .specimen:hover .specimen__img {
+        transform: scale(1.1);
+        filter: brightness(0.85) saturate(1.1);
+    }
+
+    .specimen__badge {
+        position: absolute;
+        top: 24px;
+        left: 24px;
+        z-index: 10;
+        background: rgba(0,0,0,0.6);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255,255,255,0.1);
+        padding: 6px 14px;
+        font-size: 0.45rem;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: var(--bronze);
+    }
+
+    .specimen__body {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 2;
+        padding: 36px;
+        transform: translateY(0);
+        transition: transform 0.5s var(--transition-premium);
+    }
+
+    .specimen__cat {
+        font-size: 0.5rem;
+        letter-spacing: 0.35em;
+        text-transform: uppercase;
+        color: var(--copper);
+        display: block;
+        margin-bottom: 10px;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.4s 0.1s;
+    }
+
+    .specimen:hover .specimen__cat {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .specimen__name {
+        font-family: var(--font-heading);
+        font-size: 1.1rem;
+        font-weight: 800;
+        letter-spacing: -0.01em;
+        color: #fff;
+        line-height: 1.15;
+        margin-bottom: 20px;
+        transition: color 0.3s;
+    }
+
+    .specimen:hover .specimen__name { color: rgba(255,255,255,0.9); }
+
+    .specimen__footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 18px;
+        border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .specimen__price {
+        font-family: var(--font-heading);
+        font-size: 1rem;
+        font-weight: 800;
+        color: #fff;
+        letter-spacing: -0.02em;
+    }
+
+    .specimen__actions {
+        display: flex;
+        gap: 8px;
+        opacity: 0;
+        transform: translateX(10px);
+        transition: all 0.4s 0.05s;
+    }
+
+    .specimen:hover .specimen__actions {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .specimen__btn {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(255,255,255,0.2);
+        color: #fff;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        background: transparent;
+        text-decoration: none;
+    }
+
+    .specimen__btn:hover {
         background: #fff;
         color: #000;
         border-color: #fff;
     }
 
-    /* CUSTOM FILTER STYLING */
-    .filter-panel {
-        position: sticky;
-        top: 120px;
-        padding: 40px;
-        border-right: 1px solid var(--border-subtle);
+    .specimen__btn--primary {
+        background: var(--bronze);
+        border-color: var(--bronze);
+        color: #fff;
+        font-size: 0.5rem;
+        letter-spacing: 0.15em;
+        width: auto;
+        padding: 0 16px;
+        text-transform: uppercase;
+        font-family: var(--font-heading);
     }
 
-    .filter-heading {
-        font-size: 0.7rem;
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
-        color: var(--text-muted);
+    .specimen__btn--primary:hover {
+        background: #fff;
+        border-color: #fff;
+        color: #000;
+    }
+
+    /* ── EMPTY STATE ──────────────────────────── */
+    .archive-empty {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 160px 0;
+        border: 1px dashed var(--border-subtle);
+        opacity: 0.4;
+    }
+
+    .archive-empty i {
+        font-size: 3rem;
+        color: var(--bronze);
         margin-bottom: 25px;
         display: block;
     }
 
-    .filter-link {
-        display: block;
-        padding: 12px 0;
-        color: var(--text-muted);
-        text-decoration: none;
-        font-size: 0.8rem;
-        transition: 0.3s;
-        border-bottom: 1px solid transparent;
+    /* ── STAGGER ANIMATION ────────────────────── */
+    .specimen {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.7s, transform 0.7s, box-shadow 0.5s;
     }
 
-    .filter-link:hover, .filter-link.active {
-        color: var(--bronze);
-        padding-left: 10px;
+    .specimen.in {
+        opacity: 1;
+        transform: translateY(0);
     }
 
-    .filter-link.active {
-        border-bottom-color: var(--bronze);
+    .specimen:hover {
+        box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+        z-index: 10;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<section class="collection-hero" data-appear>
-    <div class="container" style="text-align: center;">
-        <span class="hero-eyebrow">Inventory Registry</span>
-        <h1 style="font-size: clamp(3rem, 8vw, 6rem); margin-top: 20px;">ARCHIVE COLLECTION</h1>
-        <p style="color: var(--text-muted); max-width: 600px; margin: 20px auto 0;">
-            A curated archive of high-performance specimens, vetted for the most discerning automotive enthusiasts.
-        </p>
+
+<!-- ── CINEMATIC HERO ──────────────────────────── -->
+<section class="archive-hero">
+    <div class="archive-hero__body">
+        <div class="container">
+            <p class="archive-hero__eyebrow">Acquisition Archive</p>
+            <h1 class="archive-hero__h1 font-heading">
+                THE<br><span class="ghost">COLLECTION</span>
+            </h1>
+            <p style="color: rgba(255,255,255,0.5); font-size: 0.85rem; max-width: 480px; line-height: 1.8;">
+                Curated specimens each bearing a certificate of excellence, sourced from elite manufacturers and private collections.
+            </p>
+        </div>
     </div>
 </section>
 
-<div class="container collection-layout">
-    <aside class="filter-sidebar d-none d-lg-block">
-        <div class="filter-panel glass-panel">
-            <span class="filter-heading">CATEGORIES</span>
-            <a href="#" class="filter-link active" data-category="all">All Specimens</a>
-            {% for category in categories %}
-            <a href="#" class="filter-link" data-category="{{ category.id }}">{{ category.name }}</a>
-            {% endfor %}
-
-            <div style="margin-top: 50px;">
-                <span class="filter-heading">VALUATION (PRICE)</span>
-                <div style="display: flex; gap: 10px; margin-top: 15px;">
-                    <input type="number" id="minPrice" placeholder="Min" class="ritual-input" style="font-size: 0.7rem; padding: 10px;">
-                    <input type="number" id="maxPrice" placeholder="Max" class="ritual-input" style="font-size: 0.7rem; padding: 10px;">
-                </div>
-                <button id="applyPrice" class="btn btn-outline w-100" style="margin-top: 20px; font-size: 0.6rem;">RESTRICT ARCHIVE</button>
-                <button id="resetFilters" class="btn btn-ghost w-100" style="margin-top: 10px; font-size: 0.5rem; opacity: 0.5;">PURGE FILTERS</button>
-            </div>
+<!-- ── STICKY CONTROLS ────────────────────────── -->
+<div class="archive-controls">
+    <div class="container archive-controls__inner">
+        <div class="archive-count">
+            <span id="resultsCount">Scanning archive…</span>
         </div>
-    </aside>
-
-    <main class="collection-content">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid var(--border-subtle);">
-            <div id="resultsCount" class="category-tag">ARCHIVING SEARCH...</div>
-            <select id="sortSelect" class="ritual-input" style="width: auto; border: none; font-size: 0.7rem; letter-spacing: 0.1em;">
-                <option value="-created_at">LATEST ACQUISITIONS</option>
-                <option value="price">VALUATION: LOW TO HIGH</option>
-                <option value="-price">VALUATION: HIGH TO LOW</option>
-                <option value="-reviews__rating">ELITE RATING</option>
+        <div class="archive-controls__right">
+            <button id="mobileFilterTrigger" class="btn btn-outline d-lg-none" style="padding: 8px 20px; font-size: 0.55rem;">FILTER</button>
+            <select id="sortSelect" class="archive-sort">
+                <option value="-created_at">LATEST DROP</option>
+                <option value="price">PRICE: LOW–HIGH</option>
+                <option value="-price">PRICE: HIGH–LOW</option>
+                <option value="-reviews__rating">HIGHEST RATED</option>
             </select>
         </div>
+    </div>
+</div>
 
-        <div id="productGrid" class="specimen-grid">
-            <!-- ARCHIVE ENTRIES INJECTED VIA AJAX -->
-             <div style="grid-column: 1/-1; text-align: center; padding: 100px 0;">
-                <i class="fas fa-circle-notch fa-spin" style="color: var(--bronze); font-size: 2rem;"></i>
-             </div>
-        </div>
-    </main>
+<!-- ── MAIN LAYOUT ───────────────────────────── -->
+<div class="archive-layout">
+    <div class="container" style="display: contents;">
+
+        <!-- SIDEBAR (DESKTOP) -->
+        <aside class="archive-sidebar d-none d-lg-block">
+            <div class="sidebar-inner">
+                <div class="sidebar-section">
+                    <span class="sidebar-label">Specimen Registry</span>
+                    <a class="sidebar-cat active" data-category="all">
+                        All Specimens
+                        <span class="sidebar-cat__count" id="totalCount">—</span>
+                    </a>
+                    {% for category in categories %}
+                    <a class="sidebar-cat" data-category="{{ category.id }}">
+                        {{ category.name }}
+                    </a>
+                    {% endfor %}
+                </div>
+
+                <div class="sidebar-section">
+                    <span class="sidebar-label">Valuation Range</span>
+                    <div class="price-inputs">
+                        <input type="number" id="minPrice" placeholder="Min $" class="price-input">
+                        <input type="number" id="maxPrice" placeholder="Max $" class="price-input">
+                    </div>
+                    <button id="applyPrice" class="btn btn-outline" style="width: 100%; font-size: 0.6rem; margin-bottom: 10px;">APPLY RANGE</button>
+                    <button id="resetFilters" style="width: 100%; background: none; border: none; color: var(--text-muted); font-size: 0.55rem; letter-spacing: 0.1em; cursor: pointer; text-transform: uppercase; text-align: left; padding: 5px 0;">Reset All Filters</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="archive-content">
+            <div id="productGrid" class="product-grid">
+                <div style="grid-column:1/-1; display:flex; justify-content:center; padding: 160px 0;">
+                    <div style="text-align: center;">
+                        <i class="fas fa-circle-notch fa-spin" style="font-size: 2.5rem; color: var(--bronze);"></i>
+                        <p style="margin-top: 20px; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted);">Scanning Archive…</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+    </div>
 </div>
 
 {% endblock %}
@@ -253,22 +528,22 @@
 document.addEventListener('DOMContentLoaded', function() {
     const productGrid = document.getElementById('productGrid');
     const resultsCount = document.getElementById('resultsCount');
+    const totalCount = document.getElementById('totalCount');
     const sortSelect = document.getElementById('sortSelect');
-    
-    // Parse URL for search
+
     const urlParams = new URLSearchParams(window.location.search);
-    const initialSearch = urlParams.get('search');
-    
+
     let currentFilters = {
         category: null,
         min_price: null,
         max_price: null,
         ordering: '-created_at',
-        search: initialSearch
+        search: urlParams.get('search')
     };
 
     function fetchProducts() {
-        productGrid.style.opacity = '0.4';
+        productGrid.style.opacity = '0.3';
+        productGrid.style.pointerEvents = 'none';
 
         let url = new URL('/api/products/', window.location.origin);
         if (currentFilters.category) url.searchParams.append('category', currentFilters.category);
@@ -278,91 +553,94 @@ document.addEventListener('DOMContentLoaded', function() {
         url.searchParams.append('ordering', currentFilters.ordering);
 
         fetch(url)
-            .then(response => response.json())
+            .then(r => r.json())
             .then(data => {
                 const products = data.results || data;
-                resultsCount.innerText = `${products.length} SPECIMENS DISCOVERED`;
                 productGrid.style.opacity = '1';
-                
+                productGrid.style.pointerEvents = 'auto';
+
+                resultsCount.innerHTML = `<strong>${products.length}</strong> specimens discovered`;
+                if (totalCount) totalCount.textContent = products.length;
+
                 if (products.length === 0) {
                     productGrid.innerHTML = `
-                        <div style="grid-column: 1 / -1; text-align: center; padding: 100px 0; border: 1px dashed var(--border-subtle); opacity: 0.5;">
-                            <p class="font-heading" style="letter-spacing: 0.2em;">NO MATCHING SPECIMENS DETECTED</p>
-                        </div>
-                    `;
+                        <div class="archive-empty">
+                            <i class="fas fa-car"></i>
+                            <p class="font-heading" style="letter-spacing: 0.2em; font-size: 0.8rem;">NO MATCHING SPECIMENS</p>
+                            <p style="color: var(--text-muted); font-size: 0.75rem; margin-top: 10px;">Adjust your filters to widen the archive search.</p>
+                        </div>`;
                     return;
                 }
 
-                productGrid.innerHTML = products.map((product, idx) => {
-                    const fallbackImg = 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=800';
-                    const itemImg = product.first_image || product.image || fallbackImg;
-                    
+                productGrid.innerHTML = products.map((p, i) => {
+                    const fallback = '{% static "img/placeholder.png" %}';
+                    const img = p.first_image || p.image || fallback;
                     return `
-                    <div class="specimen-card" data-appear style="transition-delay: ${idx * 50}ms;">
-                        <a href="/product/${product.id}/" class="specimen-media">
-                            <span class="specimen-badge">Handpicked</span>
-                            <img src="${itemImg}" alt="${product.name}" class="specimen-img" onerror="this.src='${fallbackImg}';">
-                        </a>
-                        <div class="specimen-body">
-                            <span class="specimen-cat">${product.category_name || 'Elite Archive'}</span>
-                            <h3 class="font-heading specimen-name">${product.name.toUpperCase()}</h3>
-                            
-                            <div class="specimen-footer">
-                                <span class="specimen-price">$${parseFloat(product.price).toLocaleString()}</span>
-                                <div class="specimen-cta" onclick="window.CarifyBridge.addItemToCart(${product.id}, 'product')">
-                                    ACQUIRE
+                    <div class="specimen" style="transition-delay:${i * 45}ms;">
+                        <a href="/product/${p.id}/" style="position:absolute;inset:0;z-index:5;" aria-label="${p.name}"></a>
+                        <img src="${img}" alt="${p.name}" class="specimen__img" loading="lazy" onerror="this.src='${fallback}'">
+                        <span class="specimen__badge">Handpicked</span>
+                        <div class="specimen__body">
+                            <span class="specimen__cat">${p.category_name || 'Elite Archive'}</span>
+                            <h3 class="specimen__name">${p.name.toUpperCase()}</h3>
+                            <div class="specimen__footer">
+                                <span class="specimen__price">$${parseFloat(p.price).toLocaleString()}</span>
+                                <div class="specimen__actions">
+                                    <button class="specimen__btn" onclick="event.stopPropagation(); window.CarifyBridge.addItemToCart(${p.id}, 'product')" title="Add to Portfolio">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                    <a href="/product/${p.id}/" class="specimen__btn--primary specimen__btn" onclick="event.stopPropagation()">
+                                        VIEW
+                                    </a>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    `
+                    </div>`;
                 }).join('');
 
-                // Trigger animations
-                if (window.CarifyAnimations) window.CarifyAnimations.reinit();
+                // Stagger reveal
+                requestAnimationFrame(() => {
+                    document.querySelectorAll('.specimen:not(.in)').forEach((el, i) => {
+                        setTimeout(() => el.classList.add('in'), i * 45);
+                    });
+                });
             });
     }
 
-    // Filtering System
-    document.addEventListener('click', (e) => {
-        if(e.target.classList.contains('filter-link')) {
-            e.preventDefault();
-            const category = e.target.dataset.category;
-            currentFilters.category = category === 'all' ? null : category;
-            
-            document.querySelectorAll('.filter-link').forEach(l => l.classList.remove('active'));
-            e.target.classList.add('active');
-            
-            fetchProducts();
-        }
+    // Category filter
+    document.addEventListener('click', e => {
+        const cat = e.target.closest('.sidebar-cat');
+        if (!cat) return;
+        e.preventDefault();
+        currentFilters.category = cat.dataset.category === 'all' ? null : cat.dataset.category;
+        document.querySelectorAll('.sidebar-cat').forEach(c => c.classList.remove('active'));
+        cat.classList.add('active');
+        fetchProducts();
     });
 
-    sortSelect.addEventListener('change', (e) => {
+    // Sort
+    sortSelect.addEventListener('change', e => {
         currentFilters.ordering = e.target.value;
         fetchProducts();
     });
 
-    const applyPriceBtn = document.getElementById('applyPrice');
-    if(applyPriceBtn) {
-        applyPriceBtn.addEventListener('click', () => {
-            currentFilters.min_price = document.getElementById('minPrice').value || null;
-            currentFilters.max_price = document.getElementById('maxPrice').value || null;
-            fetchProducts();
-        });
-    }
+    // Price
+    document.getElementById('applyPrice')?.addEventListener('click', () => {
+        currentFilters.min_price = document.getElementById('minPrice').value || null;
+        currentFilters.max_price = document.getElementById('maxPrice').value || null;
+        fetchProducts();
+    });
 
-    const resetFiltersBtn = document.getElementById('resetFilters');
-    if(resetFiltersBtn) {
-        resetFiltersBtn.addEventListener('click', () => {
-            currentFilters = { category: null, min_price: null, max_price: null, ordering: '-created_at', search: initialSearch };
-            document.getElementById('minPrice').value = '';
-            document.getElementById('maxPrice').value = '';
-            sortSelect.value = '-created_at';
-            document.querySelectorAll('.filter-link').forEach(l => l.classList.remove('active'));
-            document.querySelector('[data-category="all"]').classList.add('active');
-            fetchProducts();
-        });
-    }
+    // Reset
+    document.getElementById('resetFilters')?.addEventListener('click', () => {
+        currentFilters = { category: null, min_price: null, max_price: null, ordering: '-created_at', search: urlParams.get('search') };
+        document.getElementById('minPrice').value = '';
+        document.getElementById('maxPrice').value = '';
+        sortSelect.value = '-created_at';
+        document.querySelectorAll('.sidebar-cat').forEach(c => c.classList.remove('active'));
+        document.querySelector('[data-category="all"]')?.classList.add('active');
+        fetchProducts();
+    });
 
     fetchProducts();
 });

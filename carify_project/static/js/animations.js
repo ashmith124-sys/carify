@@ -67,6 +67,15 @@
         const cards = document.querySelectorAll('.shop-card, .glass-panel, .card, .cg-pcard');
 
         cards.forEach(card => {
+            // EXCLUSION: Skip functional drawers and overlays that use 'transform' for positioning/transitions
+            if (card.classList.contains('cart-drawer') || 
+                card.classList.contains('collection-filter-drawer') || 
+                card.classList.contains('cg-booking-panel') ||
+                card.closest('#searchOverlay') ||
+                card.closest('#mobileNav')) {
+                return;
+            }
+
             // Enable 3D context
             card.style.transformStyle = 'preserve-3d';
             card.style.transition = 'transform 0.1s ease';

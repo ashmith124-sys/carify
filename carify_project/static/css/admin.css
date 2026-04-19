@@ -2,11 +2,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
 
 :root {
-    --orange: #f97316;
-    --orange-dark: #ea580c;
+    --orange: #ff6a00;
+    --orange-dark: #ff5900;
     --obsidian: #0a0a0a;
-    --surface: rgba(26, 26, 26, 0.4);
-    --border-elegant: rgba(255, 255, 255, 0.05);
+    --surface: rgba(0, 0, 0, 0.4);
+    --border-elegant: rgba(66, 64, 64, 0.116);
     --text-pure: #ffffff;
     --text-muted: rgba(255, 255, 255, 0.5);
     --font-heading: 'Outfit', sans-serif;

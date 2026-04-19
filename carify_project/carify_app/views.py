@@ -12,7 +12,6 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.db.models import Sum, Count, F, Q
 from django.db.models.functions import TruncDate
-import json
 from .models import (
     Product, ProductMedia, Order, OrderItem, Payment, OTPToken, 
     SellerProfile, Cart, CartItem, ProductVariant, Category,

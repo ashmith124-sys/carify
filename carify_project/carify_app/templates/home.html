@@ -1520,7 +1520,7 @@
                 {% if product.first_media_image_url %}
                 <img src="{{ product.first_media_image_url }}" alt="{{ product.name }}" class="la-card__img">
                 {% else %}
-                <img src="{% static 'img/placeholder.png' %}" alt="{{ product.name }}" class="la-card__img">
+                <img src="{% static 'img/placeholder.png' %}?v=2" alt="{{ product.name }}" class="la-card__img">
                 {% endif %}
                 <div class="la-card__body">
                     <span class="la-card__eyebrow">{{ product.category.name|default:"Elite Collection" }}</span>
@@ -1544,7 +1544,7 @@
                     {% if product.first_media_image_url %}
                     <img src="{{ product.first_media_image_url }}" alt="{{ product.name }}" class="la-card__img">
                     {% else %}
-                    <img src="{% static 'img/placeholder.png' %}" alt="{{ product.name }}" class="la-card__img">
+                    <img src="{% static 'img/placeholder.png' %}?v=2" alt="{{ product.name }}" class="la-card__img">
                     {% endif %}
                     <div class="la-card__body">
                         <span class="la-card__eyebrow">{{ product.category.name|default:"Elite" }}</span>

@@ -573,7 +573,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 productGrid.innerHTML = products.map((p, i) => {
-                    const fallback = '{% static "img/placeholder.png" %}';
+                    const fallback = '{% static "img/placeholder.png" %}?v=2';
                     const img = p.first_image || p.image || fallback;
                     return `
                     <div class="specimen" style="transition-delay:${i * 45}ms;">

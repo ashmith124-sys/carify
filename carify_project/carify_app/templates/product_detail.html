@@ -5,8 +5,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,900;1,900&family=Outfit:wght@100;400;900&display=swap" rel="stylesheet">
 <style>
     :root {
-        --gold: #d9915a;
-        --gold-glow: rgba(217, 145, 90, 0.3);
+        --gold: #e85002;
+        --gold-glow: rgba(232, 80, 2, 0.3);
         --bg: #050505;
     }
 
@@ -253,6 +253,150 @@
         color: #fff;
         font-weight: 400;
     }
+
+    /* --- RELATED REGISTRY --- */
+    .related-registry {
+        padding: 120px 5% 150px;
+        background: #050505;
+        border-top: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .related-header {
+        margin-bottom: 80px;
+        text-align: center;
+        position: relative;
+    }
+
+    .related-header::after {
+        content: '';
+        position: absolute;
+        bottom: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 1px;
+        background: var(--gold);
+    }
+
+    .related-subtitle {
+        font-size: 0.6rem;
+        letter-spacing: 6px;
+        color: var(--gold);
+        text-transform: uppercase;
+        margin-bottom: 15px;
+        display: block;
+    }
+
+    .related-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.4rem;
+        color: #fff;
+        font-weight: 900;
+        font-style: italic;
+        text-transform: uppercase;
+    }
+
+    .related-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 25px;
+    }
+
+    @media (max-width: 1100px) {
+        .related-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 600px) {
+        .related-grid { grid-template-columns: 1fr; }
+    }
+
+    .rel-card {
+        position: relative;
+        aspect-ratio: 3/4;
+        background: #000;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.05);
+        text-decoration: none;
+        display: block;
+        transition: all 0.6s var(--transition-premium);
+    }
+
+    .rel-card:hover {
+        border-color: var(--gold);
+        transform: translateY(-8px);
+        box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+    }
+
+    .rel-img-box {
+        width: 100%;
+        height: 100%;
+    }
+
+    .rel-img-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.7;
+        filter: grayscale(0.2);
+        transition: all 1.2s var(--transition-premium);
+    }
+
+    .rel-card:hover .rel-img-box img {
+        transform: scale(1.08);
+        opacity: 0.5;
+        filter: grayscale(0);
+    }
+
+    .rel-info {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 40px 30px;
+        background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+    }
+
+    .rel-name {
+        font-family: 'Outfit', sans-serif;
+        color: #fff;
+        font-size: 1.1rem;
+        font-weight: 900;
+        letter-spacing: -0.02em;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+
+    .rel-price {
+        font-family: 'Outfit', sans-serif;
+        color: var(--gold);
+        font-size: 0.8rem;
+        letter-spacing: 2px;
+        font-weight: 300;
+    }
+
+    .rel-card::after {
+        content: 'INSPECT';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.9);
+        font-family: 'Outfit', sans-serif;
+        font-size: 0.6rem;
+        letter-spacing: 4px;
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.3);
+        padding: 10px 20px;
+        opacity: 0;
+        transition: 0.4s;
+    }
+
+    .rel-card:hover::after {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
 </style>
 {% endblock %}
 
@@ -275,9 +419,15 @@
                 </div>
             {% endfor %}
             {% if not product.media.exists %}
-                <div class="media-node active" onclick="ascendNode(this, 'image', '{{ product.image.url }}')">
-                    <img src="{{ product.image.url }}">
-                </div>
+                {% if product.image %}
+                    <div class="media-node active" onclick="ascendNode(this, 'image', '{{ product.image.url }}')">
+                        <img src="{{ product.image.url }}">
+                    </div>
+                {% else %}
+                    <div class="media-node active" onclick="ascendNode(this, 'image', 'https://images.unsplash.com/photo-1486491830187-271f38346330?auto=format&fit=crop&q=95&w=1200')">
+                        <img src="https://images.unsplash.com/photo-1486491830187-271f38346330?auto=format&fit=crop&q=95&w=1200">
+                    </div>
+                {% endif %}
             {% endif %}
         </div>
     </div>
@@ -328,6 +478,43 @@
         </div>
     </div>
 </div>
+
+<!-- RELATED SPECIMENS SECTION -->
+{% if related_products %}
+<section class="related-registry">
+    <div class="related-header">
+        <span class="related-subtitle">DISCOVERY COMPONENT</span>
+        <h2 class="related-title">Related Specimens</h2>
+    </div>
+
+    <div class="related-grid">
+        {% for rel in related_products %}
+            <a href="{% url 'carify_app:product_detail' rel.id %}" class="rel-card">
+                <div class="rel-img-box">
+                    {% with rel_media=rel.media.first %}
+                        {% if rel_media.media_type == 'image' %}
+                            <img src="{{ rel_media.image.url }}" alt="{{ rel.name }}">
+                        {% elif rel_media.media_type == 'video' %}
+                            <video src="{{ rel_media.video.url }}" autoplay muted loop style="width:100%;height:100%;object-fit:cover;opacity:0.7;"></video>
+                        {% else %}
+                            {% if rel.image %}
+                                <img src="{{ rel.image.url }}" alt="{{ rel.name }}">
+                            {% else %}
+                                <img src="https://images.unsplash.com/photo-1486491830187-271f38346330?auto=format&fit=crop&q=95&w=800" alt="{{ rel.name }}">
+                            {% endif %}
+                        {% endif %}
+                    {% endwith %}
+                </div>
+                
+                <div class="rel-info">
+                    <h3 class="rel-name">{{ rel.name }}</h3>
+                    <span class="rel-price">${{ rel.price }}</span>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
 
 <script>
     window.addEventListener('load', () => {

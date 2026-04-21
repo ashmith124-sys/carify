@@ -15,7 +15,7 @@
         --clr-white: #ffffff;
         --clr-muted: rgba(255, 255, 255, 0.38);
         --clr-dimmed: rgba(255, 255, 255, 0.15);
-        --clr-copper: #d9915a;
+        --clr-copper: #e85002;
         --clr-gold: #f5c882;
         --clr-surface: #0d0c0b;
         --clr-border: rgba(255, 255, 255, 0.06);
@@ -53,6 +53,7 @@
         display: flex;
         align-items: flex-end;
         justify-content: center;
+        padding-top: 120px;
     }
 
     /* Full-bleed background carousel */
@@ -115,8 +116,8 @@
         position: relative;
         z-index: 5;
         width: 100%;
-        max-width: 900px;
-        padding: 0 6vw 7vh;
+        max-width: 1000px; /* Increased for wider display */
+        padding: 0 6vw 10vh; /* Increased bottom padding for better centering */
         text-align: center;
     }
 
@@ -146,21 +147,24 @@
     /* CRED Garage uses huge, condensed, centered heading */
     .cg-hero__h1 {
         font-family: var(--font-h);
-        font-size: clamp(3rem, 9vw, 8.5rem);
+        font-size: clamp(2.4rem, 7.5vw, 5.2rem); /* Viewport safe scale */
         font-weight: 800;
-        line-height: .87;
+        line-height: 1.0; /* Increased line-height for stability */
         letter-spacing: -.045em;
         color: var(--clr-white);
-        margin-bottom: 1.8rem;
+        margin-bottom: 2.5rem;
+        max-width: 90vw;
     }
 
     .cg-hero__h1 em {
         font-style: normal;
         display: block;
-        background: linear-gradient(100deg, var(--clr-copper) 0%, var(--clr-gold) 60%);
+        background: var(--brand-gradient);
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
+        margin-top: 0.3rem; 
+        padding-bottom: 0.2rem; /* Buffer to prevent clipping */
     }
 
     .cg-hero__h1 .ghost {
@@ -889,7 +893,7 @@
     /* ── LATEST ARRIVALS ──────────────────────────────── */
     .cg-arrivals {
         background: #000;
-        padding: 7rem 0;
+        padding: 7rem 6vw;
         border-top: 1px solid rgba(255,255,255,0.05);
     }
 
@@ -950,21 +954,19 @@
         color: #fff;
     }
 
-    /* Editorial Layout: 1 big + strip of smalls */
+    /* Horizontal Grid Layout */
     .cg-arrivals__grid {
         display: grid;
-        grid-template-columns: 1.6fr 1fr;
-        gap: 3px;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
     }
 
-    @media(max-width:900px) {
+    @media(max-width:1100px) {
+        .cg-arrivals__grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media(max-width:600px) {
         .cg-arrivals__grid { grid-template-columns: 1fr; }
-    }
-
-    .cg-arrivals__strip {
-        display: flex;
-        flex-direction: column;
-        gap: 3px;
     }
 
     /* ARRIVAL CARD */
@@ -975,10 +977,14 @@
         cursor: pointer;
         display: block;
         text-decoration: none;
+        aspect-ratio: 3.2/4;
+        border: 1px solid rgba(255,255,255,0.05);
+        transition: border-color 0.4s;
     }
 
-    .la-card--hero { aspect-ratio: 4/5; }
-    .la-card--mini { flex: 1; min-height: 200px; }
+    .la-card:hover {
+        border-color: var(--clr-copper);
+    }
 
     .la-card__img {
         width: 100%;
@@ -1010,19 +1016,17 @@
         bottom: 0;
         left: 0;
         right: 0;
-        padding: 36px;
+        padding: 24px;
         z-index: 2;
     }
 
-    .la-card--mini .la-card__body { padding: 24px 28px; }
-
     .la-card__eyebrow {
-        font-size: 0.48rem;
+        font-size: 0.4rem;
         letter-spacing: 0.35em;
         text-transform: uppercase;
         color: var(--clr-copper);
         display: block;
-        margin-bottom: 10px;
+        margin-bottom: 6px;
         opacity: 0;
         transform: translateY(8px);
         transition: all 0.4s 0.1s;
@@ -1035,46 +1039,41 @@
 
     .la-card__name {
         font-family: var(--font-h);
-        font-size: 1.4rem;
+        font-size: 1rem;
         font-weight: 900;
         letter-spacing: -0.02em;
         color: #fff;
-        line-height: 1.1;
-        margin-bottom: 18px;
+        line-height: 1.2;
+        margin-bottom: 12px;
     }
-
-    .la-card--mini .la-card__name { font-size: 1rem; margin-bottom: 12px; }
 
     .la-card__row {
         display: flex;
         justify-content: space-between;
         align-items: center;
         border-top: 1px solid rgba(255,255,255,0.08);
-        padding-top: 16px;
+        padding-top: 12px;
     }
 
     .la-card__price {
         font-family: var(--font-h);
         font-weight: 800;
-        font-size: 1.1rem;
+        font-size: 1rem;
         color: #fff;
         letter-spacing: -0.02em;
     }
-
-    .la-card--mini .la-card__price { font-size: 0.9rem; }
 
     .la-card__acquire {
         background: none;
         border: 1px solid rgba(255,255,255,0.25);
         color: #fff;
-        padding: 8px 16px;
+        padding: 6px 12px;
         font-size: 0.5rem;
         letter-spacing: 0.2em;
         text-transform: uppercase;
         font-family: var(--font-h);
         font-weight: 700;
         cursor: pointer;
-        transition: all 0.3s;
         opacity: 0;
         transform: translateY(5px);
         transition: all 0.4s;
@@ -1463,9 +1462,8 @@
         <p class="cg-hero__tag">The Elite Collection</p>
 
         <h1 class="cg-hero__h1">
-            manage,<br>
-            maintain,<br>
-            <em>and obsess.</em>
+            Shine that speaks
+            <em>before the engine roars.</em>
         </h1>
 
         <p class="cg-hero__sub">
@@ -1513,10 +1511,8 @@
         </div>
 
         <div class="cg-arrivals__grid">
-            <!-- HERO CARD: First Product -->
-            {% with products|slice:":1" as hero_list %}
-            {% for product in hero_list %}
-            <div class="la-card la-card--hero">
+            {% for product in products|slice:":4" %}
+            <div class="la-card">
                 {% if product.first_media_image_url %}
                 <img src="{{ product.first_media_image_url }}" alt="{{ product.name }}" class="la-card__img">
                 {% else %}
@@ -1534,33 +1530,13 @@
                     </div>
                 </div>
             </div>
-            {% endfor %}
-            {% endwith %}
-
-            <!-- STRIP: Remaining Products -->
-            <div class="cg-arrivals__strip">
-                {% for product in products|slice:"1:4" %}
-                <div class="la-card la-card--mini">
-                    {% if product.first_media_image_url %}
-                    <img src="{{ product.first_media_image_url }}" alt="{{ product.name }}" class="la-card__img">
-                    {% else %}
-                    <img src="{% static 'img/placeholder.png' %}?v=2" alt="{{ product.name }}" class="la-card__img">
-                    {% endif %}
-                    <div class="la-card__body">
-                        <span class="la-card__eyebrow">{{ product.category.name|default:"Elite" }}</span>
-                        <h4 class="la-card__name">{{ product.name|upper }}</h4>
-                        <div class="la-card__row">
-                            <span class="la-card__price">${{ product.price }}</span>
-                            <button class="la-card__acquire" onclick="event.stopPropagation(); window.CarifyBridge.addItemToCart({{ product.id }}, 'product')">ACQUIRE</button>
-                        </div>
-                    </div>
-                </div>
-                {% empty %}
-                <div style="display:flex;align-items:center;justify-content:center;flex:1;border:1px dashed rgba(255,255,255,0.05);">
-                    <p style="color:rgba(255,255,255,0.2);font-size:0.65rem;letter-spacing:0.2em;">NO ARRIVALS YET</p>
-                </div>
-                {% endfor %}
+            {% empty %}
+            {% for _ in "1234"|make_list %}
+            <div class="la-card" style="border:1px dashed rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:center;">
+                <p style="color:rgba(255,255,255,0.2); font-size:0.55rem; letter-spacing:0.2em;">SPECIMEN PENDING</p>
             </div>
+            {% endfor %}
+            {% endfor %}
         </div>
     </div>
 </section>

@@ -148,7 +148,7 @@ loadOverlay.innerHTML = `
       font-family:'Outfit',sans-serif;
       font-size:0.55rem;
       letter-spacing:0.45em;
-      color:rgba(217,145,90,0.6);
+      color:rgba(232,80,2,0.6);
       text-transform:uppercase;
     ">CALIBRATING SPECIMEN</span>
     <div style="
@@ -159,9 +159,9 @@ loadOverlay.innerHTML = `
     ">
       <div id="lux-bar" style="
         position:absolute;height:100%;
-        background:linear-gradient(90deg, #d9915a, #fff8f0);
+        background:linear-gradient(90deg, #e85002, #fff8f0);
         width:0%;transition:width 0.3s ease;
-        box-shadow:0 0 8px #d9915a;
+        box-shadow:0 0 8px #e85002;
       "></div>
     </div>
   </div>
@@ -169,7 +169,7 @@ loadOverlay.innerHTML = `
     .load-dot {
       width:5px;height:5px;
       border-radius:50%;
-      background:rgba(217,145,90,0.7);
+      background:rgba(232,80,2,0.7);
       animation:dotPulse 1.2s ease-in-out infinite;
     }
     @keyframes dotPulse {
@@ -234,8 +234,8 @@ const tyreMat = new THREE.MeshStandardMaterial({
 });
 
 const emissiveDetailMat = new THREE.MeshStandardMaterial({
-    color:            new THREE.Color(0xd9915a),
-    emissive:         new THREE.Color(0xd9915a),
+    color:            new THREE.Color(0xe85002),
+    emissive:         new THREE.Color(0xe85002),
     emissiveIntensity:1.5,
     metalness:        0.5,
     roughness:        0.2,
@@ -321,7 +321,7 @@ fillLight.position.set(-8, 3, -4);
 scene.add(fillLight);
 
 // ── Copper RIM light (back) — defines car silhouette, stronger for CRED drama
-const rimLight = new THREE.DirectionalLight(0xd9915a, 3.5);
+const rimLight = new THREE.DirectionalLight(0xe85002, 3.5);
 rimLight.position.set(-4, 2, -5);
 scene.add(rimLight);
 
@@ -331,19 +331,19 @@ sweepLight.position.set(5, 4, -3);
 scene.add(sweepLight);
 
 // ── Headlight SpotLights ──
-const headL = new THREE.SpotLight(0xd9915a, 8, 18, Math.PI / 8, 0.35, 1.8);
+const headL = new THREE.SpotLight(0xe85002, 8, 18, Math.PI / 8, 0.35, 1.8);
 headL.position.set(2.2, 0.5, 0.5);
 headL.target.position.set(12, -1,  1.5);
 headL.castShadow = true;
 scene.add(headL, headL.target);
 
-const headR = new THREE.SpotLight(0xd9915a, 8, 18, Math.PI / 8, 0.35, 1.8);
+const headR = new THREE.SpotLight(0xe85002, 8, 18, Math.PI / 8, 0.35, 1.8);
 headR.position.set(2.2, 0.5, -0.5);
 headR.target.position.set(12, -1, -1.5);
 scene.add(headR, headR.target);
 
 // ── Undercar copper glow ──
-const underGlow = new THREE.PointLight(0xd9915a, 1.5, 4);
+const underGlow = new THREE.PointLight(0xe85002, 1.5, 4);
 underGlow.position.set(0, -0.05, 0);
 scene.add(underGlow);
 
@@ -367,7 +367,7 @@ for (let i = 0; i < particleCount; i++) {
 pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
 
 const pMat = new THREE.PointsMaterial({
-    color:       0xd9915a,
+    color:       0xe85002,
     size:        0.025,
     transparent: true,
     opacity:     0.55,

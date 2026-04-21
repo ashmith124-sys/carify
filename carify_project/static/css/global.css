@@ -17,6 +17,9 @@
     --text-elegant: #E5E5E5;
     --text-muted: #8E8E93;
 
+    /* Brand Identity */
+    --brand-gradient: linear-gradient(135deg, #F16001 0%, #C10801 35%, #CC5001 65%, #441100 100%);
+
     /* Layout Tokens */
     --container-max: 1440px;
     --section-space: clamp(4rem, 10vw, 10rem);
@@ -72,11 +75,11 @@ h4,
 }
 
 .copper-text {
-    color: var(--bronze);
-    background: linear-gradient(135deg, var(--bronze), var(--copper));
+    background: var(--brand-gradient);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+    display: inline-block;
 }
 
 /* Atomic Utilities */

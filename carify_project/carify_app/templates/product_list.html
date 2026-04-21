@@ -127,15 +127,18 @@
 
     /* ── LAYOUT ───────────────────────────────── */
     .archive-layout {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 0;
-        padding: 60px 0 120px;
+        padding: 60px 0.75vw 120px;
         background: var(--obsidian);
     }
 
+    .archive-layout__container {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
     @media (min-width: 1100px) {
-        .archive-layout {
+        .archive-layout__container {
             grid-template-columns: 280px 1fr;
         }
     }
@@ -226,16 +229,23 @@
     .product-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 2px;
+        gap: 25px;
         transition: opacity 0.4s;
     }
 
-    @media (min-width: 1024px) {
+    @media (min-width: 1200px) {
+        .product-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    @media (min-width: 900px) and (max-width: 1199px) {
         .product-grid { grid-template-columns: repeat(3, 1fr); }
     }
 
     @media (max-width: 600px) {
-        .product-grid { grid-template-columns: 1fr; }
+        .product-grid { 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 12px;
+        }
     }
 
     /* ── SPECIMEN CARD ────────────────────────── */
@@ -246,6 +256,8 @@
         cursor: pointer;
         aspect-ratio: 3/4;
         display: block;
+        border: 1px solid rgba(255,255,255,0.05);
+        transition: all 0.5s var(--transition-premium);
     }
 
     .specimen::after {
@@ -288,8 +300,8 @@
         background: rgba(0,0,0,0.6);
         backdrop-filter: blur(12px);
         border: 1px solid rgba(255,255,255,0.1);
-        padding: 6px 14px;
-        font-size: 0.45rem;
+        padding: 5px 12px;
+        font-size: 0.4rem;
         letter-spacing: 0.3em;
         text-transform: uppercase;
         color: var(--bronze);
@@ -301,7 +313,7 @@
         left: 0;
         right: 0;
         z-index: 2;
-        padding: 36px;
+        padding: 30px;
         transform: translateY(0);
         transition: transform 0.5s var(--transition-premium);
     }
@@ -476,7 +488,7 @@
 
 <!-- ── MAIN LAYOUT ───────────────────────────── -->
 <div class="archive-layout">
-    <div class="container" style="display: contents;">
+    <div class="container archive-layout__container">
 
         <!-- SIDEBAR (DESKTOP) -->
         <aside class="archive-sidebar d-none d-lg-block">

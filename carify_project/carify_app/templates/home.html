@@ -156,15 +156,16 @@
         max-width: 90vw;
     }
 
-    .cg-hero__h1 em {
+    .cg-hero__h1 .copper-text {
         font-style: normal;
-        display: block;
+        display: inline-block;
         background: var(--brand-gradient);
+        background-size: 100% 100%;
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin-top: 0.3rem; 
-        padding-bottom: 0.2rem; /* Buffer to prevent clipping */
+        padding: 0.1em 0;
+        margin-top: -0.1em;
     }
 
     .cg-hero__h1 .ghost {
@@ -874,7 +875,7 @@
         font-size: clamp(2rem, 5vw, 3.5rem);
         font-weight: 800;
         letter-spacing: -.04em;
-        background: linear-gradient(120deg, #fff 0%, var(--clr-copper) 100%);
+        background: var(--brand-gradient);
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -1462,8 +1463,8 @@
         <p class="cg-hero__tag">The Elite Collection</p>
 
         <h1 class="cg-hero__h1">
-            Shine that speaks
-            <em>before the engine roars.</em>
+            Shine that speaks<br>
+            <span class="copper-text">before the engine roars.</span>
         </h1>
 
         <p class="cg-hero__sub">

@@ -18,7 +18,7 @@
     --text-muted: #8E8E93;
 
     /* Brand Identity */
-    --brand-gradient: linear-gradient(135deg, #F16001 0%, #C10801 35%, #CC5001 65%, #441100 100%);
+    --brand-gradient: linear-gradient(135deg, #F16001 0%, #C10801 35%, #FF7A01 65%, #CC5001 100%);
 
     /* Layout Tokens */
     --container-max: 1440px;

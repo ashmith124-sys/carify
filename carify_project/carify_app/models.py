@@ -160,6 +160,34 @@ class Service(models.Model):
     def __str__(self):
         return self.name
 
+class ServiceMedia(models.Model):
+    MEDIA_TYPE_CHOICES = [
+        ('image', 'Image'),
+        ('video', 'Video'),
+    ]
+
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='media')
+    media_type = models.CharField(max_length=10, choices=MEDIA_TYPE_CHOICES, default='image')
+    image = models.ImageField(upload_to='service_media/images/', blank=True, null=True)
+    video = models.FileField(upload_to='service_media/videos/', blank=True, null=True)
+    caption = models.CharField(max_length=255, blank=True)
+    sort_order = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['sort_order', 'id']
+
+    def clean(self):
+        if self.media_type == 'image' and not self.image:
+            raise ValidationError('Image file is required for image media.')
+        if self.media_type == 'video' and not self.video:
+            raise ValidationError('Video file is required for video media.')
+        if self.image and self.video:
+            raise ValidationError('Only one media file type can be uploaded per entry.')
+
+    def __str__(self):
+        return f"{self.service.name} {self.media_type} ({self.caption or 'media'})"
+
 class Booking(models.Model):
     """Tracks appointment requests for services."""
     STATUS_CHOICES = [

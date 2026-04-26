@@ -8,7 +8,7 @@
 :root {
     /* Refined Color Palette (Minimalist Luxury) */
     --obsidian: #080707;      /* Extremely Deep Brown/Black */
-    --copper: #9b5a2b;        /* Burnished Copper */
+    --copper: #e85002;        /* Vibrant Core Orange */
     --bronze: #e85002;        /* Vibrant Core Orange */
     --surface: #120f0e;       /* Sophisticated Brown-Black */
     --surface-soft: #1c1816;  /* Soft Texture Surface */
@@ -18,7 +18,7 @@
     --text-muted: #8E8E93;    /* San Francisco Style Muted Text */
     
     --border-subtle: rgba(255, 255, 255, 0.06);
-    --border-elegant: rgba(217, 145, 90, 0.2);
+    --border-elegant: rgba(232, 80, 2, 0.2);
     
     --glass-heavy: rgba(8, 7, 7, 0.85);
     --glass-blur: blur(40px);
@@ -277,7 +277,7 @@ img {
 .btn-primary:hover {
     background: var(--bronze);
     transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(217, 145, 90, 0.2);
+    box-shadow: 0 10px 30px rgba(232, 80, 2, 0.2);
 }
 
 .btn-outline {

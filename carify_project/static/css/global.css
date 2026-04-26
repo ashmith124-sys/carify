@@ -11,21 +11,21 @@
     --obsidian: #080707;
     --surface: #120f0e;
     --surface-soft: #1c1816;
-    --copper: #9b5a2b;
-    --bronze: #ff6f00;
+    --copper: #e85002;
+    --bronze: #e85002;
     --text-pure: #FFFFFF;
     --text-elegant: #E5E5E5;
     --text-muted: #8E8E93;
 
     /* Brand Identity */
-    --brand-gradient: linear-gradient(135deg, #F16001 0%, #C10801 35%, #FF7A01 65%, #CC5001 100%);
+    --brand-gradient: linear-gradient(135deg, #e85002 0%, #e85002 100%);
 
     /* Layout Tokens */
     --container-max: 1440px;
     --section-space: clamp(4rem, 10vw, 10rem);
     --border-subtle: rgba(255, 255, 255, 0.08);
     /* Slightly more visible for structure */
-    --border-elegant: rgb(255, 111, 1);
+    --border-elegant: #e85002;
 
     /* Effects */
     --glass-blur: blur(40px);
@@ -33,7 +33,7 @@
     --glass-light: rgba(255, 255, 255, 0.03);
     --transition-premium: cubic-bezier(0.16, 1, 0.3, 1);
     --shadow-luxury: 0 40px 100px rgba(0, 0, 0, 0.6);
-    --shadow-accent: 0 0 30px rgba(155, 90, 43, 0.3);
+    --shadow-accent: 0 0 30px rgba(232, 80, 2, 0.3);
 }
 
 /* Base Reset */
@@ -419,7 +419,7 @@ h4,
 .btn-primary:hover {
     background: var(--bronze);
     transform: translateY(-2px);
-    box-shadow: 0 15px 40px rgba(217, 145, 90, 0.25);
+    box-shadow: 0 15px 40px rgba(232, 80, 2, 0.25);
 }
 
 .btn-outline {

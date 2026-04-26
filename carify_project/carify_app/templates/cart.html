@@ -6,7 +6,7 @@
 {% block extra_css %}
 <style>
     :root {
-        --portfolio-gold: #d4af37;
+        --portfolio-gold: #e85002;
         --portfolio-border: rgba(255, 255, 255, 0.08);
         --portfolio-glass: rgba(10, 10, 12, 0.7);
     }
@@ -21,7 +21,7 @@
     .portfolio-hero {
         position: relative;
         padding: 160px 0 80px;
-        background: radial-gradient(circle at center, rgba(212, 175, 55, 0.05) 0%, transparent 70%);
+        background: radial-gradient(circle at center, rgba(232, 80, 2, 0.05) 0%, transparent 70%);
         border-bottom: 1px solid var(--portfolio-border);
         overflow: hidden;
     }
@@ -240,7 +240,7 @@
     .ledger-total {
         margin-top: 40px;
         padding-top: 40px;
-        border-top: 1px solid rgba(212, 175, 55, 0.2);
+        border-top: 1px solid rgba(232, 80, 2, 0.2);
         text-align: center;
     }
 
@@ -263,8 +263,8 @@
 
     .ledger-btn {
         width: 100%;
-        background: #fff;
-        color: #000;
+        background: #e85002;
+        color: #fff;
         border: none;
         padding: 24px;
         margin-top: 50px;
@@ -278,8 +278,8 @@
     }
 
     .ledger-btn:hover {
-        background: var(--portfolio-gold);
-        color: #fff;
+        background: #fff;
+        color: #000;
         transform: scale(1.02);
     }
 
@@ -314,7 +314,7 @@
             <div class="protocol-header">ACTIVE_SPECIMENS</div>
             <div id="portfolioList">
                 <div style="padding: 100px 0; text-align: center; opacity: 0.5;">
-                    <p class="font-heading" style="letter-spacing: 0.3em;">ESTABLISHING_ENCRYPTION...</p>
+                    <p class="font-heading" style="letter-spacing: 0.3em;">AUTHORIZING_ENCRYPTION...</p>
                 </div>
             </div>
 
@@ -351,7 +351,7 @@
                 <span id="pTotal" class="ledger-total__val">$0.00</span>
             </div>
 
-            <button id="pCheckoutBtn" class="ledger-btn">INITIALIZE TRANSFER</button>
+            <button id="pCheckoutBtn" class="ledger-btn">AUTHORIZE TRANSFER</button>
             
             <div style="margin-top: 40px; text-align: center;">
                 <p style="font-size: 0.55rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.2em; line-height: 1.8;">
@@ -438,7 +438,7 @@
         if (activeItems.length === 0) {
             list.innerHTML = `
                 <div style="padding: 120px 0; text-align: center; border: 1px dashed var(--portfolio-border); background: rgba(255,255,255,0.01);">
-                    <p class="font-heading" style="font-size: 0.8rem; color: var(--text-muted); letter-spacing: 0.2em;">NO_SPECIMENS_INITIALIZED</p>
+                    <p class="font-heading" style="font-size: 0.8rem; color: var(--text-muted); letter-spacing: 0.2em;">REGISTRY_IS_EMPTY</p>
                     <a href="{% url 'carify_app:product_list' %}" class="ledger-btn" style="display: inline-block; width: auto; padding: 15px 40px; margin-top: 30px;">BROWSE COLLECTION</a>
                 </div>
             `;

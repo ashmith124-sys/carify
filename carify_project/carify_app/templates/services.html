@@ -5,9 +5,20 @@
 
 {% block extra_css %}
 <style>
+    :root {
+        --bronze: #e85002;
+        --obsidian: #080707;
+        --surface: #141414;
+        --border-elegant: rgba(232, 80, 2, 0.15);
+        --text-pure: #ffffff;
+        --text-muted: rgba(255, 255, 255, 0.5);
+        --transition-premium: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* IMMERSIVE HERO */
     .solutions-hero {
         position: relative;
-        height: 70vh;
+        height: 90vh;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -15,253 +26,389 @@
         background: var(--obsidian);
     }
 
-    .solutions-hero::before {
+    .hero-video-bg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.4;
+        filter: grayscale(100%) contrast(120%);
+    }
+
+    .solutions-hero::after {
         content: '';
         position: absolute;
         inset: 0;
-        background: linear-gradient(to bottom, rgba(8, 7, 7, 0.4) 0%, var(--obsidian) 100%),
-                    url('https://images.unsplash.com/photo-1599256621730-535171e28e50?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
-        opacity: 0.6;
+        background: linear-gradient(to bottom,
+                transparent 0%,
+                rgba(8, 7, 7, 0.8) 70%,
+                var(--obsidian) 100%);
+        z-index: 1;
     }
 
     .solutions-content {
         position: relative;
-        z-index: 2;
+        z-index: 10;
         text-align: center;
-        max-width: 800px;
+        max-width: 1000px;
         padding: 0 24px;
     }
 
-    /* GRID ARCHITECTURE */
+    .hero-glitch-title {
+        font-size: clamp(3rem, 12vw, 8rem);
+        font-weight: 900;
+        line-height: 0.85;
+        letter-spacing: -0.04em;
+        margin: 20px 0;
+        text-transform: uppercase;
+        background: linear-gradient(180deg, #fff 0%, rgba(255, 255, 255, 0.4) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    /* RITUAL GRID */
     .services-catalog {
         padding: 100px 0;
         background: var(--obsidian);
+        position: relative;
     }
 
+    .catalog-header {
+        margin-bottom: 80px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+    }
+
+    /* CATALOG FILTERS */
+    .catalog-filters {
+        display: flex;
+        gap: 30px;
+        margin-bottom: 60px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        padding-bottom: 20px;
+        overflow-x: auto;
+        white-space: nowrap;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .catalog-filters::-webkit-scrollbar {
+        display: none;
+    }
+
+    @media (max-width: 991px) {
+        .catalog-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 40px;
+        }
+
+        .catalog-meta {
+            text-align: left !important;
+        }
+
+        .catalog-filters {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+    }
+
+    .filter-tab {
+        font-size: 0.65rem;
+        letter-spacing: 0.3em;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: 0.4s;
+        position: relative;
+        background: none;
+        border: none;
+        padding: 0;
+    }
+
+    .filter-tab.active {
+        color: var(--bronze);
+    }
+
+    .filter-tab.active::after {
+        content: '';
+        position: absolute;
+        bottom: -21px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: var(--bronze);
+    }
+
+    /* RITUAL GRID: PREMIUM PORTFOLIO ARRANGEMENT */
     .services-grid {
         display: grid;
-        grid-template-columns: repeat(1, 1fr);
+        grid-template-columns: repeat(12, 1fr);
         gap: 40px;
+        background: transparent;
+        border: none;
+    }
+
+    .service-specimen {
+        grid-column: span 12;
+        position: relative;
+        background: var(--surface);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: transform 0.8s var(--transition-premium), border-color 0.4s;
     }
 
     @media (min-width: 768px) {
-        .services-grid {
-            grid-template-columns: repeat(2, 1fr);
+        .service-specimen {
+            grid-column: span 6;
+        }
+
+        .service-specimen:nth-child(3n+1) {
+            grid-column: span 12;
         }
     }
 
-    @media (min-width: 1100px) {
-        .services-grid {
-            grid-template-columns: repeat(3, 1fr);
+    @media (min-width: 1200px) {
+        .service-specimen {
+            grid-column: span 4;
+        }
+
+        .service-specimen:nth-child(5n+1) {
+            grid-column: span 8;
+        }
+
+        .service-specimen:nth-child(5n+2) {
+            grid-column: span 4;
+        }
+
+        .service-specimen:nth-child(5n+3) {
+            grid-column: span 4;
+        }
+
+        .service-specimen:nth-child(5n+4) {
+            grid-column: span 8;
+        }
+
+        .service-specimen:nth-child(5n+5) {
+            grid-column: span 12;
         }
     }
 
-    /* PREMIUM CARD DESIGN */
-    .service-specimen {
-        position: relative;
-        overflow: hidden;
-        transition: transform 0.6s var(--transition-premium);
-        background: var(--surface);
-        border: 1px solid var(--border-subtle);
-    }
+    /* CARD REDESIGN */
+    @media (min-width: 1200px) {
+        .service-specimen:nth-child(5n+5) {
+            display: flex;
+            align-items: stretch;
+        }
 
-    .service-specimen:hover {
-        transform: translateY(-8px);
-        border-color: var(--bronze);
+        .service-specimen:nth-child(5n+5) .service-media {
+            flex: 0 0 60%;
+            aspect-ratio: auto;
+        }
+
+        .service-specimen:nth-child(5n+5) .service-body {
+            flex: 1;
+            margin-top: 0;
+            padding: 60px;
+            background: var(--surface);
+        }
     }
 
     .service-media {
         position: relative;
-        aspect-ratio: 16/10;
+        aspect-ratio: 16/9;
         overflow: hidden;
-        background: #000;
     }
 
     .service-img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        filter: brightness(0.6);
-        transition: transform 1.2s var(--transition-premium);
+        filter: saturate(0) brightness(0.6);
+        transition: all 1.5s var(--transition-premium);
     }
 
     .service-specimen:hover .service-img {
-        transform: scale(1.08);
-        filter: brightness(0.9);
+        filter: saturate(1) brightness(0.8);
+        transform: scale(1.1);
+    }
+
+    .service-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, var(--obsidian) 0%, transparent 100%);
+        opacity: 0.8;
     }
 
     .service-body {
-        padding: 35px;
+        padding: 50px;
         display: flex;
         flex-direction: column;
-        gap: 15px;
-        background: var(--obsidian);
+        justify-content: space-between;
+        position: relative;
+        z-index: 5;
+        margin-top: -60px;
     }
 
-    .service-category {
-        font-size: 0.6rem;
-        letter-spacing: 0.25em;
+    .service-badge {
+        font-size: 0.55rem;
+        letter-spacing: 0.4em;
         color: var(--bronze);
         text-transform: uppercase;
-        font-weight: 800;
+        margin-bottom: 20px;
+        display: block;
     }
 
     .service-h3 {
-        font-size: 1.6rem;
-        margin-bottom: 5px;
-        letter-spacing: -0.01em;
-        color: var(--text-pure);
-    }
-
-    .service-desc {
-        color: var(--text-elegant);
-        font-size: 0.85rem;
-        line-height: 1.8;
-        margin-bottom: 15px;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    .service-meta {
-        margin-top: auto;
-        padding-top: 25px;
-        border-top: 1px solid var(--border-subtle);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .service-price {
-        font-family: 'Outfit', sans-serif;
-        font-size: 1rem;
-        font-weight: 700;
-        color: var(--text-pure);
-    }
-
-    /* BOOKING DRAWER */
-    .booking-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.85);
-        backdrop-filter: blur(20px);
-        z-index: 5000;
-        display: flex;
-        justify-content: flex-end;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.5s var(--transition-premium);
-    }
-
-    .booking-overlay.active {
-        opacity: 1;
-        pointer-events: auto;
-    }
-
-    .booking-panel {
-        width: 100%;
-        max-width: 550px;
-        height: 100%;
-        background: var(--obsidian);
-        border-left: 1px solid var(--border-elegant);
-        padding: 80px 50px;
-        transform: translateX(100%);
-        transition: transform 0.7s var(--transition-premium);
-        display: flex;
-        flex-direction: column;
-    }
-
-    .booking-overlay.active .booking-panel {
-        transform: translateX(0);
-    }
-
-    .booking-h2 {
-        font-size: 2.5rem;
-        margin-bottom: 40px;
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+        letter-spacing: -0.02em;
         line-height: 1;
     }
 
-    .ritual-input-group {
-        margin-bottom: 30px;
+    .service-desc {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        line-height: 1.8;
+        margin-bottom: 40px;
+        max-width: 90%;
     }
 
-    .ritual-label {
-        display: block;
-        font-size: 0.6rem;
+    .service-specimen:hover {
+        border-color: var(--bronze);
+        transform: translateY(-10px);
+    }
+
+    /* PROCESS SECTION */
+    .ritual-process {
+        padding: 150px 0;
+        background: #000;
+        border-top: 1px solid var(--border-elegant);
+    }
+
+    .process-step {
+        padding: 40px;
+        border-left: 1px solid var(--border-elegant);
+        position: relative;
+    }
+
+    .process-number {
+        font-family: var(--font-heading);
+        font-size: 4rem;
+        font-weight: 900;
+        color: var(--border-elegant);
+        position: absolute;
+        top: 20px;
+        right: 40px;
+        line-height: 1;
+    }
+
+
+    /* BUTTONS */
+    .btn-ritual {
+        background: transparent;
+        border: 1px solid var(--border-elegant);
+        color: #fff;
+        padding: 18px 30px;
+        font-size: 0.65rem;
         letter-spacing: 0.2em;
         text-transform: uppercase;
-        color: var(--copper);
-        margin-bottom: 12px;
         font-weight: 800;
+        transition: all 0.4s var(--transition-premium);
+        cursor: pointer;
     }
 
-    .ritual-input {
-        width: 100%;
-        background: transparent;
-        border: none;
-        border-bottom: 1px solid var(--border-subtle);
-        color: #fff;
-        padding: 12px 0;
-        font-size: 1rem;
-        outline: none;
-        transition: border-color 0.4s;
+    .btn-ritual:hover {
+        background: #fff;
+        color: #000;
+        border-color: #fff;
     }
 
-    .ritual-input:focus {
-        border-bottom-color: var(--bronze);
+    .btn-ritual-primary {
+        background: var(--bronze);
+        border-color: var(--bronze);
+        color: #000;
     }
 
-    .form-actions {
-        margin-top: auto;
-        display: flex;
-        gap: 20px;
+    .btn-ritual-primary:hover {
+        background: #fff;
+        color: #000;
+        border-color: #fff;
     }
 </style>
 {% endblock %}
 
 {% block content %}
 <section class="solutions-hero" data-appear>
+    <img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1920&q=80"
+        class="hero-video-bg" alt="Hero Background">
     <div class="solutions-content">
-        <span class="hero-eyebrow" style="color: var(--bronze);">PRESERVATION PROTOCOLS</span>
-        <h1 style="font-size: clamp(3.5rem, 10vw, 7rem); margin: 20px 0;">ELITE SOLUTIONS</h1>
+        <span class="hero-eyebrow" style="color: var(--bronze); letter-spacing: 0.5em;">PRECISION ARCHITECTURE</span>
+        <h1 class="hero-glitch-title">ELITE<br>SOLUTIONS</h1>
         <p style="color: var(--text-muted); line-height: 2; font-size: 1.1rem; max-width: 600px; margin: 0 auto 40px;">
-            Beyond maintenance. Our rituals involve molecular precision and cinematic attention to detail, 
-            ensuring your legacy specimens remain timeless.
+            The preservation of legacy requires more than maintenance. Our rituals involve molecular precision
+            and cinematic attention to detail, ensuring your specimens remain timeless.
         </p>
-        {% if user.is_superuser %}
-        <a href="{% url 'carify_app:add_service' %}" class="btn btn-outline" style="border-color: var(--bronze); color: var(--bronze);">INITIALIZE NEW PROTOCOL</a>
-        {% endif %}
+        <div style="display: flex; gap: 20px; justify-content: center;">
+            <a href="#catalog" class="btn-ritual">VIEW CATALOG</a>
+        </div>
     </div>
 </section>
 
-<section class="services-catalog">
+<section class="services-catalog" id="catalog">
     <div class="container">
-        <div class="services-grid" data-appear>
+        <div class="catalog-header" data-appear>
+            <div>
+                <span class="hero-eyebrow">ACTIVE REGISTRY</span>
+                <h2 class="font-heading" style="font-size: 3rem; margin-top: 10px;">THE RITUALS</h2>
+            </div>
+            <div class="catalog-meta" style="text-align: right;">
+                <!-- DEBUG: {{ categories.count }} categories found -->
+                <p style="color: var(--text-muted); max-width: 300px; font-size: 0.75rem; margin-bottom: 20px;">
+                    Each protocol is executed by certified curators using industry-exclusive chemical compounds.
+                </p>
+                <div class="catalog-filters">
+                    <button class="filter-tab active" data-filter="all">All Rituals</button>
+                    {% for cat in categories %}
+                    <button class="filter-tab" data-filter="cat-{{ cat.id }}">{{ cat.name }}</button>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="services-grid" data-appear id="catalogGrid">
             {% for service in services %}
-            <div class="service-specimen glass-panel">
+            <div class="service-specimen" data-category="cat-{{ service.category.id }}">
                 <div class="service-media">
                     {% if service.image %}
-                        <img class="service-img" src="{{ service.image.url }}" alt="{{ service.name }}">
+                    <img class="service-img" src="{{ service.image.url }}" alt="{{ service.name }}">
                     {% else %}
-                        <img class="service-img" src="{% static 'img/placeholder.png' %}?v=2" alt="{{ service.name }}">
+                    <img class="service-img" src="{% static 'img/placeholder.png' %}?v=2" alt="{{ service.name }}">
                     {% endif %}
+                    <div class="service-overlay"></div>
                 </div>
                 <div class="service-body">
-                    <span class="service-category">{{ service.category.name|default:"RITUAL" }}</span>
+                    <span class="service-badge">{{ service.category.name|default:"RITUAL" }}</span>
                     <h3 class="service-h3 font-heading">{{ service.name }}</h3>
                     <p class="service-desc">{{ service.description }}</p>
-                    
-                    <div style="display: flex; gap: 10px; margin-top: 10px;">
-                        <button class="btn btn-outline" style="flex: 1; padding: 0.8rem; font-size: 0.6rem; border-color: var(--border-subtle);" onclick="window.CarifyBridge.addItemToCart('{{ service.id }}', 'service')">ADD TO PORTFOLIO</button>
-                        <button class="btn btn-primary" style="flex: 1; padding: 0.8rem; font-size: 0.6rem;" onclick="openBooking('{{ service.id }}', '{{ service.name }}')">BOOK CEREMONY</button>
+
+                    <div style="display: flex; gap: 15px; align-items: center;">
+                        <a href="{% url 'carify_app:service_detail' service.id %}" class="btn-ritual-primary"
+                            style="padding: 15px 40px; font-size: 0.65rem; text-align: center; text-decoration: none; flex: 1;">VIEW
+                            DOSSIER</a>
                     </div>
 
-                    <div class="service-meta">
-                        <span class="service-price copper-text">Starts at ${{ service.price }}</span>
+                    <div
+                        style="margin-top: 30px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-elegant); pt: 20px;">
+                        <span class="copper-text font-heading"
+                            style="font-size: 1.2rem; margin-top: 20px; display: block;">${{ service.price }} <small
+                                style="font-size: 0.6rem; opacity: 0.5; font-weight: normal;">BASE FEE</small></span>
                         {% if service.video %}
-                        <button style="background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.65rem; letter-spacing: 0.1em; display: flex; align-items: center; gap: 8px;" onclick="playCinematic('{{ service.video.url }}')">
-                            <i class="fas fa-play" style="font-size: 0.8rem; color: var(--bronze);"></i> VIEW FILM
+                        <button
+                            style="background: none; border: none; color: var(--bronze); cursor: pointer; font-size: 0.6rem; letter-spacing: 0.2em; display: flex; align-items: center; gap: 8px; margin-top: 20px;"
+                            onclick="playCinematic('{{ service.video.url }}')">
+                            <i class="fas fa-play"></i> VIEW FILM
                         </button>
                         {% endif %}
                     </div>
@@ -276,52 +423,51 @@
     </div>
 </section>
 
-<!-- BOOKING OVERLAY -->
-<div class="booking-overlay" id="bookingOverlay">
-    <div class="booking-panel">
-        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-            <h2 class="booking-h2 font-heading">REQUEST<br><span id="bookingServiceName" style="color:var(--bronze);">PROTOCOL</span></h2>
-            <button onclick="closeBooking()" style="background:none; border:none; color:#fff; cursor:pointer; font-size: 1.5rem;"><i class="fas fa-times"></i></button>
+<section class="ritual-process">
+    <div class="container">
+        <span class="hero-eyebrow" style="text-align: center; display: block; margin-bottom: 20px;">THE
+            METHODOLOGY</span>
+        <h2 class="font-heading"
+            style="font-size: clamp(2.5rem, 6vw, 4.5rem); text-align: center; margin-bottom: 100px;">HOW WE PRESERVE
+        </h2>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px;">
+            <div class="process-step" data-appear>
+                <span class="process-number">01</span>
+                <h4 class="font-heading" style="font-size: 1.5rem; margin-bottom: 20px;">CONSULTATION</h4>
+                <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.8;">
+                    We begin with a deep-tier assessment of your specimen's current state and historical provenance.
+                </p>
+            </div>
+            <div class="process-step" data-appear style="transition-delay: 0.1s;">
+                <span class="process-number">02</span>
+                <h4 class="font-heading" style="font-size: 1.5rem; margin-bottom: 20px;">CALIBRATION</h4>
+                <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.8;">
+                    Selection of chemical compounds and technical instruments tailored to your specimen's specific DNA.
+                </p>
+            </div>
+            <div class="process-step" data-appear style="transition-delay: 0.2s;">
+                <span class="process-number">03</span>
+                <h4 class="font-heading" style="font-size: 1.5rem; margin-bottom: 20px;">EXECUTION</h4>
+                <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.8;">
+                    The ritual is performed in a controlled environment, ensuring molecular stability and flawless
+                    results.
+                </p>
+            </div>
         </div>
-
-        <form action="{% url 'carify_app:book_service' %}" method="POST" style="flex:1; display:flex; flex-direction:column; margin-top:30px;">
-            {% csrf_token %}
-            <input type="hidden" name="service_id" id="bookingServiceId">
-
-            <div class="ritual-input-group">
-                <label class="ritual-label">Temporal Window (Date)</label>
-                <input type="date" name="preferred_date" class="ritual-input" required>
-            </div>
-
-            <div class="ritual-input-group">
-                <label class="ritual-label">Temporal Window (Time)</label>
-                <input type="time" name="preferred_time" class="ritual-input" required>
-            </div>
-
-            <div class="ritual-input-group">
-                <label class="ritual-label">Specimen Identification (Vehicle)</label>
-                <input type="text" name="vehicle_details" class="ritual-input" placeholder="e.g. 2024 Aston Martin Valhalla" required>
-            </div>
-
-            <div class="ritual-input-group">
-                <label class="ritual-label">Ceremony Addendum (Notes)</label>
-                <textarea name="additional_notes" class="ritual-input" rows="3" placeholder="Special requirements..."></textarea>
-            </div>
-
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary w-100" style="height: 70px;">TRANSMIT REQUEST</button>
-            </div>
-        </form>
     </div>
-</div>
+</section>
 
-<!-- CINEMATIC VIDEO OVERLAY -->
+
+
+<!-- VIDEO OVERLAY -->
 <div class="booking-overlay" id="videoOverlay" style="justify-content:center; align-items: center; padding: 40px;">
-    <div class="glass-panel" style="width:100%; max-width:1200px; padding:20px; background:rgba(0,0,0,0.9); position: relative;">
-        <button onclick="closeVideo()" style="position: absolute; top: -40px; right: 0; background:none; border:none; color:#fff; cursor:pointer; font-size: 1.5rem;"><i class="fas fa-times"></i></button>
-        <video id="ritualVideo" controls style="width:100%; display: block; border-radius: 2px;">
+    <div style="width:100%; max-width:1200px; background:#000; position: relative;">
+        <button onclick="closeVideo()"
+            style="position: absolute; top: -40px; right: 0; background:none; border:none; color:#fff; cursor:pointer; font-size: 1.5rem;"><i
+                class="fas fa-times"></i></button>
+        <video id="ritualVideo" controls style="width:100%; display: block;">
             <source src="" type="video/mp4">
-            Legacy player not supported.
         </video>
     </div>
 </div>
@@ -330,17 +476,39 @@
 
 {% block extra_js %}
 <script>
-    function openBooking(id, name) {
-        document.getElementById('bookingServiceId').value = id;
-        document.getElementById('bookingServiceName').innerText = name.toUpperCase();
-        document.getElementById('bookingOverlay').classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
+    // CATALOG FILTER LOGIC
+    document.addEventListener('DOMContentLoaded', () => {
+        const filters = document.querySelectorAll('.filter-tab');
+        const items = document.querySelectorAll('.service-specimen');
 
-    function closeBooking() {
-        document.getElementById('bookingOverlay').classList.remove('active');
-        document.body.style.overflow = '';
-    }
+        filters.forEach(filter => {
+            filter.addEventListener('click', () => {
+                const target = filter.dataset.filter;
+
+                // Update Tabs
+                filters.forEach(f => f.classList.remove('active'));
+                filter.classList.add('active');
+
+                // Filter Items
+                items.forEach(item => {
+                    if (target === 'all' || item.dataset.category === target) {
+                        item.style.display = 'block';
+                        setTimeout(() => {
+                            item.style.opacity = '1';
+                            item.style.transform = 'translateY(0)';
+                        }, 10);
+                    } else {
+                        item.style.opacity = '0';
+                        item.style.transform = 'translateY(20px)';
+                        setTimeout(() => {
+                            item.style.display = 'none';
+                        }, 400);
+                    }
+                });
+            });
+        });
+    });
+
 
     function playCinematic(url) {
         const overlay = document.getElementById('videoOverlay');
@@ -358,12 +526,5 @@
         overlay.classList.remove('active');
         document.body.style.overflow = '';
     }
-
-    window.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            closeBooking();
-            closeVideo();
-        }
-    });
 </script>
 {% endblock %}

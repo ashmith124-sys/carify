@@ -1,199 +1,417 @@
-{% extends 'base.html' %}
-{% block title %}Add Product | Carify{% endblock %}
+{% extends 'seller_base.html' %}
+{% load static %}
 
-{% block content %}
-<div class="section terminal-mode" style="background: var(--surface); min-height: 100vh; padding: 100px 5%; position: relative;">
-    <!-- Subtle Grid Background -->
-    <div style="position: absolute; inset: 0; background-image: radial-gradient(var(--border-subtle) 1px, transparent 1px); background-size: 40px 40px; opacity: 0.1; pointer-events: none;"></div>
+{% block title %}{% if is_edit %}Reconfigure Specimen{% else %}Register Specimen{% endif %} | Carify Elite{% endblock %}
 
-    <div class="container" style="max-width: 1000px; position: relative; z-index: 5;">
-        <div style="margin-bottom: 60px;" data-appear class="visible">
-            <a class="nav-link hover-lift" href="{% url 'carify_app:seller_products' %}" style="display: inline-flex; align-items: center; gap: 12px; font-weight: 800; color: var(--bronze); text-decoration: none; font-size: 0.75rem; letter-spacing: 2px;">
-                <i class="fas fa-arrow-left"></i> RETURN TO ARCHIVE
-            </a>
-            <h1 style="font-size: clamp(2.5rem, 8vw, 4.5rem); letter-spacing: -4px; margin-top: 30px; text-transform: uppercase; font-weight: 800;">
-                {% if is_edit %}RECONFIGURE <span class="copper-text">SPECIMEN</span>{% else %}INITIALIZE <span class="copper-text">HARDWARE</span>{% endif %}
-            </h1>
-            <p style="color: var(--text-muted); text-transform: uppercase; font-size: 0.75rem; font-weight: 600; letter-spacing: 4px; margin-top: 10px; display: flex; align-items: center; gap: 15px;">
-                <span style="display: inline-block; width: 40px; height: 1px; background: var(--copper);"></span>
-                {% if is_edit %}Updating Entry #{{ product.id|stringformat:"06d" }}{% else %}Component Registration Terminal v2.04{% endif %}
-            </p>
-        </div>
-
-        <form method="post" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 60px;">
-            {% csrf_token %}
-
-            <!-- BASIC DETAILS -->
-            <div class="glass-panel" style="padding: 60px; border-radius: 2px; border: 1px solid var(--border-elegant); background: rgba(18, 15, 14, 0.6);">
-                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 20px;">
-                    <h3 style="letter-spacing: 2px; font-weight: 800; font-size: 1.2rem;">CORE SPECIFICATIONS</h3>
-                    <span style="font-size: 0.6rem; color: var(--text-muted); letter-spacing: 2px;">SEC_AUTH_LEVEL: ALFA</span>
-                </div>
-                <div class="form-grid" style="display: grid; gap: 30px;">
-                    {% if user.is_superuser %}
-                    <div style="padding: 15px; background: rgba(155, 90, 43, 0.05); border: 1px solid rgba(155, 90, 43, 0.2); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 0.65rem; color: var(--bronze); font-weight: 800; letter-spacing: 1px;">MASTER_PROTOCOL: CATEGORY_MANAGEMENT</span>
-                        <a href="{% url 'carify_app:add_category' %}" class="btn-premium" style="font-size: 0.6rem; background: var(--bronze); color: white; padding: 5px 12px; text-decoration: none; font-weight: 700;">+ NEW CATEGORY</a>
-                    </div>
-                    {% endif %}
-                    {{ form.as_p }}
-                </div>
-            </div>
-
-            <!-- MULTI-PHOTO BULK UPLOAD -->
-            <div class="glass-panel" style="padding: 60px; border-radius: 2px; border: 1px solid var(--border-elegant); background: rgba(18, 15, 14, 0.6);">
-                <h3 style="margin-bottom: 10px; letter-spacing: 2px; font-weight: 800;">VISUAL DATA ACQUISITION</h3>
-                <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 35px; letter-spacing: 0.5px;">Synthesize multiple visual angles into the core specimen dossier.</p>
-                
-                <div class="upload-zone" style="border: 1px dashed var(--copper); padding: 80px 40px; text-align: center; background: rgba(155, 90, 43, 0.03); transition: all 0.5s var(--transition-premium); position: relative; overflow: hidden;">
-                    <input type="file" name="multi_images" multiple accept="image/*" id="multiFiles" style="display: none;">
-                    <label for="multiFiles" style="cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 20px;">
-                        <div style="width: 80px; height: 80px; border-radius: 50%; border: 1px solid var(--border-elegant); display: flex; align-items: center; justify-content: center; transition: 0.3s; background: rgba(255,255,255,0.02);">
-                            <i class="fas fa-camera-retro" style="font-size: 1.8rem; color: var(--bronze);"></i>
-                        </div>
-                        <span style="font-weight: 800; letter-spacing: 2px; font-size: 0.8rem; color: var(--text-pure);">UPLOAD MASTER COMPOSITIONS</span>
-                        <span id="fileCountLabel" style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Ready for input...</span>
-                    </label>
-                </div>
-            </div>
-
-            <!-- INDIVIDUAL MEDIA (FORMSET) -->
-            <div class="glass-panel" style="padding: 60px; border-radius: 2px; border: 1px solid var(--border-elegant); background: rgba(18, 15, 14, 0.6);">
-                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 20px;">
-                    <h3 style="letter-spacing: 2px; font-weight: 800;">MEDIA LEDGER</h3>
-                    <span style="font-size: 0.6rem; color: var(--text-muted); letter-spacing: 2px;">ASSET_ID_MAPPING</span>
-                </div>
-                {{ formset.management_form }}
-                <div style="overflow-x: auto;">
-                    <table style="width: 100%; border-collapse: separate; border-spacing: 0 15px; min-width: 600px;">
-                        <thead>
-                            <tr style="text-align: left;">
-                                <th style="padding: 0 20px; font-family: var(--font-heading); font-size: 0.65rem; color: var(--text-muted); letter-spacing: 2px;">TYPE</th>
-                                <th style="padding: 0 20px; font-family: var(--font-heading); font-size: 0.65rem; color: var(--text-muted); letter-spacing: 2px;">SOURCE_FILE</th>
-                                <th style="padding: 0 20px; font-family: var(--font-heading); font-size: 0.65rem; color: var(--text-muted); letter-spacing: 2px;">DESCRIPTOR</th>
-                                <th style="padding: 0 20px; font-family: var(--font-heading); font-size: 0.65rem; color: var(--text-muted); letter-spacing: 2px;">SEQ</th>
-                                <th style="padding: 0 20px; font-family: var(--font-heading); font-size: 0.65rem; color: var(--text-muted); letter-spacing: 2px; text-align: center;">OMIT</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for media_form in formset %}
-                                <tr class="media-row" style="background: rgba(255,255,255,0.02); transition: 0.3s;">
-                                    {{ media_form.id }}
-                                    <td style="padding: 20px; border-left: 2px solid transparent;">{{ media_form.media_type }}</td>
-                                    <td style="padding: 20px;">
-                                        <div style="display: flex; align-items: center; gap: 15px;">
-                                            {% if media_form.instance.image %}
-                                                <div style="width: 50px; height: 50px; border: 1px solid var(--border-elegant); overflow: hidden;">
-                                                    <img src="{{ media_form.instance.image.url }}" style="width: 100%; height: 100%; object-fit: cover;">
-                                                </div>
-                                            {% endif %}
-                                            <div class="custom-file-input-wrapper">
-                                                {{ media_form.image }}
-                                                {{ media_form.video }}
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td style="padding: 20px;">{{ media_form.caption }}</td>
-                                    <td style="padding: 20px; width: 80px;">{{ media_form.sort_order }}</td>
-                                    <td style="padding: 20px; text-align: center;">{{ media_form.DELETE }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
-                {% if is_edit %}
-                <a href="{% url 'carify_app:seller_delete_product' product.id %}" 
-                   onclick="return confirm('CRITICAL: Permanent specimen deletion requested. Proceed?')"
-                   style="color: #ff4d4d; font-size: 0.7rem; font-weight: 800; letter-spacing: 2px; text-decoration: none; border-bottom: 1px solid #ff4d4d; padding-bottom: 4px;">
-                    PURGE SPECIMEN
-                </a>
-                {% else %}
-                <div></div>
-                {% endif %}
-                
-                <button type="submit" class="btn btn-primary" style="padding: 25px 80px; font-size: 0.9rem; letter-spacing: 4px; border-radius: 0;">
-                    {% if is_edit %}COMMIT UPDATES{% else %}PUBLISH HARDWARE{% endif %} <i class="fas fa-terminal" style="margin-left: 15px; font-size: 0.8rem;"></i>
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
+{% block extra_css %}
 <style>
-    /* Premium Form Controls */
-    input, select, textarea {
-        width: 100%;
-        padding: 16px 20px !important;
-        background: rgba(0, 0, 0, 0.4) !important;
-        border: 1px solid var(--border-subtle) !important;
-        color: var(--text-pure) !important;
-        font-family: var(--font-body) !important;
-        font-size: 0.9rem !important;
-        border-radius: 0 !important;
-        outline: none !important;
-        transition: all 0.4s var(--transition-premium) !important;
-    }
-    
-    input:focus, select:focus, textarea:focus {
-        border-color: var(--bronze) !important;
-        background: rgba(155, 90, 43, 0.05) !important;
-        box-shadow: 0 0 20px rgba(155, 90, 43, 0.1) !important;
+    :root {
+        --dossier-bg: rgba(18, 15, 14, 0.7);
+        --dossier-accent: #e85002;
     }
 
-    p label {
-        display: block;
+    .dossier-container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding-bottom: 100px;
+    }
+
+    .dossier-header {
+        margin-bottom: 50px;
+        position: relative;
+    }
+
+    .dossier-title {
         font-family: var(--font-heading);
+        font-size: clamp(2rem, 5vw, 3.5rem);
         font-weight: 800;
-        font-size: 0.65rem;
+        letter-spacing: -2px;
+        text-transform: uppercase;
+        line-height: 1;
+        margin-bottom: 15px;
+    }
+
+    .dossier-subtitle {
+        font-family: var(--font-heading);
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 4px;
         color: var(--text-muted);
         text-transform: uppercase;
-        letter-spacing: 2px;
-        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
     }
-    
-    p { margin-bottom: 30px; }
+
+    .dossier-subtitle::before {
+        content: '';
+        width: 30px;
+        height: 1px;
+        background: var(--dossier-accent);
+    }
+
+    .glass-dossier {
+        background: var(--dossier-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--border-subtle);
+        padding: 50px;
+        border-radius: 4px;
+        box-shadow: 0 40px 100px rgba(0, 0, 0, 0.4);
+        margin-bottom: 40px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .glass-dossier::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--dossier-accent);
+        opacity: 0.5;
+    }
+
+    .dossier-section-title {
+        font-family: var(--font-heading);
+        font-size: 1.1rem;
+        font-weight: 800;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--border-subtle);
+        padding-bottom: 15px;
+    }
+
+    .field-group {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+    }
+
+    @media (max-width: 768px) {
+        .field-group { grid-template-columns: 1fr; }
+    }
+
+    .input-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .input-label {
+        font-family: var(--font-heading);
+        font-size: 0.65rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--text-muted);
+    }
+
+    input[type="text"], 
+    input[type="number"], 
+    select, 
+    textarea {
+        background: rgba(0, 0, 0, 0.3) !important;
+        border: 1px solid var(--border-subtle) !important;
+        color: var(--text-pure) !important;
+        padding: 15px 20px !important;
+        font-family: var(--font-body) !important;
+        font-size: 0.9rem !important;
+        border-radius: 2px !important;
+        transition: all 0.4s var(--transition-premium) !important;
+    }
+
+    input:focus, select:focus, textarea:focus {
+        border-color: var(--dossier-accent) !important;
+        background: rgba(232, 80, 2, 0.05) !important;
+        box-shadow: 0 0 20px rgba(232, 80, 2, 0.15) !important;
+    }
+
+    .upload-zone {
+        border: 2px dashed var(--border-subtle);
+        background: rgba(255, 255, 255, 0.02);
+        padding: 60px 40px;
+        text-align: center;
+        transition: 0.5s;
+        cursor: pointer;
+        border-radius: 4px;
+    }
 
     .upload-zone:hover {
-        background: rgba(155, 90, 43, 0.08) !important;
-        border-color: var(--bronze) !important;
-    }
-    
-    .upload-zone:hover div {
-        transform: scale(1.1);
-        border-color: var(--bronze);
+        border-color: var(--dossier-accent);
+        background: rgba(232, 80, 2, 0.03);
     }
 
-    .media-row:hover {
-        background: rgba(255, 255, 255, 0.05) !important;
-    }
-    
-    .media-row:hover td:first-child {
-        border-left-color: var(--bronze);
+    .upload-icon {
+        font-size: 2.5rem;
+        color: var(--dossier-accent);
+        margin-bottom: 20px;
+        transition: 0.5s;
     }
 
-    /* checkbox styling */
-    input[type="checkbox"] {
-        width: 20px !important;
-        height: 20px !important;
-        margin: 0 auto;
+    .upload-zone:hover .upload-icon {
+        transform: translateY(-10px) scale(1.1);
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    .dossier-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px;
+    }
+
+    .dossier-table th {
+        text-align: left;
+        padding: 0 15px;
+        font-size: 0.6rem;
+        letter-spacing: 2px;
+        color: var(--text-muted);
+        text-transform: uppercase;
+    }
+
+    .dossier-table td {
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.02);
+        border-top: 1px solid var(--border-subtle);
+        border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .dossier-table td:first-child {
+        border-left: 1px solid var(--border-subtle);
+        border-radius: 4px 0 0 4px;
+    }
+
+    .dossier-table td:last-child {
+        border-right: 1px solid var(--border-subtle);
+        border-radius: 0 4px 4px 0;
+    }
+
+    .action-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 40px;
+    }
+
+    .btn-submit {
+        background: var(--dossier-accent);
+        color: white;
+        border: none;
+        padding: 20px 60px;
+        font-family: var(--font-heading);
+        font-weight: 800;
+        font-size: 0.8rem;
+        letter-spacing: 4px;
+        text-transform: uppercase;
         cursor: pointer;
+        transition: 0.5s var(--transition-premium);
+        border-radius: 2px;
     }
 
-    .custom-file-input-wrapper input[type="file"] {
-        padding: 10px !important;
-        font-size: 0.7rem !important;
+    .btn-submit:hover {
+        background: white;
+        color: black;
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(232, 80, 2, 0.3);
+    }
+
+    .btn-purge {
+        color: #ff4444;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-decoration: none;
+        text-transform: uppercase;
+        border-bottom: 1px solid transparent;
+        transition: 0.3s;
+    }
+
+    .btn-purge:hover {
+        border-bottom-color: #ff4444;
+    }
+
+    /* Grid Overlay */
+    .grid-overlay {
+        position: fixed;
+        inset: 0;
+        background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 50px 50px;
+        pointer-events: none;
+        z-index: 0;
     }
 </style>
+{% endblock %}
 
+{% block content %}
+<div class="grid-overlay"></div>
+
+<div class="dossier-container" data-appear>
+    <header class="dossier-header">
+        <a href="{% url 'carify_app:seller_products' %}" style="text-decoration: none; display: inline-flex; align-items: center; gap: 10px; color: var(--dossier-accent); font-size: 0.65rem; font-weight: 800; letter-spacing: 2px; margin-bottom: 30px;">
+            <i class="fas fa-chevron-left"></i> ARCHIVE_LOGS
+        </a>
+        <h1 class="dossier-title">
+            {% if is_edit %}RECONFIGURE <span class="copper-text">SPECIMEN</span>{% else %}REGISTER <span class="copper-text">HARDWARE</span>{% endif %}
+        </h1>
+        <div class="dossier-subtitle">
+            {% if is_edit %}Registry Update Protocol v4.02 // ID: #{{ product.id|stringformat:"06d" }}{% else %}New Entry Acquisition Protocol v2.04{% endif %}
+        </div>
+    </header>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- CORE DATA -->
+        <section class="glass-dossier">
+            <div class="dossier-section-title">
+                <span>CORE_SPECIFICATIONS</span>
+                <i class="fas fa-microchip" style="font-size: 0.8rem; opacity: 0.5;"></i>
+            </div>
+            
+            <div class="field-group">
+                <div class="input-wrapper">
+                    <label class="input-label" for="{{ form.name.id_for_label }}">Specimen Name</label>
+                    {{ form.name }}
+                </div>
+                <div class="input-wrapper">
+                    <label class="input-label" for="{{ form.category.id_for_label }}">Catalog Category</label>
+                    {{ form.category }}
+                </div>
+                <div class="input-wrapper">
+                    <label class="input-label" for="{{ form.price.id_for_label }}">Market Valuation ($)</label>
+                    {{ form.price }}
+                </div>
+                <div class="input-wrapper">
+                    <label class="input-label" for="{{ form.quantity.id_for_label }}">Inventory Units</label>
+                    {{ form.quantity }}
+                </div>
+            </div>
+
+            <div class="input-wrapper" style="margin-top: 30px;">
+                <label class="input-label" for="{{ form.description.id_for_label }}">Technical Description</label>
+                {{ form.description }}
+            </div>
+
+            <div class="input-wrapper" style="margin-top: 30px;">
+                <label class="input-label" for="{{ form.image.id_for_label }}">Master Display Specimen</label>
+                {{ form.image }}
+            </div>
+        </section>
+
+        <!-- VISUAL DATA -->
+        <section class="glass-dossier">
+            <div class="dossier-section-title">
+                <span>VISUAL_ACQUISITION</span>
+                <i class="fas fa-camera" style="font-size: 0.8rem; opacity: 0.5;"></i>
+            </div>
+            
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 30px; font-style: italic; font-family: var(--font-serif);">
+                Multi-angle synthesis allows for complete visual preservation of the specimen.
+            </p>
+
+            <div class="upload-zone" onclick="document.getElementById('multiFiles').click()">
+                <input type="file" name="multi_images" multiple accept="image/*" id="multiFiles" style="display: none;">
+                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                <h4 style="font-family: var(--font-heading); letter-spacing: 2px; margin-bottom: 10px;">REGISTER BULK CAPTURE</h4>
+                <span id="fileCountLabel" style="font-size: 0.6rem; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase;">Awaiting data packets...</span>
+            </div>
+        </section>
+
+        <!-- MEDIA LEDGER -->
+        <section class="glass-dossier">
+            <div class="dossier-section-title">
+                <span>MEDIA_LEDGER_SYNC</span>
+                <i class="fas fa-list-check" style="font-size: 0.8rem; opacity: 0.5;"></i>
+            </div>
+
+            {{ formset.management_form }}
+            <div class="table-container">
+                <table class="dossier-table">
+                    <thead>
+                        <tr>
+                            <th>TYPE</th>
+                            <th>SOURCE_NODE</th>
+                            <th>DESCRIPTOR</th>
+                            <th>SEQ</th>
+                            <th>OMIT</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for media_form in formset %}
+                            <tr class="media-row">
+                                {{ media_form.id }}
+                                <td>{{ media_form.media_type }}</td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 15px;">
+                                        {% if media_form.instance.image %}
+                                            <div style="width: 40px; height: 40px; border: 1px solid var(--dossier-accent); overflow: hidden; border-radius: 2px;">
+                                                <img src="{{ media_form.instance.image.url }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                            </div>
+                                        {% endif %}
+                                        {{ media_form.image }}
+                                        {{ media_form.video }}
+                                    </div>
+                                </td>
+                                <td>{{ media_form.caption }}</td>
+                                <td style="width: 80px;">{{ media_form.sort_order }}</td>
+                                <td style="text-align: center;">{{ media_form.DELETE }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <div class="action-row">
+            {% if is_edit %}
+                <a href="{% url 'carify_app:seller_delete_product' product.id %}" class="btn-purge" onclick="return confirm('CRITICAL: Permanent specimen deletion requested. Proceed?')">
+                    TERMINATE_SPECIMEN
+                </a>
+            {% else %}
+                <div></div>
+            {% endif %}
+
+            <button type="submit" class="btn-submit">
+                {% if is_edit %}COMMIT_SYNCHRONIZATION{% else %}PUBLISH_TO_VAULT{% endif %}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
 <script>
-    document.getElementById('multiFiles').addEventListener('change', function(e) {
-        const count = e.target.files.length;
-        document.getElementById('fileCountLabel').innerText = count + ' UNITS BUFFERED FOR SEQUENTIAL UPLOAD';
-        document.getElementById('fileCountLabel').style.color = 'var(--bronze)';
+    document.addEventListener('DOMContentLoaded', () => {
+        const multiInput = document.getElementById('multiFiles');
+        const countLabel = document.getElementById('fileCountLabel');
+
+        if(multiInput) {
+            multiInput.addEventListener('change', (e) => {
+                const count = e.target.files.length;
+                countLabel.innerText = count + ' DATA PACKETS BUFFERED FOR SEQUENTIAL UPLOAD';
+                countLabel.style.color = 'var(--dossier-accent)';
+                countLabel.style.fontWeight = '800';
+            });
+        }
+
+        // Entrance animation
+        const dossier = document.querySelector('.dossier-container');
+        setTimeout(() => {
+            dossier.style.opacity = '1';
+            dossier.style.transform = 'translateY(0)';
+        }, 100);
+        dossier.style.opacity = '0';
+        dossier.style.transform = 'translateY(30px)';
+        dossier.style.transition = 'all 1s var(--transition-premium)';
     });
 </script>
 {% endblock %}
-

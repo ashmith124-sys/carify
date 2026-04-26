@@ -209,6 +209,7 @@
                 transform-origin: center bottom;
                 transition: opacity 1.0s cubic-bezier(0.16,1,0.3,1),
                             transform 1.0s cubic-bezier(0.16,1,0.3,1);
+                will-change: transform, opacity;
             }
             [data-appear].visible {
                 opacity: 1;
@@ -216,6 +217,16 @@
             }
         `;
         document.head.appendChild(style);
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('[data-appear]').forEach(el => observer.observe(el));
     }
 
     // ─────────────────────────────────────────────

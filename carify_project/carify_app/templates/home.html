@@ -16,7 +16,7 @@
         --clr-muted: rgba(255, 255, 255, 0.38);
         --clr-dimmed: rgba(255, 255, 255, 0.15);
         --clr-copper: #e85002;
-        --clr-gold: #f5c882;
+        --clr-gold: #e85002;
         --clr-surface: #0d0c0b;
         --clr-border: rgba(255, 255, 255, 0.06);
         --font-h: 'Outfit', sans-serif;
@@ -490,7 +490,7 @@
 
     .cg-feat-card:hover {
         transform: translateY(-6px);
-        box-shadow: 0 24px 50px rgba(0, 0, 0, .7), 0 0 0 1px rgba(217, 145, 90, .12);
+        box-shadow: 0 24px 50px rgba(0, 0, 0, .7), 0 0 0 1px rgba(232, 80, 2, .12);
     }
 
     .cg-feat-card__img-w {
@@ -671,7 +671,7 @@
     }
 
 
-    .cg-bleed__p {
+    .cg-p {
         font-family: var(--font-s);
         font-size: 1rem;
         font-style: italic;
@@ -679,6 +679,84 @@
         line-height: 1.75;
         max-width: 400px;
         margin-bottom: 2rem;
+    }
+
+    /* ── RITUAL CAROUSEL ───────────────────────────── */
+    .cg-ritual-carousel {
+        background: #000;
+        padding: 100px 0;
+        overflow: hidden;
+    }
+
+    .ritual-carousel-w {
+        position: relative;
+        height: 600px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .ritual-slide {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        transition: opacity 1.2s var(--ease);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .ritual-slide.active {
+        opacity: 1;
+        z-index: 2;
+    }
+
+    .ritual-slide img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.4);
+    }
+
+    .ritual-content {
+        position: relative;
+        z-index: 5;
+        text-align: center;
+        max-width: 800px;
+        padding: 0 40px;
+    }
+
+    .ritual-h2 {
+        font-family: var(--font-h);
+        font-size: clamp(2rem, 5vw, 4rem);
+        font-weight: 900;
+        letter-spacing: -0.04em;
+        margin-bottom: 20px;
+        line-height: 0.9;
+    }
+
+    .ritual-nav {
+        position: absolute;
+        bottom: 50px;
+        display: flex;
+        gap: 20px;
+        z-index: 10;
+    }
+
+    .ritual-dot {
+        width: 40px;
+        height: 2px;
+        background: rgba(255,255,255,0.1);
+        border: none;
+        cursor: pointer;
+        transition: 0.4s;
+    }
+
+    .ritual-dot.active {
+        background: var(--clr-copper);
+        width: 80px;
     }
 
     /* ── THE VAULT (ELITE INVENTORY) ────────────────── */
@@ -1525,8 +1603,7 @@
                     <div class="la-card__row">
                         <span class="la-card__price">${{ product.price }}</span>
                         <div style="display:flex;gap:8px;">
-                            <button class="la-card__acquire" onclick="event.stopPropagation(); window.CarifyBridge.addItemToCart({{ product.id }}, 'product')">ACQUIRE</button>
-                            <a href="{% url 'carify_app:product_detail' product.id %}" class="la-card__acquire" style="opacity:1;transform:none;">VIEW</a>
+                            <a href="{% url 'carify_app:product_detail' product.id %}" class="la-card__acquire" style="opacity:1;transform:none;">VIEW DOSSIER</a>
                         </div>
                     </div>
                 </div>
@@ -1595,6 +1672,75 @@
         {% endfor %}
     </div>
 </div>
+
+<!-- ══════════════════════════════════════════════
+     RITUAL CAROUSEL — THE ART OF CARE
+══════════════════════════════════════════════ -->
+<section class="cg-ritual-carousel" data-cg-appear>
+    <div class="ritual-carousel-w" id="ritualCarousel">
+        <div class="ritual-slide active">
+            <img src="{% static 'img/ritual/detailing.png' %}" alt="Precision Detailing">
+            <div class="ritual-content">
+                <span class="cg-features__pretitle">RITUAL 01</span>
+                <h2 class="ritual-h2">MOLECULAR<br>PRECISION</h2>
+                <p class="cg-about__p" style="margin: 0 auto 30px;">Every fiber, every surface, restored to original DNA status.</p>
+                <a href="{% url 'carify_app:services' %}" class="cg-btn-primary">EXPLORE RITUALS</a>
+            </div>
+        </div>
+        <div class="ritual-slide">
+            <img src="{% static 'img/ritual/ceramic.png' %}" alt="Ceramic Armor">
+            <div class="ritual-content">
+                <span class="cg-features__pretitle">RITUAL 02</span>
+                <h2 class="ritual-h2">CERAMIC<br>ARMOR</h2>
+                <p class="cg-about__p" style="margin: 0 auto 30px;">Shield your specimen with industry-exclusive chemical compounds.</p>
+                <a href="{% url 'carify_app:services' %}" class="cg-btn-primary">EXPLORE RITUALS</a>
+            </div>
+        </div>
+        <div class="ritual-slide">
+            <img src="{% static 'img/ritual/ppf.png' %}" alt="PPF Protection">
+            <div class="ritual-content">
+                <span class="cg-features__pretitle">RITUAL 03</span>
+                <h2 class="ritual-h2">ULTIMATE<br>SHIELD</h2>
+                <p class="cg-about__p" style="margin: 0 auto 30px;">Invisible ballistic-grade protection for your specimen's original finish.</p>
+                <a href="{% url 'carify_app:services' %}" class="cg-btn-primary">EXPLORE RITUALS</a>
+            </div>
+        </div>
+
+        <div class="ritual-nav">
+            <button class="ritual-dot active" data-idx="0"></button>
+            <button class="ritual-dot" data-idx="1"></button>
+            <button class="ritual-dot" data-idx="2"></button>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const carousel = document.getElementById('ritualCarousel');
+        const slides = carousel.querySelectorAll('.ritual-slide');
+        const dots = carousel.querySelectorAll('.ritual-dot');
+        let current = 0;
+
+        function showSlide(idx) {
+            slides.forEach(s => s.classList.remove('active'));
+            dots.forEach(d => d.classList.remove('active'));
+            slides[idx].classList.add('active');
+            dots[idx].classList.add('active');
+        }
+
+        dots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                current = parseInt(dot.dataset.idx);
+                showSlide(current);
+            });
+        });
+
+        setInterval(() => {
+            current = (current + 1) % slides.length;
+            showSlide(current);
+        }, 6000);
+    });
+</script>
 
 <!-- ══════════════════════════════════════════════
      SECTION 3 — THE VAULT (Elite Inventory)

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AUTHORIZE PROTOCOL | {{ service.name|upper }}{% endblock %}
+
+{% block content %}
+<div class="auth-page" style="padding: 180px 24px 100px; min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #050505;">
+    <div class="container" style="max-width: 600px;" data-appear>
+        <div class="glass-panel" style="padding: 60px 40px; border-radius: 4px; box-shadow: 0 40px 100px rgba(0,0,0,0.5); background: var(--surface);">
+            <div style="margin-bottom: 50px;">
+                <span class="hero-eyebrow" style="color: var(--bronze); margin-bottom: 10px; display: block;">Ritual Authorization</span>
+                <h1 class="font-heading" style="font-size: 3rem; line-height: 0.9; text-transform: uppercase;">REQUEST<br><span style="color:var(--bronze);">{{ service.name }}</span></h1>
+            </div>
+
+            <form action="{% url 'carify_app:book_service' %}" method="POST" style="display:flex; flex-direction:column;">
+                {% csrf_token %}
+                <input type="hidden" name="service_id" value="{{ service.id }}">
+
+                <div class="ritual-input-group" style="margin-bottom: 40px;">
+                    <label style="font-size: 0.55rem; letter-spacing: 3px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; display: block;">Temporal Window (Date)</label>
+                    <input type="date" name="preferred_date" style="width: 100%; background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 15px 0; color: #fff; font-family: var(--font-heading); font-size: 1.1rem; border-radius: 0;" required>
+                </div>
+
+                <div class="ritual-input-group" style="margin-bottom: 40px;">
+                    <label style="font-size: 0.55rem; letter-spacing: 3px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; display: block;">Temporal Window (Time)</label>
+                    <input type="time" name="preferred_time" style="width: 100%; background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 15px 0; color: #fff; font-family: var(--font-heading); font-size: 1.1rem; border-radius: 0;" required>
+                </div>
+
+                <div class="ritual-input-group" style="margin-bottom: 40px;">
+                    <label style="font-size: 0.55rem; letter-spacing: 3px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; display: block;">Specimen Identification</label>
+                    <input type="text" name="vehicle_details" style="width: 100%; background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 15px 0; color: #fff; font-family: var(--font-heading); font-size: 1.1rem; border-radius: 0;" placeholder="e.g. 2024 Aston Martin Valhalla" required>
+                </div>
+
+                <div class="ritual-input-group" style="margin-bottom: 60px;">
+                    <label style="font-size: 0.55rem; letter-spacing: 3px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; display: block;">Ceremony Addendum</label>
+                    <textarea name="additional_notes" style="width: 100%; background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 15px 0; color: #fff; font-family: var(--font-heading); font-size: 1.1rem; border-radius: 0;" rows="3" placeholder="Special requirements..."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; height: 80px; font-size: 0.75rem; letter-spacing: 0.3em; background: var(--bronze); border: none; color: #000; font-weight: 900; cursor: pointer; transition: 0.4s;">TRANSMIT REQUEST</button>
+            </form>
+
+            <div style="margin-top: 40px; text-align: center;">
+                <a href="{% url 'carify_app:service_detail' service.id %}" style="font-size: 0.6rem; color: var(--text-muted); text-decoration: none; letter-spacing: 2px; text-transform: uppercase;">Return to Dossier</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    input:focus, textarea:focus {
+        outline: none;
+        border-bottom-color: var(--bronze) !important;
+    }
+    
+    /* Ensure date/time inputs have white icons on some browsers */
+    input::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+    }
+</style>
+{% endblock %}

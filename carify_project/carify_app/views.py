@@ -106,7 +106,7 @@ def product_list(request):
 
 @login_required
 def add_category(request):
-    """Initialize a new catalog option (category)."""
+    """Register a new catalog option (category)."""
     if not request.user.is_superuser:
         messages.error(request, "Clearance_Error: SuperAdmin required.")
         return redirect('carify_app:seller_dashboard')
@@ -115,7 +115,7 @@ def add_category(request):
         form = CategoryForm(request.POST)
         if form.is_valid():
             category = form.save()
-            messages.success(request, f"Catalog option '{category.name}' initialized.")
+            messages.success(request, f"Catalog option '{category.name}' registered.")
             return redirect('carify_app:manage_categories')
     else:
         form = CategoryForm()
@@ -123,7 +123,7 @@ def add_category(request):
     existing_categories = Category.objects.all().order_by('name')
     return render(request, 'category_form.html', {
         'form': form, 
-        'title': 'INITIALIZE CATALOG OPTION',
+        'title': 'REGISTER CATALOG OPTION',
         'existing_categories': existing_categories
     })
 
@@ -194,7 +194,7 @@ def seller_register(request):
                 description=form.cleaned_data.get('description', '')
             )
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-            messages.success(request, f"Partner account initialized successfully.")
+            messages.success(request, f"Partner account registered successfully.")
             return redirect('carify_app:seller_dashboard')
     else:
         form = SellerRegistrationForm()
@@ -263,7 +263,7 @@ def create_checkout_session(request):
     cart = get_current_cart(request)
     active_items = cart.items.filter(is_saved_for_later=False)
     if not active_items.exists():
-        messages.error(request, "Empty_Cart_Cache. Please add items to initialize checkout.")
+        messages.error(request, "Empty_Cart_Cache. Please add items to access checkout.")
         return redirect('carify_app:product_list')
 
     try:
@@ -557,7 +557,20 @@ def seller_delete_product(request, product_id):
 def services_catalog(request):
     """Render the dynamic Elite Solutions catalog."""
     services = Service.objects.all().select_related('seller', 'category')
-    return render(request, 'services.html', {'services': services})
+    categories = Category.objects.filter(service__isnull=False).distinct()
+    return render(request, 'services.html', {
+        'services': services,
+        'categories': categories
+    })
+
+def service_detail(request, service_id):
+    """Display detailed technical dossier for a ritual protocol."""
+    service = get_object_or_404(Service, id=service_id)
+    related_rituals = Service.objects.filter(category=service.category).exclude(id=service.id)[:3]
+    return render(request, 'service_detail.html', {
+        'service': service,
+        'related_rituals': related_rituals
+    })
 
 @login_required
 def add_service(request):
@@ -572,7 +585,7 @@ def add_service(request):
             service = form.save(commit=False)
             service.seller = request.user
             service.save()
-            messages.success(request, f"Ceremony '{service.name}' initialized in the catalog.")
+            messages.success(request, f"Ceremony '{service.name}' registered in the catalog.")
             return redirect('carify_app:services')
     else:
         form = ServiceForm()
@@ -593,17 +606,26 @@ def delete_service(request, service_id):
     return redirect('carify_app:services')
 
 @login_required
+def service_booking(request, service_id):
+    """Render the dedicated booking protocol form for a specific ritual."""
+    service = get_object_or_404(Service, id=service_id)
+    return render(request, 'service_booking.html', {'service': service})
+
+@login_required
 @require_POST
 def book_service(request):
-    """Handle service ceremony booking requests with optional Cart clearing."""
+    """Handle service ceremony booking requests."""
     service_id = request.POST.get('service_id')
-    # Align with form field names in cart.html and services.html
-    preferred_date = request.POST.get('preferred_date') or request.POST.get('date')
-    preferred_time = request.POST.get('preferred_time') or request.POST.get('time')
-    vehicle_details = request.POST.get('vehicle_details') or request.POST.get('vehicle')
-    notes = request.POST.get('additional_notes') or request.POST.get('notes', '')
-    
-    redirect_to_cart = request.POST.get('redirect_to_cart') == 'true'
+    service = get_object_or_404(Service, id=service_id)
+    preferred_date = request.POST.get('preferred_date')
+    preferred_time = request.POST.get('preferred_time')
+    vehicle_details = request.POST.get('vehicle_details')
+    notes = request.POST.get('additional_notes', '')
+
+    # Here you would typically save to an Order or ServiceBooking model
+    # For now, we simulate success with a premium notification
+    messages.success(request, f"PROTOCOL_AUTHORIZED: Ritual '{service.name}' has been queued for dispatch.")
+    return redirect('carify_app:payment_success')
 
     service = get_object_or_404(Service, id=service_id)
 

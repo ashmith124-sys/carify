@@ -49,9 +49,11 @@ urlpatterns = [
     # NEW Informational Pages
     path('about/', views.static_page, {'page_type': 'about'}, name='about'),
     path('services/', views.services_catalog, name='services'),
+    path('services/<int:service_id>/', views.service_detail, name='service_detail'),
     path('services/create/', views.add_service, name='add_service'),
     path('services/delete/<int:service_id>/', views.delete_service, name='delete_service'),
     path('book-service/', views.book_service, name='book_service'),
+    path('services/book/<int:service_id>/', views.service_booking, name='service_booking'),
 
     path('manifesto/', views.static_page, {'page_type': 'manifesto'}, name='manifesto'),
     path('privacy/', views.static_page, {'page_type': 'privacy'}, name='privacy'),

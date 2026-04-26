@@ -7,6 +7,7 @@
     :root {
         --gold: #e85002;
         --gold-glow: rgba(232, 80, 2, 0.3);
+        --copper: #e85002;
         --bg: #050505;
     }
 
@@ -449,13 +450,7 @@
         </div>
 
         <div class="acq-console">
-            <div class="qty-stepper">
-                <button class="stepper-btn" onclick="tuneQty(-1)">−</button>
-                <input type="number" id="qtyInput" value="1" min="1" max="{{ product.quantity }}" class="qty-num" readonly>
-                <button class="stepper-btn" onclick="tuneQty(1)">+</button>
-            </div>
-
-            <button class="acq-btn-gold" id="acqBtn" onclick="executeAcquisition()">INITIALIZE ACQUISITION</button>
+            <a href="mailto:concierge@carify.com?subject=Specimen%20Inquiry:%20{{ product.name|urlencode }}" class="acq-btn-gold" style="text-decoration: none; display: inline-block; text-align: center;">BOOK NOW</a>
         </div>
 
         <div class="tech-matrix">
@@ -559,7 +554,7 @@
             btn.innerText = 'SYNCHRONIZING PORTFOLIO...';
             btn.style.background = '#fff';
             await window.CarifyBridge.addItemToCart("{{ product.id }}", 'product', qty);
-            btn.innerText = 'SPECIMEN INITIALIZED';
+            btn.innerText = 'SPECIMEN REGISTERED';
             setTimeout(() => {
                 window.location.href = "{% url 'carify_app:product_list' %}";
             }, 1000);

@@ -9,7 +9,7 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from .models import (
     Category, Product, ProductMedia, Order, OrderItem, Payment, 
-    SellerProfile, Service, Wishlist, ProductQuestion, ProductAnswer, 
+    SellerProfile, Service, ServiceMedia, Wishlist, ProductQuestion, ProductAnswer, 
     Review, Booking, NewsletterSubscription
 )
 
@@ -82,6 +82,12 @@ class ProductMediaInline(admin.TabularInline):
     fields = ('media_type', 'image', 'video', 'caption', 'sort_order', 'created_at')
     readonly_fields = ('created_at',)
 
+class ServiceMediaInline(admin.TabularInline):
+    model = ServiceMedia
+    extra = 1
+    fields = ('media_type', 'image', 'video', 'caption', 'sort_order', 'created_at')
+    readonly_fields = ('created_at',)
+
 class ProductAnswerInline(admin.TabularInline):
     model = ProductAnswer
     extra = 1
@@ -96,10 +102,10 @@ class CategoryAdmin(admin.ModelAdmin):
 
     def add_catalog_option(self, request):
         return format_html(
-            '<a href="{}" class="bg-primary-600 font-bold px-4 py-2 rounded text-white text-xs uppercase tracking-widest no-underline hover:bg-primary-700 transition-colors">INITIALIZE NEW CATALOG</a>',
+            '<a href="{}" class="bg-primary-600 font-bold px-4 py-2 rounded text-white text-xs uppercase tracking-widest no-underline hover:bg-primary-700 transition-colors">INDUCT NEW CATALOG</a>',
             reverse('admin:carify_app_category_add')
         )
-    add_catalog_option.short_description = 'Initialize Catalog'
+    add_catalog_option.short_description = 'Induct Catalog'
     add_catalog_option.allow_from_facets = True 
 
     def delete_action(self, obj):
@@ -232,6 +238,7 @@ class ServiceAdmin(admin.ModelAdmin):
     list_display = ('name', 'price_display', 'seller', 'category', 'contact_info', 'created_at', 'delete_action')
     list_filter = ('category', 'created_at')
     search_fields = ('name', 'description', 'seller__username', 'contact_info')
+    inlines = [ServiceMediaInline]
 
     # Unfold actions for the list view header
     actions_list = ["add_ritual_protocol"]

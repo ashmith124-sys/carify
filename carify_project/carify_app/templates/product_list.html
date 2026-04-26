@@ -598,11 +598,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             <div class="specimen__footer">
                                 <span class="specimen__price">$${parseFloat(p.price).toLocaleString()}</span>
                                 <div class="specimen__actions">
-                                    <button class="specimen__btn" onclick="event.stopPropagation(); window.CarifyBridge.addItemToCart(${p.id}, 'product')" title="Add to Portfolio">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
-                                    <a href="/product/${p.id}/" class="specimen__btn--primary specimen__btn" onclick="event.stopPropagation()">
-                                        VIEW
+                                    <a href="/product/${p.id}/" class="specimen__btn--primary specimen__btn" style="width: 100%;" onclick="event.stopPropagation()">
+                                        VIEW DOSSIER
                                     </a>
                                 </div>
                             </div>

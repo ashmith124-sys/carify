@@ -16,9 +16,9 @@
     --popover: 15 43% 6%;
     --popover-foreground: 210 3% 91%;
 
-    --primary: 28 80% 52%;
-    /* #e67e22 - Vibrant Dark Orange */
-    --primary-foreground: 0 0% 100%;
+    --primary: 20, 98%, 46%;
+    /* #e85002 - Vibrant Core Orange */
+    --primary-foreground: 0, 0%, 100%;
 
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
@@ -597,4 +597,28 @@ a {
         grid-template-columns: 1fr;
         margin-top: 2rem;
     }
+}
+/* ── ANIMATIONS ────────────────── */
+[data-appear] {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 1s var(--transition-premium);
+}
+
+[data-appear].appeared {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+    100% { transform: translate(0); }
+}
+
+.hero-glitch-title:hover {
+    animation: glitch 0.3s linear infinite;
 }

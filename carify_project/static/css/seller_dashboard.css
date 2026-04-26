@@ -8,7 +8,7 @@
 :root {
     /* Aligned with Design System v2.0 */
     --obsidian: #080707;
-    --copper: #9b5a2b;
+    --copper: #e85002;
     --bronze: #e85002;
     --surface: #120f0e;
     --surface-soft: #1c1816;
@@ -18,7 +18,7 @@
     --text-muted: #8E8E93;
 
     --border-subtle: rgba(255, 255, 255, 0.06);
-    --border-elegant: rgba(217, 145, 90, 0.2);
+    --border-elegant: rgba(232, 80, 2, 0.2);
 
     --success: #10B981;
     --warning: #ff6f00;
@@ -114,7 +114,7 @@ body {
 .nav-link:hover,
 .nav-link.active {
     color: var(--bronze);
-    background: rgba(217, 145, 90, 0.05);
+    background: rgba(232, 80, 2, 0.05);
 }
 
 /* Main Content Area */

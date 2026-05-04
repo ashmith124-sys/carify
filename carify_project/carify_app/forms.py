@@ -3,27 +3,50 @@ from django.contrib.auth.forms import UserCreationForm
 from django.forms import modelformset_factory
 from .models import Product, ProductMedia, Service, Category
 
+COUNTRY_CODES = [
+    ('+1', 'USA (+1)'),
+    ('+44', 'UK (+44)'),
+    ('+91', 'India (+91)'),
+    ('+971', 'UAE (+971)'),
+    ('+33', 'France (+33)'),
+    ('+49', 'Germany (+49)'),
+    ('+81', 'Japan (+81)'),
+    ('+86', 'China (+86)'),
+    ('+7', 'Russia (+7)'),
+    ('+61', 'Australia (+61)'),
+]
+
 class BuyerRegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True, help_text='Enter a working email address for OTP verification.')
+    country_code = forms.ChoiceField(choices=COUNTRY_CODES, initial='+1', required=True)
+    phone_number = forms.CharField(max_length=20, required=True, help_text='Enter your mobile number for SMS OTP.')
 
     class Meta(UserCreationForm.Meta):
-        fields = UserCreationForm.Meta.fields + ('email',)
+        fields = UserCreationForm.Meta.fields + ('email', 'country_code', 'phone_number')
 
     def save(self, commit=True):
         user = super().save(commit=False)
         user.email = self.cleaned_data['email']
         user.is_active = False  # Deactivate until OTP is verified
+        full_phone = f"{self.cleaned_data['country_code']}{self.cleaned_data['phone_number']}"
         if commit:
             user.save()
+            from .models import BuyerProfile
+            BuyerProfile.objects.update_or_create(
+                user=user,
+                defaults={'phone_number': full_phone}
+            )
         return user
 
 class SellerRegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True, help_text='Enter your business email address.')
+    country_code = forms.ChoiceField(choices=COUNTRY_CODES, initial='+1', required=True)
+    phone_number = forms.CharField(max_length=20, required=True, help_text='Enter your business contact number.')
     shop_name = forms.CharField(max_length=100, required=True)
     description = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}), required=False)
 
     class Meta(UserCreationForm.Meta):
-        fields = UserCreationForm.Meta.fields + ('email',)
+        fields = UserCreationForm.Meta.fields + ('email', 'country_code', 'phone_number', 'shop_name')
 
     def save(self, commit=True):
         user = super().save(commit=False)

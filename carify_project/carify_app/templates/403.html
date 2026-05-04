@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}403_ACCESS_DENIED | CARIFY{% endblock %}
+
+{% block content %}
+<div class="error-page-wrapper" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #000; position: relative; overflow: hidden;">
+    
+    <!-- Red Scanning Overlay -->
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: #ff4d4d; opacity: 0.5; box-shadow: 0 0 20px #ff4d4d; animation: scanDown 4s linear infinite;"></div>
+
+    <div style="text-align: center; z-index: 10; padding: 0 20px;">
+        <div class="error-code-wrapper" style="position: relative; display: inline-block; margin-bottom: 40px;">
+            <i class="fas fa-lock" style="font-size: 5rem; color: #ff4d4d; margin-bottom: 20px; display: block; animation: lockShake 2s ease-in-out infinite;"></i>
+            <h1 style="font-family: var(--font-heading); font-size: clamp(8rem, 15vw, 12rem); line-height: 1; font-weight: 900; letter-spacing: -5px; color: #ff4d4d; opacity: 0.1;">403</h1>
+        </div>
+
+        <div style="max-width: 600px; margin: 0 auto;">
+            <span class="auth-eyebrow" style="color: #ff4d4d; letter-spacing: 0.5em; font-weight: 800; font-size: 0.8rem; margin-bottom: 20px; display: block;">INSUFFICIENT_CLEARANCE</span>
+            <h2 class="font-heading" style="font-size: 2.5rem; color: #fff; margin-bottom: 20px; letter-spacing: -1px;">FORBIDDEN_ZONE</h2>
+            <p style="color: var(--text-muted); font-size: 1rem; line-height: 1.6; margin-bottom: 40px; font-family: var(--font-serif); font-style: italic;">
+                Your current authentication level does not permit entry into this secure sector. Please contact an administrator for elevated credentials.
+            </p>
+
+            <div style="display: flex; gap: 20px; justify-content: center;">
+                <a href="{% url 'carify_app:home' %}" class="btn btn-primary" style="padding: 15px 40px; border-radius: 0; text-transform: uppercase; letter-spacing: 2px; font-weight: 800;">RETURN_TO_SAFETY</a>
+                <a href="/accounts/login/" style="padding: 15px 40px; border: 1px solid #ff4d4d; color: #ff4d4d; text-decoration: none; font-family: var(--font-heading); font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 800; transition: 0.3s;" onmouseover="this.style.background='#ff4d4d'; this.style.color='#000'" onmouseout="this.style.background='transparent'; this.style.color='#ff4d4d'">AUTHENTICATE</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes scanDown {
+        0% { top: 0; }
+        100% { top: 100%; }
+    }
+    @keyframes lockShake {
+        0%, 100% { transform: rotate(0); }
+        10%, 30%, 50%, 70%, 90% { transform: rotate(-5deg); }
+        20%, 40%, 60%, 80% { transform: rotate(5deg); }
+    }
+</style>
+{% endblock %}

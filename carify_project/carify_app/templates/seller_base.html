@@ -93,6 +93,17 @@
         </header>
 
         <!-- Page Content -->
+        {% if messages %}
+        <div class="messages-container" style="padding: 20px;">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}" style="padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 0; {% if message.tags == 'error' %}background-color: rgba(220, 38, 38, 0.1); border-color: #dc2626; color: #f87171;{% elif message.tags == 'success' %}background-color: rgba(5, 150, 105, 0.1); border-color: #059669; color: #34d399;{% else %}background-color: rgba(30, 41, 59, 0.1); border-color: var(--border-subtle); color: var(--text-muted);{% endif %}">
+                <i class="fas {% if message.tags == 'error' %}fa-exclamation-triangle{% elif message.tags == 'success' %}fa-check-circle{% else %}fa-info-circle{% endif %}" style="margin-right: 10px;"></i>
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
         {% block content %}
         {% endblock %}
     </main>

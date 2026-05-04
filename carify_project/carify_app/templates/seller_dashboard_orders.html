@@ -1,5 +1,5 @@
 {% extends 'seller_base.html' %}
-{% block title %}Manage Logistics & Orders | Carify Partner{% endblock %}
+{% block title %}Service & Order Management | Carify Partner{% endblock %}
 
 {% block content %}
 <div class="section-header" style="margin-bottom: 30px;">
@@ -39,7 +39,19 @@
                             </div>
                         </div>
                     </td>
-                    <td style="padding: 20px; font-size: 0.8rem;">{{ item.order.buyer.username }}</td>
+                    <td style="padding: 20px; font-size: 0.8rem;">
+                        <span style="font-weight: 600;">{{ item.order.buyer.username }}</span><br>
+                        {% if item.order.shipping_address %}
+                        <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 5px; line-height: 1.4;">
+                            <i class="fas fa-truck" style="font-size: 0.6rem; color: var(--bronze); margin-right: 5px;"></i>
+                            {{ item.order.shipping_address }}<br>
+                            {{ item.order.shipping_city }}{% if item.order.shipping_state %}, {{ item.order.shipping_state }}{% endif %} {{ item.order.shipping_zip }}<br>
+                            {{ item.order.shipping_country }}
+                        </div>
+                        {% else %}
+                        <span style="font-size: 0.65rem; color: var(--text-muted); opacity: 0.5;">No shipping info</span>
+                        {% endif %}
+                    </td>
                     <td style="padding: 20px;">
                         <span style="font-family: var(--font-heading); color: var(--bronze); font-size: 0.9rem;">${{ item.price }}</span>
                     </td>
@@ -52,7 +64,14 @@
                     </td>
                     <td style="padding: 20px;">
                         {% if item.order.tracking_id %}
-                            <span style="font-family: monospace; font-size: 0.7rem; color: var(--text-pure); background: rgba(255,255,255,0.05); padding: 5px 10px; border-radius: 4px;">{{ item.order.tracking_id }}</span>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <span style="font-family: monospace; font-size: 0.7rem; color: var(--text-pure); background: rgba(255,255,255,0.05); padding: 5px 10px; border-radius: 4px; text-align: center;">{{ item.order.tracking_id }}</span>
+                                {% if item.order.status == 'paid' %}
+                                <a href="{% url 'carify_app:mark_order_as_shipped' item.order.id %}" class="btn" style="background: var(--bronze); color: white; font-size: 0.6rem; padding: 8px; text-align: center; text-decoration: none; text-transform: uppercase; font-weight: 800; letter-spacing: 1px;">
+                                    <i class="fas fa-paper-plane" style="margin-right: 5px;"></i> Dispatch Asset
+                                </a>
+                                {% endif %}
+                            </div>
                         {% else %}
                             <span style="font-size: 0.7rem; color: var(--text-muted);">Pending</span>
                         {% endif %}
@@ -67,7 +86,7 @@
         <i class="fas fa-shopping-cart" style="font-size: 3rem; color: var(--border-color); margin-bottom: 30px; opacity: 0.5;"></i>
         <h2 style="font-size: 1.5rem; margin-bottom: 20px;">Ready for Fulfillment</h2>
         <p style="color: var(--text-muted); max-width: 500px; margin: 0 auto;">
-            Your logistics pipeline is currently empty. Once a buyer completes an acquisition protocol for your assets, real-time tracking data will appear here.
+            Your service pipeline is currently empty. Once a buyer completes an acquisition protocol for your assets, real-time tracking data will appear here.
         </p>
     </div>
     {% endif %}

@@ -26,10 +26,16 @@ class SellerProfile(models.Model):
     shop_name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
     logo = models.ImageField(upload_to='seller_logos/', blank=True, null=True)
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
     is_approved = models.BooleanField(default=False)
     commission_rate = models.DecimalField(max_digits=5, decimal_places=2, default=10.00)  # Percentage fee
     revenue_total = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    # Stripe Connect fields
+    stripe_account_id = models.CharField(max_length=255, blank=True, null=True, help_text="Stripe Express connected account ID (acct_xxx)")
+    stripe_onboarding_complete = models.BooleanField(default=False, help_text="True once vendor completes Stripe onboarding")
+    stripe_payouts_enabled = models.BooleanField(default=False, help_text="Mirrors Stripe payouts_enabled flag")
 
     def __str__(self):
         return self.shop_name
@@ -214,6 +220,14 @@ class Booking(models.Model):
         return f"{self.user.username} - {self.service.name} ({self.preferred_date})"
 
 
+class BuyerProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='buyer_profile')
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user.username
+
 class Wishlist(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='wishlist')
     products = models.ManyToManyField(Product, blank=True, related_name='wishlisted_by')
@@ -259,6 +273,14 @@ class Order(models.Model):
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     tracking_id = models.CharField(max_length=50, unique=True, blank=True, null=True)
+    
+    # Shipping Details
+    shipping_address = models.TextField(blank=True, null=True)
+    shipping_city = models.CharField(max_length=100, blank=True, null=True)
+    shipping_state = models.CharField(max_length=100, blank=True, null=True)
+    shipping_zip = models.CharField(max_length=20, blank=True, null=True)
+    shipping_country = models.CharField(max_length=100, blank=True, null=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

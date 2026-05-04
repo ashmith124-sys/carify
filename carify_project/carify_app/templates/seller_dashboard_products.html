@@ -8,9 +8,15 @@
         <h1 class="section-title" style="font-size: 3rem; letter-spacing: -3px; font-weight: 800;">ASSET <span class="copper-text">REGISTRY</span></h1>
         <p style="color: var(--text-muted); font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase; margin-top: 5px;">Managing active hardware specimens</p>
     </div>
+    {% if profile.is_approved %}
     <a href="{% url 'carify_app:seller_add_product' %}" class="btn btn-primary" style="padding: 15px 40px; border-radius: 0; letter-spacing: 2px;">
         <i class="fas fa-plus" style="margin-right: 10px;"></i> REGISTER ASSET
     </a>
+    {% else %}
+    <div style="padding: 12px 25px; border: 1px solid var(--border-subtle); color: var(--text-muted); font-family: var(--font-heading); font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; display: flex; align-items: center; gap: 15px;">
+        <i class="fas fa-clock" style="color: var(--bronze);"></i> APPROVAL_PENDING
+    </div>
+    {% endif %}
 </div>
 
 <div class="glass-panel" style="padding: 0; overflow: hidden; background: rgba(18, 15, 14, 0.4); border: 1px solid var(--border-elegant);" data-appear>
@@ -83,12 +89,16 @@
                     <td style="padding: 25px 30px; text-align: right;">
                         <div style="display: flex; justify-content: flex-end; gap: 15px;">
                             <a href="{% url 'carify_app:product_detail' product.id %}" class="op-btn" title="Inspect Specimen"><i class="far fa-eye"></i></a>
+                            {% if profile.is_approved %}
                             <a href="{% url 'carify_app:seller_edit_product' product.id %}" class="op-btn" style="color: var(--bronze);" title="Reconfigure"><i class="far fa-edit"></i></a>
                             <a href="{% url 'carify_app:seller_delete_product' product.id %}" 
                                onclick="return confirm('CRITICAL: Purge specimen #{{ product.id }} from registry?')"
                                class="op-btn" style="color: #ef4444;" title="Decommission">
                                 <i class="far fa-trash-alt"></i>
                             </a>
+                            {% else %}
+                            <div class="op-btn" style="opacity: 0.3; cursor: not-allowed;" title="Action restricted - Pending approval"><i class="fas fa-lock"></i></div>
+                            {% endif %}
                         </div>
                     </td>
                 </tr>
@@ -100,7 +110,11 @@
                         </div>
                         <h3 style="font-size: 1.5rem; margin-bottom: 10px; letter-spacing: 1px; font-weight: 800;">NO ASSETS DETECTED</h3>
                         <p style="color: var(--text-muted); font-size: 0.75rem; margin-bottom: 40px; letter-spacing: 2px; text-transform: uppercase;">Vault status: Ready for initialization</p>
+                        {% if profile.is_approved %}
                         <a href="{% url 'carify_app:seller_add_product' %}" class="btn btn-primary" style="padding: 20px 50px; border-radius: 0;">REGISTER SPECIMEN</a>
+                        {% else %}
+                        <div style="display: inline-block; padding: 20px 50px; border: 1px dashed var(--border-subtle); color: var(--text-muted); font-family: var(--font-heading); font-size: 0.7rem; letter-spacing: 2px;">APPROVAL_REQUIRED_TO_INITIALIZE</div>
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}

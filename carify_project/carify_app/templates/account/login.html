@@ -1,72 +1,240 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Sign In | CARIFY{% endblock %}
+{% block title %}Sign In | CARIFY Private Terminal{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --bronze: #e85002;
+        --obsidian: #080707;
+        --surface: #141414;
+        --border-elegant: rgba(232, 80, 2, 0.2);
+        --text-pure: #ffffff;
+        --text-muted: rgba(255, 255, 255, 0.5);
+        --transition-premium: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .auth-immersive-wrapper {
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--obsidian);
+        padding: 100px 24px;
+        overflow: hidden;
+    }
+
+    .auth-bg-media {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.35;
+        filter: grayscale(100%) contrast(110%);
+        z-index: 1;
+    }
+
+    .auth-immersive-wrapper::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at center, transparent 0%, var(--obsidian) 80%);
+        z-index: 2;
+    }
+
+    .auth-terminal {
+        position: relative;
+        z-index: 10;
+        width: 100%;
+        max-width: 460px;
+        background: rgba(12, 12, 12, 0.7);
+        backdrop-filter: blur(30px);
+        -webkit-backdrop-filter: blur(30px);
+        border: 1px solid var(--border-elegant);
+        padding: 60px 50px;
+        animation: terminalEntry 1.2s var(--transition-premium) forwards;
+    }
+
+    @keyframes terminalEntry {
+        from { opacity: 0; transform: translateY(40px) scale(0.98); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .terminal-header {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    .terminal-title {
+        font-size: 3.5rem;
+        font-weight: 900;
+        letter-spacing: -0.05em;
+        line-height: 0.9;
+        text-transform: uppercase;
+        margin: 15px 0;
+        background: linear-gradient(180deg, #fff 0%, rgba(255, 255, 255, 0.4) 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .input-ritual-group {
+        margin-bottom: 30px;
+        position: relative;
+    }
+
+    .input-ritual-label {
+        font-size: 0.6rem;
+        letter-spacing: 0.3em;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        margin-bottom: 12px;
+        display: block;
+        font-weight: 800;
+    }
+
+    .input-ritual {
+        width: 100%;
+        height: 60px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        color: #fff;
+        padding: 0 20px;
+        font-size: 0.9rem;
+        font-family: var(--font-heading);
+        outline: none;
+        transition: all 0.4s var(--transition-premium);
+    }
+
+    .input-ritual:focus {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: var(--bronze);
+        box-shadow: 0 0 20px rgba(232, 80, 2, 0.1);
+    }
+
+    .btn-terminal {
+        width: 100%;
+        height: 65px;
+        background: var(--bronze);
+        border: none;
+        color: #000;
+        font-size: 0.75rem;
+        font-weight: 900;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.4s var(--transition-premium);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 20px;
+    }
+
+    .btn-terminal:hover {
+        background: #fff;
+        transform: translateY(-2px);
+    }
+
+    .terminal-footer {
+        margin-top: 50px;
+        padding-top: 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        text-align: center;
+    }
+
+    .link-ritual {
+        color: var(--text-muted);
+        font-size: 0.65rem;
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        transition: all 0.3s;
+    }
+
+    .link-ritual:hover {
+        color: var(--bronze);
+    }
+
+    .auth-error {
+        background: rgba(232, 80, 2, 0.1);
+        border-left: 3px solid var(--bronze);
+        padding: 15px 20px;
+        margin-bottom: 30px;
+        font-size: 0.7rem;
+        color: var(--bronze);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-weight: 700;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="auth-page" style="padding: 120px 24px 60px;">
-    <div class="container" style="max-width: 440px;">
-        <div class="glass-panel" style="padding: 60px 40px; border-radius: 4px; box-shadow: 0 40px 100px rgba(0,0,0,0.5);">
-            <div style="text-align: center; margin-bottom: 50px;">
-                <span class="hero-eyebrow" style="margin-bottom: 20px;">Private Terminal</span>
-                <h1 style="font-size: 3rem; letter-spacing: -2px; margin-bottom: 10px;">Sign In</h1>
-                <p style="color: var(--text-muted); font-size: 0.8rem; letter-spacing: 0.05em;">ENTER THE CARIFY COLLECTION</p>
+<div class="auth-immersive-wrapper">
+    <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1920&q=80" 
+         class="auth-bg-media" alt="Auth Background">
+    
+    <div class="auth-terminal">
+        <div class="terminal-header">
+            <span class="hero-eyebrow" style="color: var(--bronze); letter-spacing: 0.5em;">ACCESS PROTOCOL</span>
+            <h1 class="terminal-title">SIGN IN</h1>
+            <p style="color: var(--text-muted); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;">Identity Verification Required</p>
+        </div>
+
+        <form method="post" action="{% url 'account_login' %}">
+            {% csrf_token %}
+            
+            {% if form.errors or messages %}
+            <div class="auth-error">
+                {% if form.errors %}
+                    CREDENTIAL MISMATCH DETECTED.
+                {% else %}
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <div class="input-ritual-group">
+                <label class="input-ritual-label">Identification</label>
+                <input type="text" name="login" required placeholder="USERNAME OR EMAIL" class="input-ritual">
             </div>
 
-            <form method="post" action="{% url 'account_login' %}">
-                {% csrf_token %}
-                
-                {% if form.errors or messages %}
-                <div style="background: rgba(155, 90, 43, 0.1); border: 1px solid var(--clr-copper); color: var(--clr-copper); padding: 15px; font-size: 0.7rem; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600;">
-                    {% if form.errors %}
-                        Identity verification failure. Please verify credentials.
-                    {% else %}
-                        {% for message in messages %}
-                            {{ message }}
-                        {% endfor %}
-                    {% endif %}
-                </div>
-                {% endif %}
+            <div class="input-ritual-group">
+                <label class="input-ritual-label">Security Key</label>
+                <input type="password" name="password" required placeholder="••••••••" class="input-ritual">
+            </div>
 
-                <div class="form-group" style="margin-bottom: 30px;">
-                    <label style="font-size: 0.6rem; color: var(--text-muted); display: block; margin-bottom: 10px; letter-spacing: 0.2em; font-weight: 700; text-transform: uppercase;">Identity</label>
-                    <input type="text" name="login" required placeholder="USERNAME OR EMAIL" 
-                           style="width: 100%; height: 55px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-subtle); color: white; padding: 0 20px; font-size: 0.85rem; font-family: var(--font-heading); outline: none;"
-                           onfocus="this.style.borderColor='var(--clr-copper)'" onblur="this.style.borderColor='var(--border-subtle)'">
-                </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin: 30px 0;">
+                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                    <input type="checkbox" name="remember" style="accent-color: var(--bronze);">
+                    <span style="font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em;">Persist Session</span>
+                </label>
+                <a href="{% url 'account_reset_password' %}" class="link-ritual" style="color: var(--bronze);">Key Recovery</a>
+            </div>
 
-                <div class="form-group" style="margin-bottom: 40px;">
-                    <label style="font-size: 0.6rem; color: var(--text-muted); display: block; margin-bottom: 10px; letter-spacing: 0.2em; font-weight: 700; text-transform: uppercase;">Key</label>
-                    <input type="password" name="password" required placeholder="PASSWORD"
-                           style="width: 100%; height: 55px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-subtle); color: white; padding: 0 20px; font-size: 0.85rem; font-family: var(--font-heading); outline: none;"
-                           onfocus="this.style.borderColor='var(--clr-copper)'" onblur="this.style.borderColor='var(--border-subtle)'">
-                </div>
+            <button type="submit" class="btn-terminal">
+                INITIATE ACCESS <i class="fas fa-chevron-right" style="font-size: 0.6rem;"></i>
+            </button>
 
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
-                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                        <input type="checkbox" name="remember" style="accent-color: var(--clr-copper);">
-                        <span style="font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em;">Remember Identification</span>
-                    </label>
-                    <a href="{% url 'account_reset_password' %}" style="font-size: 0.6rem; color: var(--clr-copper); text-decoration: none; text-transform: uppercase; letter-spacing: 0.1em;">Recover Key</a>
-                </div>
+            {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
+            {% endif %}
+        </form>
 
-                <button type="submit" class="btn btn-primary w-100" style="height: 60px; font-size: 0.8rem; letter-spacing: 0.2em; border-radius: 0;">
-                    INITIATE ACCESS
-                </button>
-
-                {% if redirect_field_value %}
-                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
-                {% endif %}
-            </form>
-
-            <div style="margin-top: 50px; text-align: center; border-top: 1px solid var(--border-subtle); padding-top: 30px;">
-                <p style="color: var(--text-muted); font-size: 0.7rem; margin-bottom: 25px; letter-spacing: 0.1em; text-transform: uppercase;">New to the series?</p>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <a href="{% url 'carify_app:buyer_register' %}" class="btn btn-outline" style="font-size: 0.6rem; padding: 12px 10px;">Join as Buyer</a>
-                    <a href="{% url 'carify_app:seller_register' %}" class="btn btn-outline" style="font-size: 0.6rem; padding: 12px 10px;">Join as Seller</a>
-                </div>
+        <div class="terminal-footer">
+            <p style="color: var(--text-muted); font-size: 0.65rem; margin-bottom: 25px; letter-spacing: 0.1em; text-transform: uppercase;">UNREGISTERED SPECIMEN?</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <a href="{% url 'carify_app:buyer_register' %}" class="btn-ritual" style="font-size: 0.6rem; padding: 15px; text-align: center; text-decoration: none; border: 1px solid rgba(255,255,255,0.1); color: #fff; transition: 0.4s;" onmouseover="this.style.borderColor='var(--bronze)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">JOIN BUYER</a>
+                <a href="{% url 'carify_app:seller_register' %}" class="btn-ritual" style="font-size: 0.6rem; padding: 15px; text-align: center; text-decoration: none; border: 1px solid rgba(255,255,255,0.1); color: #fff; transition: 0.4s;" onmouseover="this.style.borderColor='var(--bronze)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">JOIN SELLER</a>
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
+

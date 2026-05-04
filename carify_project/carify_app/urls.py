@@ -41,6 +41,7 @@ urlpatterns = [
     path('accounts/verify-otp/', views.verify_otp, name='verify_otp'),
     
     path('product/<int:product_id>/', views.product_detail, name='product_detail'),
+        path('product/<int:product_id>/car/', views.car_details, name='car_details'),
     path('checkout/initialize/', views.create_checkout_session, name='create_checkout'),
     
     # NEW Tracking
@@ -61,6 +62,7 @@ urlpatterns = [
 
     # Seller Dashboard Extensions
     path('seller/orders/', views.seller_orders, name='seller_orders'),
+    path('seller/orders/ship/<int:order_id>/', views.mark_order_as_shipped, name='mark_order_as_shipped'),
     path('seller/analytics/', views.seller_analytics, name='seller_analytics'),
     path('seller/settings/', views.seller_settings, name='seller_settings'),
     
@@ -83,5 +85,9 @@ urlpatterns = [
     path('payment/success/', views.payment_success, name='payment_success'),
     path('payment/cancel/', views.payment_cancel, name='payment_cancel'),
     path('stripe/webhook/', views.stripe_webhook, name='stripe_webhook'),
+    # Stripe Connect — Vendor Onboarding
+    path('seller/stripe/connect/', views.stripe_connect_onboard, name='stripe_connect_onboard'),
+    path('seller/stripe/return/', views.stripe_connect_return, name='stripe_connect_return'),
+    path('seller/stripe/refresh/', views.stripe_connect_refresh, name='stripe_connect_refresh'),
     path('newsletter/subscribe/', views.subscribe_newsletter, name='subscribe_newsletter'),
 ]

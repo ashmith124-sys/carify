@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}404_PROTOCOL_BREACH | CARIFY{% endblock %}
+
+{% block content %}
+<div class="error-page-wrapper" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #000; position: relative; overflow: hidden;">
+    
+    <!-- Animated Grid Background -->
+    <div style="position: absolute; inset: 0; background-image: linear-gradient(rgba(155, 90, 43, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(155, 90, 43, 0.05) 1px, transparent 1px); background-size: 50px 50px; transform: perspective(500px) rotateX(60deg) translateY(-100px); opacity: 0.3; animation: gridMovement 20s linear infinite;"></div>
+
+    <div style="text-align: center; z-index: 10; padding: 0 20px;">
+        <div class="error-code-wrapper" style="position: relative; display: inline-block; margin-bottom: 40px;">
+            <h1 style="font-family: var(--font-heading); font-size: clamp(8rem, 20vw, 15rem); line-height: 1; font-weight: 900; letter-spacing: -10px; color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,0.1); position: relative;">
+                404
+                <span style="position: absolute; inset: 0; color: var(--bronze); opacity: 0.1; filter: blur(20px); animation: codePulse 4s ease-in-out infinite;">404</span>
+            </h1>
+        </div>
+
+        <div style="max-width: 600px; margin: 0 auto; animation: fadeUp 1s cubic-bezier(0.23, 1, 0.32, 1) forwards;">
+            <span class="auth-eyebrow" style="color: var(--bronze); letter-spacing: 0.5em; font-weight: 800; font-size: 0.8rem; margin-bottom: 20px; display: block;">PROTOCOL_BREACH_DETECTED</span>
+            <h2 class="font-heading" style="font-size: 2.5rem; color: #fff; margin-bottom: 20px; letter-spacing: -1px;">SPECIMEN_NOT_FOUND</h2>
+            <p style="color: var(--text-muted); font-size: 1rem; line-height: 1.6; margin-bottom: 40px; font-family: var(--font-serif); font-style: italic;">
+                The coordinate you requested does not exist in the preservation registry. The asset may have been decommissioned or moved to a restricted vault.
+            </p>
+
+            <div style="display: flex; gap: 20px; justify-content: center;">
+                <a href="{% url 'carify_app:home' %}" class="btn btn-primary" style="padding: 15px 40px; border-radius: 0; text-transform: uppercase; letter-spacing: 2px; font-weight: 800;">RECOVER_HOME</a>
+                <a href="{% url 'carify_app:product_list' %}" style="padding: 15px 40px; border: 1px solid var(--border-elegant); color: #fff; text-decoration: none; font-family: var(--font-heading); font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 800; transition: 0.3s;" onmouseover="this.style.borderColor='var(--bronze)'; this.style.color='var(--bronze)'" onmouseout="this.style.borderColor='var(--border-elegant)'; this.style.color='#fff'">VIEW_COLLECTION</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Particles -->
+    <div class="particle" style="position: absolute; width: 2px; height: 2px; background: var(--bronze); border-radius: 50%; opacity: 0.5; animation: particleFloat 10s linear infinite;"></div>
+</div>
+
+<style>
+    @keyframes gridMovement {
+        from { background-position: 0 0; }
+        to { background-position: 0 500px; }
+    }
+    @keyframes codePulse {
+        0%, 100% { opacity: 0.05; transform: scale(1); }
+        50% { opacity: 0.2; transform: scale(1.05); }
+    }
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(40px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes particleFloat {
+        from { transform: translateY(100vh) translateX(0); }
+        to { transform: translateY(-10vh) translateX(50px); }
+    }
+
+    /* Randomize some particles */
+    .particle:nth-child(1) { left: 10%; animation-duration: 8s; animation-delay: 1s; }
+    .particle:nth-child(2) { left: 30%; animation-duration: 12s; animation-delay: 3s; }
+    .particle:nth-child(3) { left: 50%; animation-duration: 10s; animation-delay: 0s; }
+    .particle:nth-child(4) { left: 70%; animation-duration: 15s; animation-delay: 5s; }
+    .particle:nth-child(5) { left: 90%; animation-duration: 9s; animation-delay: 2s; }
+</style>
+{% endblock %}

@@ -228,10 +228,55 @@ class OrderItemAdmin(admin.ModelAdmin):
 
 @admin.register(SellerProfile, site=admin_site)
 class SellerProfileAdmin(admin.ModelAdmin):
-    list_display = ('shop_name', 'user', 'is_approved', 'created_at')
+    list_display = ('shop_name', 'user', 'is_approved_badge', 'approve_action', 'created_at')
     list_filter = ('is_approved', 'created_at')
     search_fields = ('shop_name', 'user__username', 'user__email')
     readonly_fields = ('created_at',)
+    actions = ['approve_sellers', 'unapprove_sellers']
+
+    def is_approved_badge(self, obj):
+        color = '#4ade80' if obj.is_approved else '#ef4444'
+        text = 'APPROVED' if obj.is_approved else 'PENDING'
+        return format_html(
+            '<span style="background-color: {}; color: white; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: bold; letter-spacing: 0.5px;">{}</span>',
+            color, text
+        )
+    is_approved_badge.short_description = 'Status'
+
+    def approve_action(self, obj):
+        if not obj.is_approved:
+            url = reverse('admin:approve-seller', args=[obj.pk])
+            return format_html(
+                '<a href="{}" style="background-color: #9b5a2b; color: white; padding: 5px 15px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 11px; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s;" onmouseover="this.style.backgroundColor=\'#b36b35\'" onmouseout="this.style.backgroundColor=\'#9b5a2b\'">APPROVE NOW</a>',
+                url
+            )
+        return format_html('<span style="color: #4ade80; font-size: 11px; font-weight: bold;"><i class="fas fa-check-circle"></i> {}</span>', 'VERIFIED')
+    approve_action.short_description = 'Action'
+
+    def get_urls(self):
+        from django.urls import path
+        urls = super().get_urls()
+        custom_urls = [
+            path('<int:seller_id>/approve/', self.admin_site.admin_view(self.approve_seller_instant), name='approve-seller'),
+        ]
+        return custom_urls + urls
+
+    def approve_seller_instant(self, request, seller_id):
+        seller = get_object_or_404(SellerProfile, pk=seller_id)
+        seller.is_approved = True
+        seller.save()
+        self.message_user(request, f"Seller '{seller.shop_name}' has been successfully approved.")
+        return redirect(reverse('admin:carify_app_sellerprofile_changelist'))
+
+    @admin.action(description="Approve selected sellers")
+    def approve_sellers(self, request, queryset):
+        queryset.update(is_approved=True)
+        self.message_user(request, "Selected sellers have been approved.")
+
+    @admin.action(description="Unapprove selected sellers")
+    def unapprove_sellers(self, request, queryset):
+        queryset.update(is_approved=False)
+        self.message_user(request, "Selected sellers have been unapproved.")
 
 @admin.register(Service, site=admin_site)
 class ServiceAdmin(admin.ModelAdmin):

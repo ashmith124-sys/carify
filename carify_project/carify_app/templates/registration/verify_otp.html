@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}IDENTITY_VERIFICATION | CARIFY{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+<style>
+    .auth-page-wrapper {
+        background-image: url("{% static 'premium_auth_background_1777826356305.png' %}");
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-page-wrapper">
+    <div class="auth-card">
+        <span class="auth-eyebrow">IDENTITY VERIFICATION</span>
+        <h1 class="auth-title">VERIFY ACCESS</h1>
+        <p class="auth-subtitle">
+            A secure authentication key has been transmitted to your registered contact endpoints.
+        </p>
+
+        <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 20px; margin-bottom: 35px; text-align: center;">
+            <p style="font-size: 0.85rem; color: var(--text-pure); line-height: 1.6;">
+                Please enter the 6-digit access key sent to your email and phone.<br>
+            </p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            
+            <div class="auth-field-group" style="margin-bottom: 35px;">
+                <label class="auth-label">AUTHENTICATION_KEY</label>
+                {{ form.otp_code }}
+                {% if form.otp_code.errors %}
+                <div class="auth-error" style="margin-top: 15px;">
+                    {{ form.otp_code.errors }}
+                </div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="auth-btn">
+                AUTHENTICATE_SESSION
+            </button>
+        </form>
+
+        <div class="auth-footer" style="margin-top: 40px;">
+            <form method="POST">
+                {% csrf_token %}
+                <button type="submit" name="resend" style="background: none; border: none; color: var(--text-muted); font-family: var(--font-heading); font-size: 0.65rem; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; transition: 0.3s;" onmouseover="this.style.color='var(--bronze)'" onmouseout="this.style.color='var(--text-muted)'">
+                    Did not receive key? <span style="color: var(--bronze); font-weight: 800;">RESEND_TRANSMISSION</span>
+                </button>
+            </form>
+        </div>
+
+        <div style="margin-top: 30px; text-align: center;">
+            <a href="{% url 'carify_app:home' %}" style="color: var(--text-muted); font-size: 0.6rem; text-decoration: none; letter-spacing: 2px; text-transform: uppercase; opacity: 0.5;">Abort Authentication</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .otp-input {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--text-pure);
+        padding: 20px;
+        font-family: monospace;
+        font-size: 1.8rem;
+        letter-spacing: 12px;
+        text-align: center;
+        outline: none;
+        transition: 0.4s var(--transition-premium);
+    }
+    .otp-input:focus {
+        border-color: var(--bronze);
+        background: rgba(255, 255, 255, 0.06);
+        box-shadow: 0 0 25px rgba(155, 90, 43, 0.15);
+    }
+</style>
+{% endblock %}

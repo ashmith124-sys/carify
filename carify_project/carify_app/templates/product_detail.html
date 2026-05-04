@@ -441,7 +441,7 @@
         <div class="pricing-tier">
             <span class="price-value" id="priceTag">${{ product.price }}</span>
             <div class="price-label">
-                AUTHORIZED VALUE<br>TAX & LOGISTICS INCL.
+                AUTHORIZED VALUE<br>TAX & CAR SERVICE INCL.
             </div>
         </div>
 
@@ -450,7 +450,7 @@
         </div>
 
         <div class="acq-console">
-            <a href="mailto:concierge@carify.com?subject=Specimen%20Inquiry:%20{{ product.name|urlencode }}" class="acq-btn-gold" style="text-decoration: none; display: inline-block; text-align: center;">BOOK NOW</a>
+            <a href="{% url 'carify_app:car_details' product.id %}" class="acq-btn-gold" style="text-decoration: none; display: inline-block; text-align: center;">CAR DETAILS</a>
         </div>
 
         <div class="tech-matrix">

@@ -1,57 +1,61 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Sign In | CARIFY{% endblock %}
+{% block title %}IDENTITY_ACCESS | CARIFY{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+<style>
+    .auth-page-wrapper {
+        background-image: url("{% static 'premium_auth_background_1777826356305.png' %}");
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 140px 20px 100px;">
-    <div class="glass-panel" style="width: 100%; max-width: 500px; padding: 50px 40px; border-radius: 4px;">
-        <span class="font-heading" style="color: var(--bronze); font-weight: 800; letter-spacing: 0.2rem; font-size: 0.7rem; display: block; margin-bottom: 10px;">SECURE ACCESS</span>
-        <h1 class="font-heading" style="margin-bottom: 15px; font-size: 2.5rem; letter-spacing: -1px;">SIGN IN</h1>
-        <p class="font-serif" style="color: var(--text-muted); font-size: 1rem; margin-bottom: 40px; font-style: italic;">
-            Access the terminal to manage your preservation protocol.
+<div class="auth-page-wrapper">
+    <div class="auth-card">
+        <span class="auth-eyebrow">SECURE ACCESS</span>
+        <h1 class="auth-title">SIGN IN</h1>
+        <p class="auth-subtitle">
+            Authenticate to access your preservation registry and dashboard.
         </p>
 
         <form method="post" action="">
             {% csrf_token %}
             
             {% if form.errors %}
-                <div style="background: rgba(220, 38, 38, 0.1); border: 1px solid #dc2626; color: #ef4444; padding: 15px; border-radius: 4px; margin-bottom: 25px; font-size: 0.9rem;">
-                    Authentication failed. Check credentials and retry.
+                <div class="auth-error">
+                    <i class="fas fa-exclamation-triangle" style="margin-right: 10px;"></i>
+                    Authentication failed. Please verify credentials.
                 </div>
             {% endif %}
 
-            <div style="margin-bottom: 25px;">
-                <label for="id_username" class="font-heading" style="font-size: 0.65rem; letter-spacing: 0.15em; color: var(--text-pure); display: block; margin-bottom: 10px;">USERNAME / IDENTITY</label>
+            <div class="auth-field-group">
+                <label for="id_username" class="auth-label">IDENTITY / USERNAME</label>
                 <input type="text" name="username" id="id_username" autofocus required 
-                       style="width: 100%; background: rgba(255,255,255,0.02); border: 1px solid var(--border-subtle); color: var(--text-pure); padding: 15px 20px; font-family: 'Inter', sans-serif; transition: 0.3s; outline: none;"
-                       onfocus="this.style.borderColor='var(--bronze)'" 
-                       onblur="this.style.borderColor='var(--border-subtle)'">
+                       class="auth-input" placeholder="ENTER IDENTITY">
             </div>
 
-            <div style="margin-bottom: 35px;">
-                <label for="id_password" class="font-heading" style="font-size: 0.65rem; letter-spacing: 0.15em; color: var(--text-pure); display: block; margin-bottom: 10px;">PASSWORD</label>
+            <div class="auth-field-group" style="margin-bottom: 35px;">
+                <label for="id_password" class="auth-label">ACCESS KEY / PASSWORD</label>
                 <input type="password" name="password" id="id_password" required
-                       style="width: 100%; background: rgba(255,255,255,0.02); border: 1px solid var(--border-subtle); color: var(--text-pure); padding: 15px 20px; font-family: 'Inter', sans-serif; transition: 0.3s; outline: none;"
-                       onfocus="this.style.borderColor='var(--bronze)'" 
-                       onblur="this.style.borderColor='var(--border-subtle)'">
+                       class="auth-input" placeholder="••••••••">
             </div>
 
-            <button type="submit" class="btn btn-primary" style="width: 100%; height: 60px;">
-                ACCESS REGISTRY
+            <button type="submit" class="auth-btn">
+                INITIALIZE SESSION
             </button>
 
             <input type="hidden" name="next" value="{{ next }}">
         </form>
 
-        <div style="margin-top: 40px; text-align: center; border-top: 1px solid var(--border-subtle); padding-top: 30px;">
-            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 15px;">New to the platform?</p>
-            <a href="{% url 'carify_app:seller_register' %}" class="font-heading" style="color: var(--text-elegant); font-weight: 500; text-decoration: underline; font-size: 0.75rem; letter-spacing: 0.1em; display: inline-block; margin: 0 10px;">
-                BECOME A PARTNER
-            </a>
-            <a href="{% url 'carify_app:buyer_register' %}" class="font-heading" style="color: var(--text-elegant); font-weight: 500; text-decoration: underline; font-size: 0.75rem; letter-spacing: 0.1em; display: inline-block; margin: 0 10px;">
-                CREATE CLIENT ID
-            </a>
+        <div class="auth-footer">
+            <p class="auth-footer-text">New to the preservation network?</p>
+            <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;">
+                <a href="{% url 'carify_app:seller_register' %}" class="auth-link">BECOME A PARTNER</a>
+                <a href="{% url 'carify_app:buyer_register' %}" class="auth-link">CREATE CLIENT ID</a>
+            </div>
         </div>
     </div>
 </div>

@@ -74,7 +74,9 @@ def get_current_cart(request):
 
 def home(request):
     """Render the landing page with featured products."""
-    products = Product.objects.all().prefetch_related('media', 'reviews').order_by('-created_at')[:8]
+    products = Product.objects.filter(
+        seller__seller_profile__is_approved=True
+    ).prefetch_related('media', 'reviews').order_by('-created_at')[:8]
     categories = Category.objects.all()
     return render(request, 'home.html', {'products': products, 'categories': categories})
 
@@ -83,7 +85,9 @@ def product_list(request):
     query = request.GET.get('search', '')
     category_id = request.GET.get('category')
     
-    products = Product.objects.all().prefetch_related('media', 'reviews')
+    products = Product.objects.filter(
+        seller__seller_profile__is_approved=True
+    ).prefetch_related('media', 'reviews')
     
     if query:
         products = products.filter(
@@ -155,6 +159,12 @@ def edit_category(request, category_id):
 def product_detail(request, product_id):
     """Display product detail with gallery, variants, and reviews."""
     product = get_object_or_404(Product, id=product_id)
+    
+    # Check if seller is approved (allow the seller themselves to see it)
+    seller_profile = getattr(product.seller, 'seller_profile', None)
+    if not (seller_profile and seller_profile.is_approved) and product.seller != request.user:
+        messages.error(request, "This specimen is not currently available for public inspection.")
+        return redirect('carify_app:product_list')
     related_products = Product.objects.filter(category=product.category).exclude(id=product.id)[:4]
     user_has_reviewed = product.reviews.filter(user=request.user).exists() if request.user.is_authenticated else False
     
@@ -164,17 +174,39 @@ def product_detail(request, product_id):
         'user_has_reviewed': user_has_reviewed
     })
 
+@login_required
+def car_details(request, product_id):
+    """Render detailed car information for the given product.
+    This replaces the previous delivery_requirements view with a car‑focused page.
+    """
+    product = get_object_or_404(Product, id=product_id)
+    
+    if request.method == 'POST':
+        # Simulate processing car-related info
+        messages.success(request, f"CAR_PROTOCOL_INITIATED: Vehicle details for '{product.name}' have been processed.")
+        return redirect('carify_app:create_checkout')
+        
+    return render(request, 'car_details.html', {'product': product})
+
 def buyer_register(request):
     """Register a new buyer account."""
     if request.method == 'POST':
         form = BuyerRegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            user.is_active = True
-            user.save()
-            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-            messages.success(request, f"Welcome to CARIFY! Account created successfully.")
-            return redirect('carify_app:home')
+            # form.save() now creates the BuyerProfile automatically
+            
+            # OTP Logic
+            otp_token = OTPToken.objects.create(user=user)
+            send_otp_email(user, otp_token.otp_code)
+            
+            # Simulate SMS sending
+            buyer_profile = user.buyer_profile
+            print(f"DEBUG SMS SENT TO {buyer_profile.phone_number}: Your Carify code is {otp_token.otp_code}")
+            
+            request.session['otp_user_id'] = user.id
+            messages.success(request, f"Access key transmitted to {user.email} and {buyer_profile.phone_number}.")
+            return redirect('carify_app:verify_otp')
     else:
         form = BuyerRegistrationForm()
     return render(request, 'registration/signup.html', {'form': form, 'user_type': 'Buyer'})
@@ -185,17 +217,27 @@ def seller_register(request):
         form = SellerRegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            user.is_active = True
-            user.save()
-            # Create Seller Profile
-            SellerProfile.objects.create(
+            # Concatenate country code and phone number
+            full_phone = f"{form.cleaned_data['country_code']}{form.cleaned_data['phone_number']}"
+            
+            # Create Seller Profile with phone_number
+            sp = SellerProfile.objects.create(
                 user=user,
                 shop_name=form.cleaned_data['shop_name'],
-                description=form.cleaned_data.get('description', '')
+                description=form.cleaned_data.get('description', ''),
+                phone_number=full_phone
             )
-            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-            messages.success(request, f"Partner account registered successfully.")
-            return redirect('carify_app:seller_dashboard')
+            
+            # OTP Logic
+            otp_token = OTPToken.objects.create(user=user)
+            send_otp_email(user, otp_token.otp_code)
+            
+            # Simulate SMS sending
+            print(f"DEBUG SMS SENT TO {sp.phone_number}: Your Carify code is {otp_token.otp_code}")
+            
+            request.session['otp_user_id'] = user.id
+            messages.success(request, f"Partner credentials transmitted to {user.email} and {sp.phone_number}.")
+            return redirect('carify_app:verify_otp')
     else:
         form = SellerRegistrationForm()
     return render(request, 'registration/signup.html', {'form': form, 'user_type': 'Seller'})
@@ -259,7 +301,13 @@ def track_order(request):
 
 @login_required
 def create_checkout_session(request):
-    """Create a Stripe checkout session for the entire current cart."""
+    """Create a Stripe checkout session for the entire current cart.
+    
+    Supports Stripe Connect: if the cart contains items from a seller with a
+    verified Stripe Express account, the payment is split automatically —
+    the platform retains its commission and the remainder is transferred to
+    the vendor's connected account.
+    """
     cart = get_current_cart(request)
     active_items = cart.items.filter(is_saved_for_later=False)
     if not active_items.exists():
@@ -274,7 +322,18 @@ def create_checkout_session(request):
         )
 
         line_items = []
+        # Resolve the primary seller for Connect transfer (single-vendor checkout)
+        # We pick the seller of the first product/service in the cart.
+        connected_account_id = None
+        platform_fee_amount = 0  # in cents
+
         for item in active_items:
+            # Safety check: ensure seller is approved
+            item_seller = item.product.seller if item.product else item.service.seller
+            if not getattr(item_seller, 'seller_profile', None) or not item_seller.seller_profile.is_approved:
+                messages.error(request, f"Checkout aborted: One or more assets in your spool are currently offline for validation.")
+                return redirect('carify_app:cart_view')
+
             # Create OrderItem
             unit_price = item.get_cost() / item.quantity
             OrderItem.objects.create(
@@ -286,10 +345,25 @@ def create_checkout_session(request):
             )
 
             item_name = ""
+            seller_user = None
             if item.product:
                 item_name = f"{item.product.name} ({item.variant.name if item.variant else 'Standard'})"
+                seller_user = item.product.seller
             else:
                 item_name = f"Ritual: {item.service.name}"
+                seller_user = item.service.seller
+
+            # Detect a verified Stripe Connect account for this seller
+            if not connected_account_id and seller_user:
+                try:
+                    sp = seller_user.seller_profile
+                    if sp.stripe_account_id and sp.stripe_payouts_enabled:
+                        connected_account_id = sp.stripe_account_id
+                        # Calculate platform fee: commission_rate % of total order
+                        total_cents = int(order.total_amount * 100)
+                        platform_fee_amount = int(total_cents * float(sp.commission_rate) / 100)
+                except Exception:
+                    pass
 
             line_items.append({
                 'price_data': {
@@ -302,6 +376,7 @@ def create_checkout_session(request):
                 },
                 'quantity': item.quantity,
             })
+
         stripe_secret_key = get_stripe_secret_key()
 
         # DEV BYPASS: Show a local payment-options screen without a configured Stripe key.
@@ -316,16 +391,31 @@ def create_checkout_session(request):
 
         stripe.api_key = stripe_secret_key
 
-        checkout_session = stripe.checkout.Session.create(
-            payment_method_types=['card', 'klarna', 'affirm'],
-            line_items=line_items,
-            mode='payment',
-            success_url=request.build_absolute_uri('/payment/success/'),
-            cancel_url=request.build_absolute_uri('/payment/cancel/'),
-            metadata={'order_id': order.id}
-        )
-        
+        # Build the checkout session params
+        session_params = {
+            'payment_method_types': ['card'],
+            'line_items': line_items,
+            'mode': 'payment',
+            'success_url': request.build_absolute_uri('/payment/success/'),
+            'cancel_url': request.build_absolute_uri('/payment/cancel/'),
+            'metadata': {'order_id': order.id},
+            'shipping_address_collection': {
+                'allowed_countries': ['US', 'CA', 'GB', 'AE', 'IN'],  # common regions for the platform
+            },
+        }
+
+        # Attach Stripe Connect transfer if a verified seller account is found
+        if connected_account_id and platform_fee_amount >= 0:
+            session_params['payment_intent_data'] = {
+                'application_fee_amount': platform_fee_amount,
+                'transfer_data': {
+                    'destination': connected_account_id,
+                },
+            }
+
+        checkout_session = stripe.checkout.Session.create(**session_params)
         return redirect(checkout_session.url)
+
     except Exception as e:
         order.delete()
         messages.error(request, f"Stripe_Error: {str(e)}")
@@ -381,20 +471,32 @@ def complete_demo_payment(request):
 def stripe_webhook(request):
     payload = request.body
     sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
-    
+
     try:
         event = stripe.Webhook.construct_event(
             payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
         )
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=400)
-    
+
     if event.type == 'checkout.session.completed':
         session = event.data.object
         order_id = session.metadata.get('order_id')
         if order_id:
             try:
                 order = Order.objects.get(id=order_id)
+
+                # Capture shipping details from Stripe
+                shipping = session.get('shipping_details')
+                if shipping:
+                    addr = shipping.get('address', {})
+                    order.shipping_address = f"{addr.get('line1', '')} {addr.get('line2', '')}".strip()
+                    order.shipping_city = addr.get('city')
+                    order.shipping_state = addr.get('state')
+                    order.shipping_zip = addr.get('postal_code')
+                    order.shipping_country = addr.get('country')
+                    order.save()
+
                 complete_order_payment(
                     order,
                     payment_method='stripe',
@@ -418,7 +520,147 @@ def stripe_webhook(request):
 
             except Order.DoesNotExist:
                 pass
+
+    elif event.type == 'account.updated':
+        # Sync Stripe Connect account status back to the SellerProfile
+        account = event.data.object
+        account_id = account.get('id')
+        if account_id:
+            try:
+                from .models import SellerProfile
+                sp = SellerProfile.objects.get(stripe_account_id=account_id)
+                sp.stripe_payouts_enabled = account.get('payouts_enabled', False)
+                sp.stripe_onboarding_complete = (
+                    account.get('details_submitted', False) and
+                    account.get('charges_enabled', False)
+                )
+                sp.save(update_fields=['stripe_payouts_enabled', 'stripe_onboarding_complete'])
+            except SellerProfile.DoesNotExist:
+                pass
+
     return JsonResponse({'status': 'success'})
+
+
+# ───────────────────────────────────────────────────────────────────────────────
+# STRIPE CONNECT — VENDOR ONBOARDING
+# ───────────────────────────────────────────────────────────────────────────────
+
+@login_required
+def stripe_connect_onboard(request):
+    """Step 1: Create a Stripe Express account (if not already created) and
+    redirect the vendor to Stripe's hosted onboarding flow."""
+    stripe_secret_key = get_stripe_secret_key()
+    if not stripe_secret_key or is_stripe_demo_mode():
+        messages.error(request, "Stripe is not configured. Please add a live STRIPE_SECRET_KEY to enable vendor payouts.")
+        return redirect('carify_app:seller_dashboard')
+
+    try:
+        sp = request.user.seller_profile
+    except Exception:
+        messages.error(request, "Seller profile not found. Please register as a seller first.")
+        return redirect('carify_app:home')
+
+    stripe.api_key = stripe_secret_key
+
+    # Create a new Express account if the seller doesn't have one yet
+    if not sp.stripe_account_id:
+        try:
+            account = stripe.Account.create(
+                type='express',
+                email=request.user.email,
+                capabilities={
+                    'transfers': {'requested': True},
+                },
+                business_profile={
+                    'name': sp.shop_name,
+                },
+                metadata={'seller_profile_id': sp.pk},
+            )
+            sp.stripe_account_id = account.id
+            sp.save(update_fields=['stripe_account_id'])
+        except stripe.error.InvalidRequestError as e:
+            error_msg = e.user_message or str(e)
+            print(f"STRIPE_CONNECT_ERROR: {error_msg}")
+            if "signed up for Connect" in error_msg:
+                messages.error(request, "Stripe Connect is not enabled on this platform's Stripe account. Please enable Connect in the Stripe Dashboard.")
+            else:
+                messages.error(request, f"Stripe Configuration Error: {error_msg}")
+            return redirect('carify_app:seller_dashboard')
+        except Exception as e:
+            print(f"STRIPE_CONNECT_GENERAL_ERROR: {str(e)}")
+            messages.error(request, f"Stripe Error during account creation: {str(e)}")
+            return redirect('carify_app:seller_dashboard')
+
+    try:
+        # Generate a fresh Account Link (valid for ~5 minutes)
+        account_link = stripe.AccountLink.create(
+            account=sp.stripe_account_id,
+            refresh_url=request.build_absolute_uri('/seller/stripe/refresh/'),
+            return_url=request.build_absolute_uri('/seller/stripe/return/'),
+            type='account_onboarding',
+        )
+        return redirect(account_link.url)
+    except Exception as e:
+        print(f"STRIPE_LINK_ERROR: {str(e)}")
+        messages.error(request, f"Stripe Error during link generation: {str(e)}")
+        return redirect('carify_app:seller_dashboard')
+
+
+@login_required
+def stripe_connect_return(request):
+    """Step 2: Vendor lands here after completing (or partially completing) the
+    Stripe onboarding flow. We fetch the latest account status from Stripe and
+    update the SellerProfile accordingly."""
+    stripe_secret_key = get_stripe_secret_key()
+
+    try:
+        sp = request.user.seller_profile
+    except Exception:
+        return redirect('carify_app:seller_dashboard')
+
+    if sp.stripe_account_id and stripe_secret_key and not is_stripe_demo_mode():
+        stripe.api_key = stripe_secret_key
+        try:
+            account = stripe.Account.retrieve(sp.stripe_account_id)
+            sp.stripe_payouts_enabled = account.payouts_enabled
+            sp.stripe_onboarding_complete = (
+                account.details_submitted and account.charges_enabled
+            )
+            sp.save(update_fields=['stripe_payouts_enabled', 'stripe_onboarding_complete'])
+        except Exception:
+            pass
+
+    if sp.stripe_payouts_enabled:
+        messages.success(request, "✓ Stripe Connect onboarding complete! Your bank account is now linked and payouts are enabled.")
+    else:
+        messages.warning(request, "Onboarding is not yet complete. Please finish verifying your details to enable payouts.")
+
+    return redirect('carify_app:seller_dashboard')
+
+
+@login_required
+def stripe_connect_refresh(request):
+    """Stripe calls this URL if the onboarding link expires. We regenerate a
+    fresh Account Link and redirect the vendor back to onboarding."""
+    stripe_secret_key = get_stripe_secret_key()
+
+    try:
+        sp = request.user.seller_profile
+    except Exception:
+        return redirect('carify_app:seller_dashboard')
+
+    if not sp.stripe_account_id or not stripe_secret_key or is_stripe_demo_mode():
+        messages.error(request, "Cannot refresh onboarding link. Please start the process again.")
+        return redirect('carify_app:seller_dashboard')
+
+    stripe.api_key = stripe_secret_key
+    account_link = stripe.AccountLink.create(
+        account=sp.stripe_account_id,
+        refresh_url=request.build_absolute_uri('/seller/stripe/refresh/'),
+        return_url=request.build_absolute_uri('/seller/stripe/return/'),
+        type='account_onboarding',
+    )
+    return redirect(account_link.url)
 
 @login_required
 def seller_dashboard(request):
@@ -436,11 +678,16 @@ def seller_dashboard(request):
 
     products = Product.objects.filter(seller=request.user)
     
+    # Check if seller is approved
+    if not seller_profile.is_approved:
+        messages.info(request, "Your account is currently under review. You will be able to publish products once approved by an administrator.")
+    
     # Calculate Metrics
     seller_order_items = OrderItem.objects.filter(product__seller=request.user)
     total_revenue = seller_order_items.filter(order__status='paid').aggregate(Sum('price'))['price__sum'] or 0
     total_orders = seller_order_items.values('order').distinct().count()
     low_stock_count = products.filter(quantity__lt=5).count() + ProductVariant.objects.filter(product__seller=request.user, stock__lt=5).count()
+    pending_shipments = seller_order_items.filter(order__status='paid').count()
 
     # Generate 7-day rolling revenue data
     today = timezone.now().date()
@@ -461,7 +708,8 @@ def seller_dashboard(request):
         'total_revenue': total_revenue,
         'total_orders': total_orders,
         'low_stock_count': low_stock_count,
-        'recent_orders': seller_order_items.order_by('-order__created_at')[:5],
+        'pending_shipments': pending_shipments,
+        'recent_orders': seller_order_items.select_related('order', 'order__buyer').order_by('-order__created_at')[:5],
         'chart_labels': json.dumps(chart_labels),
         'chart_data': json.dumps(chart_data)
     }
@@ -474,6 +722,12 @@ def seller_products(request):
 
 @login_required
 def seller_add_product(request):
+    # Check for approval
+    seller_profile = getattr(request.user, 'seller_profile', None)
+    if not seller_profile or not seller_profile.is_approved:
+        messages.error(request, "Clearance_Error: Your account must be approved by an administrator to register new assets.")
+        return redirect('carify_app:seller_dashboard')
+
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
         # Use inlineformset_factory for better handling
@@ -511,6 +765,12 @@ def seller_add_product(request):
 
 @login_required
 def seller_edit_product(request, product_id):
+    # Check for approval
+    seller_profile = getattr(request.user, 'seller_profile', None)
+    if not seller_profile or not seller_profile.is_approved:
+        messages.error(request, "Clearance_Error: Your account must be approved by an administrator to modify existing assets.")
+        return redirect('carify_app:seller_dashboard')
+
     product = get_object_or_404(Product, id=product_id, seller=request.user)
     from django.forms import inlineformset_factory
     EditMediaFormset = inlineformset_factory(Product, ProductMedia, fields=('media_type', 'image', 'video', 'caption', 'sort_order'), extra=3, can_delete=True)
@@ -556,7 +816,9 @@ def seller_delete_product(request, product_id):
 
 def services_catalog(request):
     """Render the dynamic Elite Solutions catalog."""
-    services = Service.objects.all().select_related('seller', 'category')
+    services = Service.objects.filter(
+        seller__seller_profile__is_approved=True
+    ).select_related('seller', 'category')
     categories = Category.objects.filter(service__isnull=False).distinct()
     return render(request, 'services.html', {
         'services': services,
@@ -566,6 +828,12 @@ def services_catalog(request):
 def service_detail(request, service_id):
     """Display detailed technical dossier for a ritual protocol."""
     service = get_object_or_404(Service, id=service_id)
+    
+    # Check if seller is approved (allow the seller themselves to see it)
+    seller_profile = getattr(service.seller, 'seller_profile', None)
+    if not (seller_profile and seller_profile.is_approved) and service.seller != request.user:
+        messages.error(request, "This ritual protocol is not currently available for public booking.")
+        return redirect('carify_app:services_catalog')
     related_rituals = Service.objects.filter(category=service.category).exclude(id=service.id)[:3]
     return render(request, 'service_detail.html', {
         'service': service,
@@ -613,7 +881,46 @@ def service_booking(request, service_id):
 
 @login_required
 @require_POST
+@login_required
+@require_POST
 def book_service(request):
+    """Handle service ceremony booking requests."""
+    service_id = request.POST.get('service_id')
+    service = get_object_or_404(Service, id=service_id)
+    preferred_date = request.POST.get('preferred_date')
+    preferred_time = request.POST.get('preferred_time')
+    vehicle_details = request.POST.get('vehicle_details')
+    notes = request.POST.get('additional_notes', '')
+
+    # Create Booking record
+    booking = Booking.objects.create(
+        user=request.user,
+        service=service,
+        preferred_date=preferred_date,
+        preferred_time=preferred_time,
+        vehicle_details=vehicle_details,
+        additional_notes=notes,
+    )
+
+    # Send confirmation email
+    subject = f"Booking Confirmation for {service.name}"
+    message = (
+        f"Dear {request.user.get_full_name() or request.user.username},\n\n"
+        f"Your booking for the service \"{service.name}\" has been received.\n"
+        f"Details:\n"
+        f"Date: {preferred_date}\n"
+        f"Time: {preferred_time}\n"
+        f"Vehicle: {vehicle_details}\n"
+        f"Notes: {notes}\n\n"
+        "We will contact you shortly to confirm the appointment.\n"
+        "Thank you for choosing Carify."
+    )
+    from_email = settings.DEFAULT_FROM_EMAIL
+    recipient_list = [request.user.email]
+    send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+
+    messages.success(request, f"Booking confirmed for '{service.name}'. Details have been emailed.")
+    return redirect('carify_app:payment_success')
     """Handle service ceremony booking requests."""
     service_id = request.POST.get('service_id')
     service = get_object_or_404(Service, id=service_id)
@@ -699,6 +1006,30 @@ def static_page(request, page_type):
     }
     context = pages.get(page_type, pages['about'])
     return render(request, 'static_page.html', context)
+
+@login_required
+def mark_order_as_shipped(request, order_id):
+    """Mark an order as shipped and notify the buyer."""
+    order = get_object_or_404(Order, id=order_id)
+    
+    # Security: Ensure the user owns at least one product in this order
+    # (In a real multi-vendor setup, you might split the order status per seller, 
+    # but for now we update the global order status if the seller owns an item in it).
+    is_seller = order.items.filter(product__seller=request.user).exists() or \
+                order.items.filter(service__seller=request.user).exists()
+                
+    if not is_seller and not request.user.is_superuser:
+        messages.error(request, "Clearance_Error: Unauthorized fulfillment attempt.")
+        return redirect('carify_app:seller_orders')
+
+    if order.status == 'paid':
+        order.status = 'shipped'
+        order.save()
+        messages.success(request, f"PROTOCOL_SUCCESS: Order #{order.id} has been marked as DISPATCHED. Tracking ID: {order.tracking_id}")
+    else:
+        messages.warning(request, f"Protocol_Status: Order #{order.id} is currently '{order.status}'. Only PAID orders can be marked as shipped.")
+
+    return redirect('carify_app:seller_orders')
 
 @login_required
 def seller_orders(request):
